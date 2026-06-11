@@ -33,7 +33,7 @@ return () => clearTimeout(timer);
     "activeTrips": 6,
     "expiry": "31 Dec 2028",
     "lastUpdated": "11 Nov 2026",
-    "logo": ""
+    "logo": "https://images.unsplash.com/photo-1549488344-c6aeb21a8cc6?w=150&h=150&fit=crop"
   },
   {
     "id": "TA-002",
@@ -48,7 +48,7 @@ return () => clearTimeout(timer);
     "activeTrips": 10,
     "expiry": "31 Dec 2029",
     "lastUpdated": "12 Nov 2026",
-    "logo": ""
+    "logo": "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=150&h=150&fit=crop"
   },
   {
     "id": "TA-003",
