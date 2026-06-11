@@ -118,7 +118,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <div>
                 <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Package Inclusions</h3>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {pkg.inclusions.map(i => <div key={i} className="text-body" style={{ padding: '4px 12px', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-full)', border: 'none' }}>✓ {i}</div>)}
+                  {pkg.inclusions.map(i => <div key={i} className="text-body" style={{ padding: '4px 12px', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>✓ {i}</div>)}
                 </div>
               </div>
             </div>

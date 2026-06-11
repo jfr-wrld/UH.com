@@ -125,14 +125,14 @@ export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) 
               <hr style={{ border: 'none', borderTop: '1px solid var(--border-subtle)' }} />
               <div>
                 <span className="text-caption text-muted" style={{ display: 'flex', justifyContent: 'space-between' }}><span>Document Readiness</span> <span>{trip.docProgress}%</span></span>
-                <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: 'var(--radius-full)', marginTop: '4px' }}>
-                  <div style={{ width: `${trip.docProgress}%`, height: '100%', backgroundColor: 'var(--color-warning)', borderRadius: 'var(--radius-full)' }}></div>
+                <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: 'var(--radius-pill)', marginTop: '4px' }}>
+                  <div style={{ width: `${trip.docProgress}%`, height: '100%', backgroundColor: 'var(--color-warning)', borderRadius: 'var(--radius-pill)' }}></div>
                 </div>
               </div>
               <div>
                 <span className="text-caption text-muted" style={{ display: 'flex', justifyContent: 'space-between' }}><span>Service Readiness</span> <span>{trip.svcProgress}%</span></span>
-                <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: 'var(--radius-full)', marginTop: '4px' }}>
-                  <div style={{ width: `${trip.svcProgress}%`, height: '100%', backgroundColor: 'var(--color-warning)', borderRadius: 'var(--radius-full)' }}></div>
+                <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--border-subtle)', borderRadius: 'var(--radius-pill)', marginTop: '4px' }}>
+                  <div style={{ width: `${trip.svcProgress}%`, height: '100%', backgroundColor: 'var(--color-warning)', borderRadius: 'var(--radius-pill)' }}></div>
                 </div>
               </div>
             </div>

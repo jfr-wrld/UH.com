@@ -315,7 +315,7 @@ return () => clearTimeout(timer);
       header: 'Travel Agency Name', 
       accessor: (row: typeof agencies[0]) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-pill)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             {row.logo ? (
               <img src={row.logo} alt={row.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (

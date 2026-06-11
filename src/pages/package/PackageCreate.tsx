@@ -123,7 +123,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                   <FormField label="Key Features">
                     <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-3)' }}>
                       {features.map((feat, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-full)', border: 'none' }}>
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>
                           <span className="text-caption-bold">{feat}</span>
                           <Trash2 size={12} className="text-muted" style={{ cursor: 'pointer' }} onClick={() => setFeatures(features.filter((_, idx) => idx !== i))} />
                         </div>
@@ -139,7 +139,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                   <FormField label="Package Inclusions">
                     <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-3)' }}>
                       {inclusions.map((inc, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-full)', border: 'none' }}>
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>
                           <span className="text-caption-bold">{inc}</span>
                           <Trash2 size={12} className="text-muted" style={{ cursor: 'pointer' }} onClick={() => setInclusions(inclusions.filter((_, idx) => idx !== i))} />
                         </div>
