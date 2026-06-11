@@ -344,8 +344,35 @@ return () => clearTimeout(timer);
         return <Badge variant={variant}>{row.status}</Badge>;
       }
     },
-    { header: 'PIC', accessor: 'pic' as const },
-    { header: 'Location', accessor: 'location' as const },
+    { 
+      header: 'PIC', 
+      accessor: (row: typeof agencies[0]) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <div style={{ width: 24, height: 24, borderRadius: 'var(--radius-pill)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--surface-sunken)' }}>
+            <img src={`https://i.pravatar.cc/150?u=${row.id}`} alt={row.pic} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div>
+            <div className="text-body-bold">{row.pic}</div>
+            <div className="text-caption text-muted" style={{ fontSize: '11px' }}>{row.pic.toLowerCase().replace(/\s+/g, '.')}@example.com</div>
+          </div>
+        </div>
+      )
+    },
+    { 
+      header: 'Location', 
+      accessor: (row: typeof agencies[0]) => {
+        let flag = '📍';
+        if (row.location.endsWith('ID')) flag = '🇮🇩';
+        if (row.location.endsWith('MY')) flag = '🇲🇾';
+        if (row.location.endsWith('SA')) flag = '🇸🇦';
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <span style={{ fontSize: '16px' }}>{flag}</span>
+            <span>{row.location}</span>
+          </div>
+        );
+      }
+    },
     { header: 'Total Jamaah', accessor: 'jamaah' as const, align: 'right' as const },
     { header: 'Packages', accessor: 'activePackages' as const, align: 'right' as const },
     { header: 'Trips', accessor: 'activeTrips' as const, align: 'right' as const },
