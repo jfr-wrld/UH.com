@@ -5,6 +5,7 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { FileUploader } from '../../components/inputs/FileUploader';
+import { ImageUploader } from '../../components/inputs/ImageUploader';
 import { Stepper } from '../../components/navigation/Stepper';
 import { Edit, CheckCircle } from 'lucide-react';
 
@@ -16,6 +17,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
 
   // Form State
   const [formData, setFormData] = useState({
+    profileImage: '',
     name: '',
     type: 'travel_agency',
     licenseCategory: 'umrah',
@@ -81,7 +83,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         <h3 className="text-section-title" style={{ marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>Basic Information</h3>
         <div style={{ marginBottom: 'var(--space-4)' }}>
           <FormField label="Agency Logo / Profile Image">
-            <FileUploader id="logo-upload" accept=".jpg,.png,.jpeg" maxSizeMB={2} />
+            <ImageUploader id="logo-upload" maxSizeMB={2} onFileSelect={(files) => updateForm('profileImage', files ? URL.createObjectURL(files[0]) : '')} />
           </FormField>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
@@ -247,7 +249,14 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         </div>
         <Button variant="ghost" size="sm" leftIcon={<Edit size={14} />} onClick={() => setCurrentStep(0)}>Edit</Button>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', padding: '0 var(--space-4)' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-6)', padding: '0 var(--space-4)' }}>
+        {formData.profileImage && (
+          <div style={{ flexShrink: 0 }}>
+            <span className="text-caption text-muted" style={{ display: 'block', marginBottom: '8px' }}>Logo / Profile</span>
+            <img src={formData.profileImage} alt="Profile" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-default)' }} />
+          </div>
+        )}
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
         <div><span className="text-caption text-muted">Agency Name</span><div className="text-body-medium">{formData.name || '-'}</div></div>
         <div><span className="text-caption text-muted">Agency Type</span><div className="text-body-medium" style={{ textTransform: 'capitalize' }}>{formData.type.replace('_', ' ')}</div></div>
         <div><span className="text-caption text-muted">License Category</span><div className="text-body-medium" style={{ textTransform: 'capitalize' }}>{formData.licenseCategory}</div></div>
@@ -258,6 +267,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         <div><span className="text-caption text-muted">Status</span><div className="text-body-medium" style={{ textTransform: 'capitalize' }}>{formData.status}</div></div>
         <div><span className="text-caption text-muted">Main Email</span><div className="text-body-medium">{formData.email || '-'}</div></div>
         <div><span className="text-caption text-muted">Main Phone</span><div className="text-body-medium">{formData.phone || '-'}</div></div>
+        </div>
       </div>
 
       <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
