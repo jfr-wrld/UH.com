@@ -33,6 +33,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadingFile, setUploadingFile] = useState<File | null>(null);
+
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -57,9 +61,28 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       }
       validFiles.push(files[i]);
     }
-    setUploadedFiles(validFiles);
-    if(onFileSelect) onFileSelect(files); 
-    if(onUpload) onUpload(files);
+    
+    // Simulate upload animation
+    setIsUploading(true);
+    setUploadProgress(0);
+    setUploadingFile(validFiles[0]);
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 15) + 5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadingFile(null);
+          setUploadedFiles(validFiles);
+          if(onFileSelect) onFileSelect(files); 
+          if(onUpload) onUpload(files);
+        }, 300);
+      }
+      setUploadProgress(progress);
+    }, 100);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -95,6 +118,32 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   };
 
   const displayError = error || localError;
+
+  if (isUploading && uploadingFile) {
+    return (
+      <div className={classNames('file-uploader-compact', className)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', padding: 'var(--space-3)', border: '1px solid var(--border-primary)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-primary-light)', opacity: 0.8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--surface-base)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)' }}>
+              <RefreshCw size={20} className="animate-spin" />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                <span className="text-body-bold" style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{uploadingFile.name}</span>
+              </div>
+              <div className="text-caption text-muted">
+                Uploading... {uploadProgress}%
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ width: '100%', height: '4px', backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-pill)', marginTop: 'var(--space-2)', overflow: 'hidden' }}>
+          <div style={{ width: `${uploadProgress}%`, height: '100%', backgroundColor: 'var(--color-primary)', transition: 'width 0.1s linear' }} />
+        </div>
+        <input type="file" ref={fileInputRef} onChange={handleChange} accept={accept} multiple={multiple} style={{ display: 'none' }} />
+      </div>
+    );
+  }
 
   if (uploadedFiles.length > 0) {
     const file = uploadedFiles[0];
