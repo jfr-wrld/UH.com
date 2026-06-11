@@ -34,10 +34,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   }, [value]);
 
   return (
-    <div 
-      className={classNames('metric-card', className)}
-      style={accentColor ? { borderLeft: `3px solid ${accentColor}` } : undefined}
-    >
+    <div className={classNames('metric-card', className)}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <h3 className="text-body-medium" style={{ color: 'var(--gray-500)', fontSize: '13px' }}>{title}</h3>
         {icon && (
