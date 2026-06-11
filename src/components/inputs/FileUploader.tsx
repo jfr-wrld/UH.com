@@ -150,7 +150,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           fileInputRef.current?.click();
         }
       }}
-      style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px dashed var(--border-default)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--surface-base)', cursor: 'pointer', transition: 'all 0.2s' }}
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
     >
       <input
         id={id}
