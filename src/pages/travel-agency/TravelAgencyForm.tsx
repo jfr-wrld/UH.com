@@ -79,6 +79,11 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <section>
         <h3 className="text-section-title" style={{ marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>Basic Information</h3>
+        <div style={{ marginBottom: 'var(--space-4)' }}>
+          <FormField label="Agency Logo / Profile Image">
+            <FileUploader id="logo-upload" accept=".jpg,.png,.jpeg" maxSizeMB={2} />
+          </FormField>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
           <FormField label="Travel Agency Name" required>
             <Input placeholder="Enter official name" value={formData.name} onChange={e => updateForm('name', e.target.value)} />
