@@ -4,10 +4,11 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { Button } from '../../components/actions/Button';
-import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck } from 'lucide-react';
+import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck, CheckCircle2, Users } from 'lucide-react';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { MetricCard } from '../../components/data-display/MetricCard';
 
 export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -459,6 +460,49 @@ return (
           </div>
         }
       />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Agencies" 
+          value="156" 
+          trend="up" 
+          trendValue="+12" 
+          trendLabel="vs last month"
+          icon={<Building2 />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)"
+        />
+        <MetricCard 
+          title="Active Agencies" 
+          value="142" 
+          trend="up" 
+          trendValue="+8" 
+          trendLabel="vs last month"
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)"
+        />
+        <MetricCard 
+          title="Pending Verification" 
+          value="14" 
+          trend="down" 
+          trendValue="-3" 
+          trendLabel="vs last month"
+          icon={<RefreshCw />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)"
+        />
+        <MetricCard 
+          title="Total Jamaah Served" 
+          value="45.2k" 
+          trend="up" 
+          trendValue="+18%" 
+          trendLabel="vs last year"
+          icon={<Users />} 
+          iconBg="var(--color-info-light)" 
+          accentColor="var(--color-info)"
+        />
+      </div>
 
       <FilterBar 
         groups={filterGroups}
