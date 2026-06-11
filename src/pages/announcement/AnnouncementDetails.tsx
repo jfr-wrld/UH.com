@@ -108,7 +108,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 'var(--space-6)', alignItems: 'start' }}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-            <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Message Preview</h2>
               <div style={{ marginBottom: 'var(--space-4)' }}>
                 <span className="text-caption text-muted" style={{ display: 'block' }}>Subject / Title</span>
@@ -142,7 +142,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Audience Snapshot</h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
@@ -165,7 +165,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
               </div>
             </div>
 
-            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Schedule & Author</h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>

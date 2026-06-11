@@ -55,7 +55,7 @@ export const FinanceSettings: React.FC<{ navigate: (route: string, data?: any) =
           display: 'flex', 
           flexDirection: 'column', 
           gap: 'var(--space-1)',
-          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
           borderRadius: 'var(--radius-md)', 
           border: 'none',
           padding: 'var(--space-3)',
@@ -91,7 +91,7 @@ export const FinanceSettings: React.FC<{ navigate: (route: string, data?: any) =
 
         {/* Settings Content */}
         <div style={{ 
-          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
           borderRadius: 'var(--radius-md)', 
           border: 'none',
           padding: 'var(--space-6)'

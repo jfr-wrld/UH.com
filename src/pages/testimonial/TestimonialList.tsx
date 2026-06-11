@@ -588,7 +588,6 @@ return () => clearTimeout(timer);
   }
 ];
 
-  const renderStars = (rating: number) => {
   const {
     searchQuery,
     setSearchQuery,
@@ -611,6 +610,9 @@ return () => clearTimeout(timer);
     defaultPerPage: 10,
     syncToUrl: true
   });
+
+  const renderStars = (rating: number) => {
+  
 
 return (
       <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
@@ -826,7 +828,6 @@ return (
           }}
           columns={endTripColumns}
           isLoading={isLoading}
-          isLoading={false}
           selectedKeys={selectedItems}
           onSelectionChange={setSelectedItems}
           emptyStateTitle="No testimonials found"
@@ -838,7 +839,6 @@ return (
           data={dailyFeedbackData}
           columns={dailyColumns}
           isLoading={isLoading}
-          isLoading={false}
           selectedKeys={selectedItems}
           onSelectionChange={setSelectedItems}
           emptyStateTitle="No daily feedback found"
@@ -850,7 +850,6 @@ return (
           data={mutawwifReports}
           columns={mutawwifColumns}
           isLoading={isLoading}
-          isLoading={false}
           selectedKeys={selectedItems}
           onSelectionChange={setSelectedItems}
           emptyStateTitle="No mutawwif reports found"

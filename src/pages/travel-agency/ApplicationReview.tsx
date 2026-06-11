@@ -107,7 +107,7 @@ export const ApplicationReview: React.FC<{ navigate: (route: string, data?: any)
         cancelLabel="Cancel"
         isDestructive={dialogConfig.type === 'reject'}
         onConfirm={handleDecisionSubmit}
-        onCancel={() => setDialogConfig({ isOpen: false, type: null })}
+        onClose={() => setDialogConfig({ isOpen: false, type: null })}
       >
         {dialogConfig.type !== 'approve' && (
           <FormField label={dialogConfig.type === 'revise' ? 'Revision Details' : 'Rejection Reason'} required>
@@ -122,7 +122,7 @@ export const ApplicationReview: React.FC<{ navigate: (route: string, data?: any)
                 padding: 'var(--space-3)',
                 borderRadius: 'var(--radius-md)',
                 border: '1px solid var(--border-input)',
-                backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)',
+                backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)',
                 resize: 'vertical'
               }}
             />

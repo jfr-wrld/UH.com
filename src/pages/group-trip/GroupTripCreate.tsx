@@ -52,7 +52,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
         
         {/* Section 1: Core Details */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="details" title="1. Group Trip Details" icon={Users} isComplete={true} />
           {openSections.details && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -161,7 +161,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
         </div>
 
         {/* Section 2: Flight */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="flight" title="2. Flight Details Snapshot" icon={Plane} />
           {openSections.flight && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -218,7 +218,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
         </div>
 
         {/* Section 3: Hotel */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="hotel" title="3. Accommodation / Hotel Assignment" icon={BedDouble} />
           {openSections.hotel && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -256,7 +256,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
         </div>
 
         {/* Section 4: Transport */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="transport" title="4. Ground Transportation" icon={Bus} />
           {openSections.transport && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -279,7 +279,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
         </div>
 
         {/* Section 5: Itinerary */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="itinerary" title="5. Itinerary Snapshot" icon={MapIcon} />
           {openSections.itinerary && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>

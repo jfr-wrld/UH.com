@@ -12,11 +12,11 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
-    { label: 'Agency Info' },
-    { label: 'Address & PIC' },
-    { label: 'Legal Docs' },
-    { label: 'Settlement' },
-    { label: 'Review' }
+    { id: '1', label: 'Agency Info' },
+    { id: '2', label: 'Address & PIC' },
+    { id: '3', label: 'Legal Docs' },
+    { id: '4', label: 'Settlement' },
+    { id: '5', label: 'Review' }
   ];
 
   const handleNext = () => {
@@ -124,16 +124,16 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
   const renderLegalDocs = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', maxWidth: '800px' }}>
       <FormField label="SSM Certificate" required>
-        <FileUploader id="ssm-upload" accept=".pdf,.jpg,.png" maxSize={5} onUpload={async (files) => console.log(files)} />
+        <FileUploader id="ssm-upload" accept=".pdf,.jpg,.png" maxSizeMB={5} onUpload={async (files) => console.log(files)} />
       </FormField>
       <FormField label="MOTAC License" required>
-        <FileUploader id="motac-upload" accept=".pdf,.jpg,.png" maxSize={5} onUpload={async (files) => console.log(files)} />
+        <FileUploader id="motac-upload" accept=".pdf,.jpg,.png" maxSizeMB={5} onUpload={async (files) => console.log(files)} />
       </FormField>
       <FormField label="Umrah/Ziarah Authorization">
-        <FileUploader id="umrah-auth-upload" accept=".pdf,.jpg,.png" maxSize={5} onUpload={async (files) => console.log(files)} />
+        <FileUploader id="umrah-auth-upload" accept=".pdf,.jpg,.png" maxSizeMB={5} onUpload={async (files) => console.log(files)} />
       </FormField>
       <FormField label="PJH Certificate (If applicable)">
-        <FileUploader id="pjh-upload" accept=".pdf,.jpg,.png" maxSize={5} onUpload={async (files) => console.log(files)} />
+        <FileUploader id="pjh-upload" accept=".pdf,.jpg,.png" maxSizeMB={5} onUpload={async (files) => console.log(files)} />
       </FormField>
     </div>
   );
@@ -150,7 +150,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         <FormField label="Tax / SST Number"><Input placeholder="Optional" /></FormField>
       </div>
       <FormField label="Bank Statement (Proof of Account)">
-        <FileUploader id="bank-statement-upload" accept=".pdf,.jpg,.png" maxSize={5} onUpload={async (files) => console.log(files)} />
+        <FileUploader id="bank-statement-upload" accept=".pdf,.jpg,.png" maxSizeMB={5} onUpload={async (files) => console.log(files)} />
       </FormField>
     </div>
   );
@@ -161,15 +161,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
       <p className="text-body text-muted">Please review all information before submitting. Once submitted, critical fields will require Admin re-verification if edited.</p>
     </div>
   );
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeFilters,
-    handleFilterChange,
-    clearFilters,
-    hasActiveFilters,
-    filteredData
-  } = useDataFilter(steps);
+  
 
 
   return (
@@ -183,8 +175,8 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         ]}
       />
 
-      <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
-        <Stepper steps={steps} currentStep={currentStep} />
+      <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
+        <Stepper steps={steps} currentStepIndex={currentStep} />
 
         <div style={{ marginTop: 'var(--space-8)', marginBottom: 'var(--space-8)' }}>
           {currentStep === 0 && renderAgencyInfo()}

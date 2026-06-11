@@ -47,7 +47,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
 
         {source === 'invite' && (
           <>
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Invitation Details</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Full Name" required>
@@ -95,7 +95,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
 
         {source === 'full' && (
           <>
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Identity & Contact</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Full Name" required>
@@ -123,7 +123,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
               </div>
             </section>
 
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Professional Info</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Job Type" required>
@@ -155,7 +155,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
               </div>
             </section>
             
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Invitation Settings</h2>
               <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', cursor: 'pointer' }}>
                 <input type="checkbox" defaultChecked style={{ width: '18px', height: '18px' }} />
@@ -170,7 +170,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
 
         {source === 'existing' && (
           <>
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Search Existing User</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                 <FormField label="Search Platform Users" required helpText="Search by name, email, or phone number.">
@@ -182,7 +182,7 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
               </div>
             </section>
 
-            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Professional Settings</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Job Type" required>

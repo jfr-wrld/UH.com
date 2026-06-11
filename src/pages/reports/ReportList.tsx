@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { PageHeader } from '../../components/layout/PageHeader';

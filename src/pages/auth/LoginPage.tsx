@@ -103,7 +103,7 @@ export const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         <div style={{
           width: '100%',
           maxWidth: '440px',
-          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)',
+          backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)',
           borderRadius: 'var(--radius-card)',
           border: 'none',
           padding: 'var(--space-8)',

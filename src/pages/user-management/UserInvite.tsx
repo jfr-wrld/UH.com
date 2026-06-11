@@ -25,13 +25,13 @@ export const UserInvite: React.FC<{ navigate: (route: string, data?: any) => voi
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 800px)', gap: 'var(--space-6)' }}>
         
         {/* Section 1: Identity */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>1. Identity & Contact</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Full Name" required>
               <Input placeholder="Enter user's full name" />
             </FormField>
-            <FormField label="Email Address" required helpText="This will be used for login and receiving the invitation link.">
+            <FormField label="Email Address" required helperText="This will be used for login and receiving the invitation link.">
               <Input type="email" placeholder="email@domain.com" />
             </FormField>
             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 'var(--space-3)' }}>
@@ -46,7 +46,7 @@ export const UserInvite: React.FC<{ navigate: (route: string, data?: any) => voi
         </section>
 
         {/* Section 2: Access & Role */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>2. Access & Role Assignment</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             
@@ -109,7 +109,7 @@ export const UserInvite: React.FC<{ navigate: (route: string, data?: any) => voi
             </div>
 
             {userType === 'agency' && (
-              <FormField label="Linked Travel Agency" required helpText="Select the travel agency this user belongs to.">
+              <FormField label="Linked Travel Agency" required helperText="Select the travel agency this user belongs to.">
                 <Select options={[{value: 'zamzam', label: 'Zamzam Travels'}, {value: 'makkah', label: 'Makkah Tours'}]} value="" onChange={() => {}} placeholder="Search agency..." />
               </FormField>
             )}
@@ -118,7 +118,7 @@ export const UserInvite: React.FC<{ navigate: (route: string, data?: any) => voi
         </section>
 
         {/* Section 3: Preferences */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>3. Settings</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', cursor: 'pointer' }}>

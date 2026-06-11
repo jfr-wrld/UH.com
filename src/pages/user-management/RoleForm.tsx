@@ -19,15 +19,7 @@ export const RoleForm: React.FC<{ navigate: (route: string, data?: any) => void,
   ];
 
   const actions = ['View', 'Create', 'Update', 'Delete', 'Verify/Approve'];
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeFilters,
-    handleFilterChange,
-    clearFilters,
-    hasActiveFilters,
-    filteredData
-  } = useDataFilter(modules);
+  
 
 
   return (
@@ -46,7 +38,7 @@ export const RoleForm: React.FC<{ navigate: (route: string, data?: any) => void,
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 800px)', gap: 'var(--space-6)' }}>
         
         {/* Basic Info */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Role Details</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Role Name" required>
@@ -61,7 +53,7 @@ export const RoleForm: React.FC<{ navigate: (route: string, data?: any) => void,
               />
             </FormField>
 
-            <FormField label="Data Scope" required helpText="Determines which records users with this role can see.">
+            <FormField label="Data Scope" required helperText="Determines which records users with this role can see.">
               <Select 
                 options={[
                   {value: 'global', label: 'Global (All Records)'}, 
@@ -76,7 +68,7 @@ export const RoleForm: React.FC<{ navigate: (route: string, data?: any) => void,
         </section>
 
         {/* Permission Matrix */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Permission Matrix</h2>
           
           <div style={{ overflowX: 'auto' }}>

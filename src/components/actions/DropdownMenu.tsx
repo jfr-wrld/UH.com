@@ -8,6 +8,8 @@ export interface DropdownMenuItem {
   label: string;
   icon?: React.ReactNode;
   danger?: boolean;
+  disabled?: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }
 

@@ -206,7 +206,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               top: 'calc(100% + var(--space-2))', 
               left: 0, 
               width: '100%', 
-              backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+              backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
               borderRadius: 'var(--radius-md)', 
               border: 'none', 
               boxShadow: 'var(--shadow-md)', 

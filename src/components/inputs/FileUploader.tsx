@@ -3,7 +3,9 @@ import { classNames } from '../../lib/utils';
 import { UploadCloud } from 'lucide-react';
 
 export interface FileUploaderProps {
-  onFileSelect: (files: FileList | null) => void;
+  id?: string;
+  onUpload?: (files: any) => void;
+  onFileSelect?: (files: FileList | null) => void;
   accept?: string;
   multiple?: boolean;
   maxSizeMB?: number;
@@ -47,7 +49,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         }
       }
     }
-    onFileSelect(files);
+    if(onFileSelect) onFileSelect(files); if(onUpload) onUpload(files);
   };
 
   const handleDrop = (e: React.DragEvent) => {

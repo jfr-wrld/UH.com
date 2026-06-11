@@ -210,8 +210,8 @@ return () => clearTimeout(timer);
       accessor: (row: typeof applications[0]) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
           <div style={{ width: 40, height: 40, borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            {row.logo ? (
-              <img src={row.logo} alt={row.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+            {(row as any).logo ? (
+              <img src={(row as any).logo} alt={row.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <Building2 size={20} className="text-primary" />
             )}

@@ -12,18 +12,20 @@ export interface ReviewRecord {
 
 export interface ReviewHistoryPanelProps {
   title?: string;
-  reviews: ReviewRecord[];
+  reviews?: ReviewRecord[];
+  history?: any[];
 }
 
 export const ReviewHistoryPanel: React.FC<ReviewHistoryPanelProps> = ({
   title = 'Review History',
-  reviews
+  reviews,
+  history
 }) => {
-  const timelineItems: TimelineItemProps[] = reviews.map(review => {
+  const timelineItems: TimelineItemProps[] = (reviews || history || []).map(review => {
     let status: TimelineItemProps['status'] = 'default';
-    if (review.decision === 'Approved') status = 'success';
-    if (review.decision === 'Rejected') status = 'danger';
-    if (review.decision === 'Requested Revision') status = 'warning';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Approved') status = 'success';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Rejected') status = 'danger';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Requested Revision') status = 'warning';
 
     return {
       id: review.id,
@@ -38,7 +40,7 @@ export const ReviewHistoryPanel: React.FC<ReviewHistoryPanelProps> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
       <h3 className="text-section-title">{title}</h3>
       <div style={{ 
-        backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+        backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
         padding: 'var(--space-6)', 
         borderRadius: 'var(--radius-card)',
         border: 'none'

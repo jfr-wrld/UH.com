@@ -36,7 +36,7 @@ export const VerificationChecklist: React.FC<VerificationChecklistProps> = ({
             justifyContent: 'space-between', 
             alignItems: 'center',
             padding: 'var(--space-3)',
-            backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)',
+            backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)',
             border: 'none',
             borderRadius: 'var(--radius-md)'
           }}>

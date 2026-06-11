@@ -50,7 +50,7 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
         
         {/* Section 1: Package & Schedule */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="package" title="1. Package & Schedule Selection" icon={Package} isComplete={true} />
           {openSections.package && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -87,7 +87,7 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
         </div>
 
         {/* Section 2: Booker & Participants */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="participants" title="2. Primary Booker & Participants" icon={Users} />
           {openSections.participants && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -146,7 +146,7 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
         </div>
 
         {/* Section 3: Room & Pricing */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="pricing" title="3. Room Selection & Pricing Snapshot" icon={BedDouble} />
           {openSections.pricing && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
@@ -200,7 +200,7 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
         </div>
 
         {/* Section 4: Payment */}
-        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', overflow: 'hidden' }}>
           <SectionHeader id="payment" title="4. Payment Options" icon={CreditCard} />
           {openSections.payment && (
             <div style={{ padding: 'var(--space-6)', display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>

@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 export interface Breadcrumb {
   label: string;
   href?: string;
+  onClick?: () => void;
 }
 
 export interface PageHeaderProps {

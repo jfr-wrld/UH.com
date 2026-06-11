@@ -59,15 +59,7 @@ export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void 
       align: 'right' as const
     }
   ];
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeFilters,
-    handleFilterChange,
-    clearFilters,
-    hasActiveFilters,
-    filteredData
-  } = useDataFilter(roles);
+  
 
 
   return (

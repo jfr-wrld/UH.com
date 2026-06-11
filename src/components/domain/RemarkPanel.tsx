@@ -98,7 +98,7 @@ export const RemarkPanel: React.FC<RemarkPanelProps> = ({ remarks, onAddRemark }
           remarks.map(remark => (
             <div key={remark.id} style={{ 
               padding: 'var(--space-4)', 
-              backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+              backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
               borderRadius: 'var(--radius-md)',
               border: 'none',
               borderLeft: `4px solid ${

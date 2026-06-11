@@ -55,7 +55,7 @@ export const AuditLogPanel: React.FC<AuditLogPanelProps> = ({ logs }) => {
       </div>
 
       <div style={{ 
-        backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)', 
+        backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', 
         padding: 'var(--space-6)', 
         borderRadius: 'var(--radius-card)',
         border: 'none'
