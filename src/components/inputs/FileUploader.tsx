@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { classNames } from '../../lib/utils';
-import { UploadCloud, FileText, CheckCircle, Trash2, RefreshCw, Eye } from 'lucide-react';
+import { UploadCloud, FileText, CheckCircle, Trash2, RefreshCw, Eye, X } from 'lucide-react';
 import { Button } from '../actions/Button';
 
 export interface FileUploaderProps {
@@ -109,11 +109,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     fileInputRef.current?.click();
   };
 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const handlePreview = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (uploadedFiles.length > 0) {
       const url = URL.createObjectURL(uploadedFiles[0]);
-      window.open(url, '_blank');
+      setPreviewUrl(url);
     }
   };
 
@@ -174,6 +176,27 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           <Button variant="ghost" size="sm" onClick={handleRemove} leftIcon={<Trash2 size={14} />} style={{ fontSize: '12px', height: '28px', color: 'var(--color-danger)' }}>Remove</Button>
         </div>
         <input type="file" ref={fileInputRef} onChange={handleChange} accept={accept} multiple={multiple} style={{ display: 'none' }} />
+
+        {previewUrl && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(4px)' }} onClick={() => setPreviewUrl(null)} />
+            <div style={{ position: 'relative', width: '80%', height: '80%', backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-xl)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--border-default)' }}>
+                <span className="text-body-bold">{file.name}</span>
+                <button onClick={() => setPreviewUrl(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-500)', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <X size={20} />
+                </button>
+              </div>
+              <div style={{ flex: 1, overflow: 'auto', backgroundColor: 'var(--surface-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <object data={previewUrl} style={{ width: '100%', height: '100%' }}>
+                  <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--gray-500)' }}>
+                    Preview not available for this file type.
+                  </div>
+                </object>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
