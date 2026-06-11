@@ -4,7 +4,7 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { Button } from '../../components/actions/Button';
-import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban } from 'lucide-react';
+import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck } from 'lucide-react';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
@@ -26,6 +26,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Siti Aminah",
     "location": "Selangor, MY",
     "jamaah": 215,
@@ -41,6 +42,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Mohammad Ali",
     "location": "Johor, MY",
     "jamaah": 310,
@@ -56,6 +58,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Active",
+    "isVerified": true,
     "pic": "Budi Santoso",
     "location": "Jakarta, ID",
     "jamaah": 405,
@@ -71,6 +74,7 @@ return () => clearTimeout(timer);
     "type": "Branch Office",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Fatimah Zahra",
     "location": "Surabaya, ID",
     "jamaah": 500,
@@ -86,6 +90,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Suspended",
+    "isVerified": false,
     "pic": "Zulkifli Harun",
     "location": "Bandung, ID",
     "jamaah": 595,
@@ -101,6 +106,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Inactive",
+    "isVerified": false,
     "pic": "Nurul Aini",
     "location": "Medan, ID",
     "jamaah": 690,
@@ -116,6 +122,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Adi Wijaya",
     "location": "Penang, MY",
     "jamaah": 785,
@@ -131,6 +138,7 @@ return () => clearTimeout(timer);
     "type": "Branch Office",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Kartika Sari",
     "location": "Kedah, MY",
     "jamaah": 880,
@@ -146,6 +154,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Active",
+    "isVerified": true,
     "pic": "Hendra Setiawan",
     "location": "Melaka, MY",
     "jamaah": 975,
@@ -161,6 +170,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Suspended",
+    "isVerified": false,
     "pic": "Ahmad Abdullah",
     "location": "Kuala Lumpur, MY",
     "jamaah": 1070,
@@ -176,6 +186,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Siti Aminah",
     "location": "Selangor, MY",
     "jamaah": 1165,
@@ -191,6 +202,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Inactive",
+    "isVerified": false,
     "pic": "Mohammad Ali",
     "location": "Johor, MY",
     "jamaah": 1260,
@@ -206,6 +218,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Budi Santoso",
     "location": "Jakarta, ID",
     "jamaah": 1355,
@@ -221,6 +234,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Fatimah Zahra",
     "location": "Surabaya, ID",
     "jamaah": 1450,
@@ -236,6 +250,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Suspended",
+    "isVerified": false,
     "pic": "Zulkifli Harun",
     "location": "Bandung, ID",
     "jamaah": 1545,
@@ -251,6 +266,7 @@ return () => clearTimeout(timer);
     "type": "Branch Office",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Nurul Aini",
     "location": "Medan, ID",
     "jamaah": 1640,
@@ -266,6 +282,7 @@ return () => clearTimeout(timer);
     "type": "Travel Agency",
     "licenseCategory": "Umrah/Ziarah",
     "status": "Active",
+    "isVerified": true,
     "pic": "Adi Wijaya",
     "location": "Penang, MY",
     "jamaah": 1735,
@@ -273,7 +290,7 @@ return () => clearTimeout(timer);
     "activeTrips": 10,
     "expiry": "31 Dec 2029",
     "lastUpdated": "27 Nov 2026",
-    "logo": ""
+    "logo": "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=150&h=150&fit=crop"
   },
   {
     "id": "TA-018",
@@ -281,6 +298,7 @@ return () => clearTimeout(timer);
     "type": "Tour Operator",
     "licenseCategory": "Ticketing",
     "status": "Inactive",
+    "isVerified": false,
     "pic": "Kartika Sari",
     "location": "Kedah, MY",
     "jamaah": 1830,
@@ -288,7 +306,7 @@ return () => clearTimeout(timer);
     "activeTrips": 2,
     "expiry": "31 Dec 2027",
     "lastUpdated": "28 Nov 2026",
-    "logo": ""
+    "logo": "https://images.unsplash.com/photo-1549488344-c6aeb21a8cc6?w=150&h=150&fit=crop"
   }
 ];
 
@@ -297,15 +315,18 @@ return () => clearTimeout(timer);
       header: 'Travel Agency Name', 
       accessor: (row: typeof agencies[0]) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', backgroundColor: 'var(--surface-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-full)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             {row.logo ? (
               <img src={row.logo} alt={row.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <Building2 size={16} color="var(--text-muted)" />
+              <Building2 size={16} style={{ color: 'var(--text-muted)' }} />
             )}
           </div>
           <div>
-            <div className="text-body-bold">{row.name}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+              <div className="text-body-bold">{row.name}</div>
+              {row.isVerified && <BadgeCheck size={16} className="text-primary" style={{ color: 'var(--color-primary)' }} />}
+            </div>
             <div className="text-caption text-muted">{row.id}</div>
           </div>
         </div>
