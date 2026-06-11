@@ -29,7 +29,7 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
     customerVisible: 'Yes',
     dataVerified: 'Yes',
     description: 'As part of the prestigious Abraj Al Bait complex, the deluxe Swissotel Makkah is a contemporary five-star hotel located in close proximity to the holy Masjid Al Haraam.',
-    thumbnail: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&h=400&fit=crop',
+    thumbnail: 'https://picsum.photos/seed/273/600/400',
     createdBy: 'System Admin',
     lastUpdated: 'Today, 10:30 AM',
     roomTypesCount: 3,

@@ -35,8 +35,8 @@ export const TestimonialDetails: React.FC<{ navigate: (route: string, data?: any
       general: 'I highly recommend this package to anyone taking their family for the first time. Truly a blessing.'
     },
     media: [
-      { id: 'm1', type: 'image', url: 'https://images.unsplash.com/photo-1565552643952-b13c8f8cd83b?w=150&h=150&fit=crop' },
-      { id: 'm2', type: 'image', url: 'https://images.unsplash.com/photo-1529156069898-49953eb1b5ce?w=150&h=150&fit=crop' }
+      { id: 'm1', type: 'image', url: 'https://picsum.photos/seed/701/150/150' },
+      { id: 'm2', type: 'image', url: 'https://picsum.photos/seed/680/150/150' }
     ]
   };
 

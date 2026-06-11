@@ -34,7 +34,7 @@ return () => clearTimeout(timer);
     "activeTrips": 6,
     "expiry": "31 Dec 2028",
     "lastUpdated": "11 Nov 2026",
-    "logo": "https://images.unsplash.com/photo-1549488344-c6aeb21a8cc6?w=150&h=150&fit=crop"
+    "logo": "https://picsum.photos/seed/663/150/150"
   },
   {
     "id": "TA-002",
@@ -50,7 +50,7 @@ return () => clearTimeout(timer);
     "activeTrips": 10,
     "expiry": "31 Dec 2029",
     "lastUpdated": "12 Nov 2026",
-    "logo": "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=150&h=150&fit=crop"
+    "logo": "https://picsum.photos/seed/788/150/150"
   },
   {
     "id": "TA-003",
@@ -290,7 +290,7 @@ return () => clearTimeout(timer);
     "activeTrips": 10,
     "expiry": "31 Dec 2029",
     "lastUpdated": "27 Nov 2026",
-    "logo": "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=150&h=150&fit=crop"
+    "logo": "https://picsum.photos/seed/452/150/150"
   },
   {
     "id": "TA-018",
@@ -306,7 +306,7 @@ return () => clearTimeout(timer);
     "activeTrips": 2,
     "expiry": "31 Dec 2027",
     "lastUpdated": "28 Nov 2026",
-    "logo": "https://images.unsplash.com/photo-1549488344-c6aeb21a8cc6?w=150&h=150&fit=crop"
+    "logo": "https://picsum.photos/seed/273/150/150"
   }
 ];
 

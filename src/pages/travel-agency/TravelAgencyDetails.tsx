@@ -46,7 +46,7 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
     status: agencyId === 'TA-002' ? 'Suspended' : agencyId === 'TA-003' ? 'Inactive' : 'Active',
     rating: 4.8,
     reviews: 120,
-    logo: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=200&h=200&fit=crop'
+    logo: 'https://picsum.photos/seed/901/200/200'
   };
 
   const usersData = [

@@ -22,7 +22,7 @@ export const ArticleDetails: React.FC<{ navigate: (route: string, data?: any) =>
     publishedDate: '10 Nov 2026, 09:00 AM',
     updatedDate: '12 Nov 2026, 02:15 PM',
     seoTitle: 'Essential Guide to Ihram | UmrahHaji.com',
-    image: 'https://images.unsplash.com/photo-1565552643952-b13c8f8cd83b?w=1200&h=630&fit=crop',
+    image: 'https://picsum.photos/seed/281/1200/630',
     metrics: {
       views: 12450,
       wordCount: 1850,

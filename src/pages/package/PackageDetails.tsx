@@ -28,7 +28,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
     description: 'An exclusive 11-day Premium Umrah package featuring stays at the Swissotel Makkah and Pullman Zamzam Madinah. Includes full board meals and private transportation.',
     features: ['Mutawwif Guide', '24/7 Support', 'VIP Transport'],
     inclusions: ['Flight Tickets', 'Hotel Stay', 'Visa Processing', 'Daily Breakfast', 'Zam-zam Water'],
-    thumbnail: 'https://images.unsplash.com/photo-1565552643952-b13c8f8cd83b?w=600&h=400&fit=crop',
+    thumbnail: 'https://picsum.photos/seed/479/600/400',
     cancellationPolicy: 'Cancellations made 45 days prior to departure will receive a full refund minus a RM 500 processing fee.',
     refundPolicy: 'Refunds are processed within 14-21 working days after approval.',
     amendmentPolicy: 'Name changes are allowed up to 30 days prior to departure subject to airline policies.'
