@@ -5,8 +5,33 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [hasTransit, setHasTransit] = useState(false);
+  const [airline, setAirline] = useState('');
+  const [number, setNumber] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
+
+  const { create } = useLocalStorageCrud('flight');
+
+  const handleSave = () => {
+    create({
+      airline: airline || 'Unknown',
+      logo: airline === 'sv' ? 'SV' : airline === 'mh' ? 'MH' : 'XX',
+      number: number || 'XX000',
+      route: `${origin || 'XXX'} → ${destination || 'YYY'}`,
+      type: hasTransit ? 'Transit' : 'Direct',
+      departure: '00:00',
+      arrival: '00:00',
+      duration: '0h',
+      available: true,
+      status: 'Active'
+    });
+    if(showToast) showToast('Success', 'Flight published successfully', 'success');
+    navigate('flight-list');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -17,7 +42,7 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('flight-list'); }}>Cancel</Button>
             <Button variant="secondary" onClick={() => navigate('flight-list')}>Save as Draft</Button>
-            <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('flight-list'); }}>Publish Flight</Button>
+            <Button onClick={handleSave}>Publish Flight</Button>
           </div>
         }
       />
@@ -30,10 +55,10 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Airline" required>
-                <Select options={[{value: 'sv', label: 'Saudia Airlines'}, {value: 'mh', label: 'Malaysia Airlines'}]} placeholder="Select Airline" value="" onChange={() => {}} />
+                <Select options={[{value: 'sv', label: 'Saudia Airlines'}, {value: 'mh', label: 'Malaysia Airlines'}]} placeholder="Select Airline" value={airline} onChange={setAirline} />
               </FormField>
               <FormField label="Flight Number" required helpText="Airline code + number (e.g. SV841)">
-                <Input placeholder="Flight Number" />
+                <Input placeholder="Flight Number" value={number} onChange={e => setNumber(e.target.value)} />
               </FormField>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
@@ -67,7 +92,7 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-6)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Origin Airport" required>
-                <Select options={[{value: 'kul', label: 'KUL - Kuala Lumpur'}, {value: 'cgk', label: 'CGK - Jakarta'}]} placeholder="Select Origin" value="" onChange={() => {}} />
+                <Select options={[{value: 'kul', label: 'KUL - Kuala Lumpur'}, {value: 'cgk', label: 'CGK - Jakarta'}]} placeholder="Select Origin" value={origin} onChange={setOrigin} />
               </FormField>
               <FormField label="Origin Terminal">
                 <Input placeholder="e.g. Terminal 1" />
@@ -75,7 +100,7 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Destination Airport" required>
-                <Select options={[{value: 'jed', label: 'JED - Jeddah'}, {value: 'med', label: 'MED - Medina'}]} placeholder="Select Destination" value="" onChange={() => {}} />
+                <Select options={[{value: 'jed', label: 'JED - Jeddah'}, {value: 'med', label: 'MED - Medina'}]} placeholder="Select Destination" value={destination} onChange={setDestination} />
               </FormField>
               <FormField label="Destination Terminal">
                 <Input placeholder="e.g. Terminal 1" />

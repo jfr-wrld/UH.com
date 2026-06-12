@@ -9,22 +9,36 @@ import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar
 import { Package, Map, Calendar, BedDouble, Plane, DollarSign, Image as ImageIcon, Users, Eye, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: any, packageId?: string }> = ({ navigate, showToast, packageId = 'pkg_1' }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [status, setStatus] = useState('Pending Approval');
+  const { getById } = useLocalStorageCrud('package');
 
   // Mock Data
-  const pkg = {
+  const pkgData = getById(packageId) || {
     id: packageId,
-    code: 'PKG-UMR-26-001',
-    name: 'Premium Umrah Safar 2026',
-    agency: 'Zamzam Travels',
-    category: 'Umrah',
-    type: 'Premium',
+    code: '-',
+    name: 'Unknown Package',
+    agency: '-',
+    category: '-',
+    type: '-',
     status: status,
+    hotel: '-',
+    flight: '-',
+    price: '-',
+    schedule: '-',
+    commission: '-',
+    dateCreated: '-',
+    labels: []
+  };
+
+  const pkg = {
+    ...pkgData,
     visibility: 'Public',
     availability: 'Open',
-    promoLabels: ['Best Offer', 'High Season'],
+    promoLabels: pkgData.labels || [],
     description: 'An exclusive 11-day Premium Umrah package featuring stays at the Swissotel Makkah and Pullman Zamzam Madinah. Includes full board meals and private transportation.',
     features: ['Mutawwif Guide', '24/7 Support', 'VIP Transport'],
     inclusions: ['Flight Tickets', 'Hotel Stay', 'Visa Processing', 'Daily Breakfast', 'Zam-zam Water'],

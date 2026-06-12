@@ -9,6 +9,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Package, FileText, CheckCircle, Archive, Download, Link as LinkIcon, Star, Eye, Edit, ChevronRight, Trash2, FileEdit } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const PackageList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
@@ -19,8 +20,7 @@ export const PackageList: React.FC<{ navigate: (route: string, data?: any) => vo
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const packageList = [
+const initialPackageList = [
   {
     "id": "pkg_1",
     "code": "PKG-UMR-26-001",
@@ -323,6 +323,7 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: packageList, remove } = useLocalStorageCrud('package', initialPackageList);
   const {
     searchQuery,
     setSearchQuery,
@@ -422,7 +423,7 @@ return () => clearTimeout(timer);
             { id: 'share', label: 'Copy Share Link', icon: <LinkIcon size={16} />, onClick: () => console.log('Share', row.id) },
             { id: 'draft', label: 'Set as Draft', icon: <FileEdit size={16} />, onClick: () => console.log('Set Draft', row.id) },
             { id: 'archive', label: 'Archive', icon: <Archive size={16} />, onClick: () => console.log('Archive', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id) },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } },
           ]}
         />
       ),

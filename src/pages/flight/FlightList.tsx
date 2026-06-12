@@ -9,6 +9,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const FlightList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('flights');
@@ -21,8 +22,7 @@ export const FlightList: React.FC<{ navigate: (route: string, data?: any) => voi
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Airline Data
-  const airlineList = [
+const initialAirlineList = [
   {
     "id": "al_1",
     "logo": "MH",
@@ -223,7 +223,7 @@ return () => clearTimeout(timer);
   }
 ];
 
-  const flightList = [
+  const initialFlightList = [
   {
     "id": "fl_1",
     "airline": "Malaysia Airlines",
@@ -460,6 +460,9 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: airlineList, remove: removeAirline } = useLocalStorageCrud('airline', initialAirlineList);
+  const { data: flightList, remove: removeFlight } = useLocalStorageCrud('flight', initialFlightList);
+
   const airlineColumns = [
     { 
       header: 'Airline', 
@@ -504,7 +507,7 @@ return () => clearTimeout(timer);
             { id: 'edit', label: 'Edit Airline', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
             { id: 'add_flight', label: 'Add Flight', onClick: () => navigate('flight-add', { airlineId: row.id }) },
             { id: 'archive', label: 'Archive', icon: <Archive size={16} />, danger: true, onClick: () => console.log('Archive', row.id), disabled: row.status === 'Archived' },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id), disabled: row.status !== 'Draft' || row.flights > 0 },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) removeAirline(row.id) } },
           ]}
         />
       ),
@@ -569,7 +572,7 @@ return () => clearTimeout(timer);
             { id: 'publish', label: 'Publish', icon: <UploadCloud size={16} />, onClick: () => console.log('Publish', row.id), disabled: row.status === 'Active' },
             { id: 'archive', label: 'Archive', icon: <Archive size={16} />, danger: true, onClick: () => console.log('Archive', row.id), disabled: row.status === 'Archived' },
             { id: 'restore', label: 'Restore', onClick: () => console.log('Restore', row.id), disabled: row.status !== 'Archived' },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id), disabled: row.status !== 'Draft' },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) removeFlight(row.id) } },
           ]}
         />
       ),

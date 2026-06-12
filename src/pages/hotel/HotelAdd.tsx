@@ -6,7 +6,31 @@ import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { Plus, Trash2, MapPin, BedDouble, Wifi, Image as ImageIcon } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
+  const [name, setName] = useState('');
+  const [city, setCity] = useState('');
+  const [rating, setRating] = useState('0');
+  const [rooms, setRooms] = useState('0');
+  const [distance, setDistance] = useState('0');
+
+  const { create } = useLocalStorageCrud('hotel');
+
+  const handleSave = () => {
+    create({
+      name: name || 'New Hotel',
+      city: city || 'Makkah',
+      rating: parseInt(rating) || 0,
+      distance: parseInt(distance) || 0,
+      rooms: parseInt(rooms) || 0,
+      status: 'Active',
+      lastUpdated: new Date().toISOString().split('T')[0]
+    });
+    if(showToast) showToast('Success', 'Hotel published successfully', 'success');
+    navigate('hotel-list');
+  };
+
   const [roomTypes, setRoomTypes] = useState<any[]>([
     { id: 'rt_1', name: 'Double Room', occupancy: 2, bed: '1 King Bed', size: '32', bathroom: 'private', notes: '' },
     { id: 'rt_2', name: 'Triple Room', occupancy: 3, bed: '3 Single Beds', size: '40', bathroom: 'private', notes: '' }
@@ -25,7 +49,7 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('hotel-list'); }}>Cancel</Button>
             <Button variant="secondary" onClick={() => navigate('hotel-list')}>Save as Draft</Button>
-            <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('hotel-list'); }}>Publish Hotel</Button>
+            <Button onClick={handleSave}>Publish Hotel</Button>
           </div>
         }
       />
@@ -37,19 +61,19 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Basic Information</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Hotel Name" required>
-              <Input placeholder="e.g. Swissotel Makkah" />
+              <Input placeholder="e.g. Swissotel Makkah" value={name} onChange={e => setName(e.target.value)} />
             </FormField>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Hotel Chain / Brand">
                 <Input placeholder="e.g. Accor, Hilton" />
               </FormField>
-              <FormField label="Hotel Type">
-                <Select options={[{value: 'hotel', label: 'Hotel'}, {value: 'suite', label: 'Suite Hotel'}, {value: 'apartment', label: 'Apartment Hotel'}]} value="hotel" onChange={() => {}} />
+              <FormField label="Total Rooms">
+                <Input type="number" placeholder="e.g. 500" value={rooms} onChange={e => setRooms(e.target.value)} />
               </FormField>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Star Rating" required>
-                <Select options={[{value: '5', label: '5 Star'}, {value: '4', label: '4 Star'}, {value: '3', label: '3 Star'}, {value: 'unrated', label: 'Unrated'}]} value="" onChange={() => {}} placeholder="Select rating" />
+                <Select options={[{value: '5', label: '5 Star'}, {value: '4', label: '4 Star'}, {value: '3', label: '3 Star'}, {value: 'unrated', label: 'Unrated'}]} value={rating} onChange={setRating} placeholder="Select rating" />
               </FormField>
               <FormField label="Customer Rating">
                 <Input type="number" step="0.1" max="5" min="0" placeholder="0.0 - 5.0" />
@@ -57,7 +81,7 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="City" required>
-                <Select options={[{value: 'makkah', label: 'Makkah'}, {value: 'madinah', label: 'Madinah'}]} value="" onChange={() => {}} placeholder="Select city" />
+                <Select options={[{value: 'makkah', label: 'Makkah'}, {value: 'madinah', label: 'Madinah'}]} value={city} onChange={setCity} placeholder="Select city" />
               </FormField>
               <FormField label="Country" required>
                 <Select options={[{value: 'sa', label: 'Saudi Arabia'}]} value="sa" onChange={() => {}} />
@@ -116,7 +140,7 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
                 </FormField>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px', gap: 'var(--space-2)' }}>
                   <FormField label="Distance Value" required>
-                    <Input type="number" placeholder="e.g. 100" />
+                    <Input type="number" placeholder="e.g. 100" value={distance} onChange={e => setDistance(e.target.value)} />
                   </FormField>
                   <FormField label="Unit" required>
                     <Select options={[{value: 'm', label: 'm'}, {value: 'km', label: 'km'}]} value="m" onChange={() => {}} />

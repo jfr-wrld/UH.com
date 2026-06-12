@@ -9,6 +9,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Download, DollarSign, Clock, CheckCircle, Send, AlertCircle, FileText, Eye, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const AllowanceList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedAllowances, setSelectedAllowances] = useState<string[]>([]);
@@ -16,11 +17,9 @@ export const AllowanceList: React.FC<{ navigate: (route: string, data?: any) => 
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
-return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const allowanceList = [
+const initialAllowanceList = [
   {
     "id": "all_mut_1",
     "mutawwif": "Ustaz Don Daniyal",
@@ -185,6 +184,8 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: allowanceList, remove } = useLocalStorageCrud('allowance', initialAllowanceList);
+
   const columns = [
     { header: 'Allowance ID', accessor: 'id' as const, sortable: true },
     { header: 'Mutawwif', accessor: 'mutawwif' as const, sortable: true },
@@ -216,7 +217,8 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('allowance-details', { id: row.id }) },
             { id: 'approve', label: 'Approve Payout', icon: <CheckCircle size={16} />, onClick: () => console.log('Approve', row.id) },
-            { id: 'disburse', label: 'Disburse Funds', onClick: () => console.log('Disburse', row.id) }
+            { id: 'disburse', label: 'Disburse Funds', onClick: () => console.log('Disburse', row.id) },
+            { id: 'delete', label: 'Delete', icon: <AlertCircle size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
           ]}
         />
       ),

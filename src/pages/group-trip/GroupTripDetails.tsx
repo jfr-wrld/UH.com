@@ -9,28 +9,31 @@ import { Users, Map, Calendar, BedDouble, Plane, FileText, Bus, Eye, ChevronRigh
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
-export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) => void, tripId?: string }> = ({ navigate, tripId = 'gt_1' }) => {
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
+export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) => void, tripId?: string }> = ({ navigate, tripId = 'trp_1' }) => {
   const [status, setStatus] = useState('Upcoming');
   const [activeTab, setActiveTab] = useState('overview');
+  const { getById } = useLocalStorageCrud('group-trip');
 
   // Mock Data
-  const trip = {
+  const trip = getById(tripId) || {
     id: tripId,
-    code: 'TRP-1001',
-    name: 'Premium Umrah Safar (Dec 26)',
-    agency: 'Zamzam Travels',
-    type: 'Umrah',
+    code: '-',
+    name: 'Unknown Trip',
+    agency: '-',
+    type: '-',
     status: status,
-    creationSource: 'Spawned From Package',
-    pkgRef: 'Premium Umrah 2026',
-    mutawwif: 'Ustaz Ahmad',
-    schedule: '15 Dec 2026 - 26 Dec 2026',
-    members: 3,
-    capacity: 45,
-    hotel: 'Swissotel Makkah',
-    flight: 'Saudi Airlines (SV)',
-    docProgress: 75,
-    svcProgress: 60
+    creationSource: '-',
+    pkgRef: '-',
+    mutawwif: '-',
+    schedule: '-',
+    members: 0,
+    capacity: 0,
+    hotel: '-',
+    flight: '-',
+    docProgress: 0,
+    svcProgress: 0
   };
 
   const tabs = [

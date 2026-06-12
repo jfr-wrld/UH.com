@@ -4,23 +4,14 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { Button } from '../../components/actions/Button';
-import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck, CheckCircle2, Users } from 'lucide-react';
+import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck, CheckCircle2, Users, Trash2 } from 'lucide-react';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { MetricCard } from '../../components/data-display/MetricCard';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
-export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-return () => clearTimeout(timer);
-  }, []);
-
-  
-  const agencies = [
+const initialAgencies = [
   {
     "id": "TA-001",
     "name": "Makkah Tours",
@@ -333,52 +324,92 @@ return () => clearTimeout(timer);
         </div>
       )
     },
-    { header: 'Type', accessor: 'type' as const },
-    { header: 'License Category', accessor: 'licenseCategory' as const },
+    { 
+      header: 'Type', 
+      accessor: (row: any) => {
+        const t = row.type;
+        if (t === 'travel_agency') return 'Travel Agency';
+        if (t === 'tour_operator') return 'Tour Operator';
+        if (t === 'branch') return 'Branch Office';
+        return t || '-';
+      }
+    },
+    { 
+      header: 'License Category', 
+      accessor: (row: any) => {
+        const c = row.licenseCategory;
+        if (c === 'umrah') return 'Umrah/Ziarah';
+        if (c === 'inbound') return 'Inbound';
+        if (c === 'outbound') return 'Outbound';
+        if (c === 'ticketing') return 'Ticketing';
+        return c || '-';
+      }
+    },
     { 
       header: 'Status', 
-      accessor: (row: typeof agencies[0]) => {
+      accessor: (row: any) => {
+        const statusStr = row.status ? (row.status.charAt(0).toUpperCase() + row.status.slice(1).toLowerCase()) : 'Unknown';
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
-        if (row.status === 'Active') variant = 'success';
-        if (row.status === 'Suspended') variant = 'danger';
-        if (row.status === 'Inactive') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        if (statusStr === 'Active') variant = 'success';
+        if (statusStr === 'Suspended') variant = 'danger';
+        if (statusStr === 'Inactive') variant = 'neutral';
+        return <Badge variant={variant}>{statusStr}</Badge>;
       }
     },
     { 
       header: 'PIC', 
-      accessor: (row: typeof agencies[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          <div style={{ width: 24, height: 24, borderRadius: 'var(--radius-pill)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--surface-sunken)' }}>
-            <img src={`https://i.pravatar.cc/150?u=${row.id}`} alt={row.pic} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div>
-            <div className="text-body-bold">{row.pic}</div>
-            <div className="text-caption text-muted" style={{ fontSize: '11px' }}>{row.pic.toLowerCase().replace(/\s+/g, '.')}@example.com</div>
-          </div>
-        </div>
-      )
-    },
-    { 
-      header: 'Location', 
-      accessor: (row: typeof agencies[0]) => {
-        let flag = '📍';
-        if (row.location.endsWith('ID')) flag = '🇮🇩';
-        if (row.location.endsWith('MY')) flag = '🇲🇾';
-        if (row.location.endsWith('SA')) flag = '🇸🇦';
+      accessor: (row: any) => {
+        const picName = row.pic || row.picName || 'Unknown';
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span style={{ fontSize: '16px' }}>{flag}</span>
-            <span>{row.location}</span>
+            <div style={{ width: 24, height: 24, borderRadius: 'var(--radius-pill)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--surface-sunken)' }}>
+              <img src={`https://i.pravatar.cc/150?u=${row.id}`} alt={picName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+            <div>
+              <div className="text-body-bold">{picName}</div>
+              <div className="text-caption text-muted" style={{ fontSize: '11px' }}>{picName.toLowerCase().replace(/\s+/g, '.')}@example.com</div>
+            </div>
           </div>
         );
       }
     },
-    { header: 'Total Jamaah', accessor: 'jamaah' as const, align: 'right' as const },
-    { header: 'Packages', accessor: 'activePackages' as const, align: 'right' as const },
-    { header: 'Trips', accessor: 'activeTrips' as const, align: 'right' as const },
-    { header: 'License Expiry', accessor: 'expiry' as const },
-    { header: 'Last Updated', accessor: 'lastUpdated' as const },
+    { 
+      header: 'Location', 
+      accessor: (row: any) => {
+        const locationStr = row.location || (row.state && row.country ? `${row.state}, ${row.country === 'Malaysia' ? 'MY' : row.country === 'Indonesia' ? 'ID' : row.country === 'Saudi Arabia' ? 'SA' : row.country}` : 'Unknown');
+        let flag = '📍';
+        if (locationStr.endsWith('ID')) flag = '🇮🇩';
+        if (locationStr.endsWith('MY')) flag = '🇲🇾';
+        if (locationStr.endsWith('SA')) flag = '🇸🇦';
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <span style={{ fontSize: '16px' }}>{flag}</span>
+            <span>{locationStr}</span>
+          </div>
+        );
+      }
+    },
+    { header: 'Total Jamaah', accessor: (row: any) => row.jamaah || 0, align: 'right' as const },
+    { header: 'Packages', accessor: (row: any) => row.activePackages || 0, align: 'right' as const },
+    { header: 'Trips', accessor: (row: any) => row.activeTrips || 0, align: 'right' as const },
+    { 
+      header: 'License Expiry', 
+      accessor: (row: any) => {
+        if (row.expiry) return row.expiry;
+        if (row.validityEnd) {
+          const d = new Date(row.validityEnd);
+          return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        return '-';
+      }
+    },
+    { 
+      header: 'Last Updated', 
+      accessor: (row: any) => {
+        if (row.lastUpdated) return row.lastUpdated;
+        return new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+    },
     {
       header: 'Actions',
       accessor: (row: typeof agencies[0]) => (
@@ -387,13 +418,18 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('ta-details', { agencyId: row.id }) },
             { id: 'edit', label: 'Edit Agency', icon: <Edit size={16} />, onClick: () => navigate('ta-edit', { agencyId: row.id }) },
-            { id: 'suspend', label: row.status === 'Suspended' ? 'Reactivate' : 'Suspend', icon: row.status === 'Suspended' ? <RefreshCw size={16} /> : <Ban size={16} />, onClick: () => console.log('Suspend') }
+            { id: 'suspend', label: row.status === 'Suspended' ? 'Reactivate' : 'Suspend', icon: row.status === 'Suspended' ? <RefreshCw size={16} /> : <Ban size={16} />, onClick: () => console.log('Suspend') },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
           ]}
         />
       ),
       align: 'right' as const
     }
   ];
+
+export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const { data: agencies, isLoading, remove, removeMany } = useLocalStorageCrud('travel-agencies', initialAgencies);
 
   const filterGroups: FilterGroup[] = [
     {

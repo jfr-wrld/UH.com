@@ -8,30 +8,38 @@ import { MapPin, Star, BedDouble, Wifi, Image as ImageIcon, Package, Users, Eye,
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
-export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => void, hotelId?: string }> = ({ navigate, hotelId = 'h_1' }) => {
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
+export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => void, hotelId?: string }> = ({ navigate, hotelId = 'ht_1' }) => {
   const [status, setStatus] = useState('Active');
   const [activeTab, setActiveTab] = useState('overview');
+  const { getById } = useLocalStorageCrud('hotel');
 
   // Mock Data
-  const hotel = {
+  const htData = getById(hotelId) || {
     id: hotelId,
-    name: 'Swissotel Makkah',
-    rating: 5,
+    name: 'Unknown Hotel',
+    city: '-',
+    rating: 0,
+    distance: 0,
+    rooms: 0,
+    status: status,
+    lastUpdated: '-'
+  };
+
+  const hotel = {
+    ...htData,
     chain: 'Accor',
-    city: 'Makkah',
     country: 'Saudi Arabia',
     address: 'King Abdul Aziz Endowment, Abraj Al Bait Complex',
     landmark: 'Masjid al-Haram',
-    distance: '100m',
     distanceMode: 'Walking',
-    status: status,
     visibility: 'Available for Package',
     customerVisible: 'Yes',
     dataVerified: 'Yes',
     description: 'As part of the prestigious Abraj Al Bait complex, the deluxe Swissotel Makkah is a contemporary five-star hotel located in close proximity to the holy Masjid Al Haraam.',
     thumbnail: 'https://picsum.photos/seed/273/600/400',
     createdBy: 'System Admin',
-    lastUpdated: 'Today, 10:30 AM',
     roomTypesCount: 3,
     latitude: 21.422487,
     longitude: 39.826206,

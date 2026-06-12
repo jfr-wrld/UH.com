@@ -6,8 +6,31 @@ import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { Users, Plane, BedDouble, Bus, Map as MapIcon, ChevronDown, ChevronRight, Check } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [creationSource, setCreationSource] = useState('manual_admin');
+  const [name, setName] = useState('');
+  const [dates, setDates] = useState('');
+  const [seats, setSeats] = useState(45);
+  const { create } = useLocalStorageCrud('group-trip');
+
+  const handleSave = () => {
+    create({
+      code: `TRP-${Math.floor(Math.random() * 10000)}`,
+      name: name || 'New Group Trip',
+      package: 'Custom Package',
+      agency: 'Zamzam Travels',
+      mutawwif: 'Unassigned',
+      dates: dates || 'TBD',
+      seats: seats,
+      booked: 0,
+      status: 'Upcoming'
+    });
+    if(showToast) showToast('Success', 'Group Trip created successfully', 'success');
+    navigate('group-trip-list');
+  };
+
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     details: true,
     flight: false,
@@ -123,14 +146,14 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Trip Code" required><Input placeholder="Auto-generated" disabled /></FormField>
-                <FormField label="Group Trip Name" required><Input placeholder="e.g. Premium Safar Umrah" /></FormField>
+                <FormField label="Group Trip Name" required><Input placeholder="e.g. Premium Safar Umrah" value={name} onChange={e => setName(e.target.value)} /></FormField>
                 <FormField label="Trip Type" required>
                   <Select options={[{value: 'umrah', label: 'Umrah'}, {value: 'hajj', label: 'Hajj'}, {value: 'custom', label: 'Custom'}]} value="umrah" onChange={() => {}} />
                 </FormField>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)' }}>
-                <FormField label="Departure Date" required><Input type="date" /></FormField>
+                <FormField label="Departure Date" required><Input type="date" value={dates} onChange={e => setDates(e.target.value)} /></FormField>
                 <FormField label="Return Date" required><Input type="date" /></FormField>
                 <FormField label="Duration" required><Input placeholder="e.g. 11 Days 10 Nights" disabled /></FormField>
               </div>
@@ -144,7 +167,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-                <FormField label="Member Capacity" required><Input type="number" defaultValue="45" /></FormField>
+                <FormField label="Member Capacity" required><Input type="number" value={seats} onChange={e => setSeats(Number(e.target.value))} /></FormField>
                 <FormField label="WhatsApp Group Link"><Input placeholder="https://chat.whatsapp.com/..." /></FormField>
               </div>
 

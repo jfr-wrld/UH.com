@@ -12,19 +12,25 @@ export interface StepperProps {
   currentStepIndex: number;
   className?: string;
   errorSteps?: number[];
+  onStepClick?: (stepIndex: number) => void;
 }
 
-export const Stepper: React.FC<StepperProps> = ({ steps, currentStepIndex, className, errorSteps = [] }) => {
+export const Stepper: React.FC<StepperProps> = ({ steps, currentStepIndex, className, errorSteps = [], onStepClick }) => {
   return (
     <div className={classNames('stepper-container', className)}>
       {steps.map((step, index) => {
         const isCompleted = index < currentStepIndex;
         const isActive = index === currentStepIndex;
         const isError = errorSteps.includes(index);
+        const clickable = onStepClick !== undefined;
 
         return (
           <React.Fragment key={step.id}>
-            <div className={classNames('stepper-step', isActive && 'active', isCompleted && 'completed', isError && 'error')}>
+            <div 
+              className={classNames('stepper-step', isActive && 'active', isCompleted && 'completed', isError && 'error')}
+              onClick={() => { if (clickable) onStepClick(index); }}
+              style={{ cursor: clickable ? 'pointer' : 'default' }}
+            >
               <div className="stepper-circle" style={isError ? { backgroundColor: 'var(--surface-danger)', color: 'var(--color-danger)', borderColor: 'var(--color-danger)' } : {}}>
                 {isCompleted && !isError ? <Check size={14} /> : (isError ? '!' : (index + 1))}
               </div>

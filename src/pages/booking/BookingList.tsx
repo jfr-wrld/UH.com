@@ -8,6 +8,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Download, Eye, Edit, ChevronRight, XCircle, Archive } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const BookingList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedBookings, setSelectedBookings] = useState<string[]>([]);
@@ -18,8 +19,7 @@ export const BookingList: React.FC<{ navigate: (route: string, data?: any) => vo
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const bookingList = [
+const initialBookingList = [
   {
     "id": "bk_1",
     "code": "BK-1001",
@@ -220,6 +220,8 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: bookingList, remove } = useLocalStorageCrud('booking', initialBookingList);
+
   const columns = [
     { header: 'Booking ID', accessor: 'code' as const, sortable: true },
     { header: 'Customer', accessor: 'customer' as const, sortable: true },
@@ -256,7 +258,7 @@ return () => clearTimeout(timer);
             { id: 'view', label: 'View Booking Details', icon: <Eye size={16} />, onClick: () => navigate('booking-details', { id: row.id }) },
             { id: 'edit', label: 'Edit Booking', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
             { id: 'allocate', label: 'Allocate to Group Trip', onClick: () => console.log('Allocate', row.id) },
-            { id: 'cancel', label: 'Request Cancellation', icon: <XCircle size={16} />, onClick: () => console.log('Cancel', row.id), variant: 'danger' },
+            { id: 'cancel', label: 'Delete Booking', icon: <XCircle size={16} />, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) }, variant: 'danger' },
             { id: 'archive', label: 'Archive Booking', icon: <Archive size={16} />, onClick: () => console.log('Archive', row.id) },
           ]}
         />

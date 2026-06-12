@@ -7,20 +7,27 @@ import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { Eye, ChevronRight } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const AirlineDetails: React.FC<{ navigate: (route: string, data?: any) => void, airlineId?: string }> = ({ navigate, airlineId = 'al_1' }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const { getById } = useLocalStorageCrud('airline');
+
+  const alData = getById(airlineId) || {
+    id: airlineId,
+    name: 'Unknown Airline',
+    iata: 'NA',
+    icao: 'NAA',
+    country: 'Unknown',
+    logo: 'NA',
+    flights: 0,
+    status: 'Draft'
+  };
 
   // Mock Data
   const airline = {
-    id: airlineId,
-    name: 'Saudia Airlines',
-    iata: 'SV',
-    icao: 'SVA',
-    country: 'Saudi Arabia',
-    logo: 'SV',
-    flights: 42,
-    activeFlights: 38,
-    status: 'Active',
+    ...alData,
+    activeFlights: alData.flights || 0,
     createdBy: 'System Admin',
     lastUpdated: 'Today, 10:30 AM'
   };

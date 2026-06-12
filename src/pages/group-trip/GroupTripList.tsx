@@ -8,6 +8,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Users, Download, Link as LinkIcon, Star, Plane, FileText, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const GroupTripList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
@@ -18,8 +19,7 @@ export const GroupTripList: React.FC<{ navigate: (route: string, data?: any) => 
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const tripList = [
+const initialTripList = [
   {
     "id": "trp_1",
     "code": "TRP-1001",
@@ -238,6 +238,7 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: tripList, remove } = useLocalStorageCrud('group-trip', initialTripList);
   const columns = [
     { header: 'Trip ID', accessor: 'code' as const, sortable: true },
     { 
@@ -276,7 +277,7 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('group-trip-details', { id: row.id }) },
             { id: 'edit', label: 'Edit', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id) }
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
           ]}
         />
       ),

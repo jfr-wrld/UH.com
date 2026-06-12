@@ -7,8 +7,34 @@ import { Button } from '../../components/actions/Button';
 import { Plus, Trash2, Calendar, Map, BedDouble, Plane, DollarSign, Image as ImageIcon, ChevronRight, Check, FileText, Video } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('Umrah');
+  const [type, setType] = useState('Premium');
+  const { create } = useLocalStorageCrud('package');
+
+  const handleSave = () => {
+    create({
+      code: `PKG-UMR-26-${Math.floor(Math.random() * 1000)}`,
+      name: name || 'New Package',
+      agency: 'Zamzam Travels',
+      category: category,
+      type: type,
+      hotel: 'Swissotel Makkah',
+      flight: 'Saudi Airlines (SV)',
+      price: 'RM 10800',
+      schedule: 'TBD',
+      commission: 'RM 500',
+      status: 'Published',
+      labels: [],
+      dateCreated: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    });
+    if(showToast) showToast('Success', 'Package created successfully', 'success');
+    navigate('package-list');
+  };
 
   // Mock form state for dynamic lists
   const [features, setFeatures] = useState<string[]>(['Mutawwif Guide', '24/7 Support']);
@@ -44,7 +70,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('package-list'); }}>Cancel</Button>
             <Button variant="secondary" onClick={() => navigate('package-list')}>Save as Draft</Button>
-            {currentStep === 3 && <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('package-list'); }}>Publish Package</Button>}
+            {currentStep === 3 && <Button onClick={handleSave}>Publish Package</Button>}
             {currentStep < 3 && <Button onClick={() => setCurrentStep(currentStep + 1)}>Save & Continue</Button>}
           </div>
         }
@@ -86,14 +112,14 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                   </FormField>
                 </div>
                 <FormField label="Package Name" required>
-                  <Input placeholder="e.g. Premium Umrah Safar 2026" />
+                  <Input placeholder="e.g. Premium Umrah Safar 2026" value={name} onChange={e => setName(e.target.value)} />
                 </FormField>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
                   <FormField label="Category" required>
-                    <Select options={[{value: 'umrah', label: 'Umrah'}, {value: 'hajj', label: 'Hajj'}]} value="umrah" onChange={() => {}} />
+                    <Select options={[{value: 'Umrah', label: 'Umrah'}, {value: 'Hajj', label: 'Hajj'}]} value={category} onChange={setCategory} />
                   </FormField>
                   <FormField label="Type" required>
-                    <Select options={[{value: 'premium', label: 'Premium'}, {value: 'standard', label: 'Standard'}]} value="premium" onChange={() => {}} />
+                    <Select options={[{value: 'Premium', label: 'Premium'}, {value: 'Standard', label: 'Standard'}]} value={type} onChange={setType} />
                   </FormField>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>

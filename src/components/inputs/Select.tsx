@@ -3,7 +3,7 @@ import { classNames } from '../../lib/utils';
 import { ChevronDown, Check, X } from 'lucide-react';
 
 export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
-  options?: { value: string; label: string }[];
+  options?: { value: string; label: string; icon?: React.ReactNode }[];
   error?: boolean;
   value?: string;
   onChange?: (e: any) => void;
@@ -11,7 +11,7 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
 }
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({ className, error, children, options, value, defaultValue, onChange, placeholder = "Select an option", disabled, ...props }, ref) => {
+  ({ className, error, children, options, value, defaultValue, onChange, placeholder = "Select an option", disabled, style, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [internalValue, setInternalValue] = useState(defaultValue || '');
     const isControlled = value !== undefined;
@@ -55,7 +55,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     };
 
     return (
-      <div className="custom-select-container" ref={containerRef}>
+      <div className="custom-select-container" ref={containerRef} style={style}>
         {/* Hidden select for standard form submissions if needed */}
         <select 
           style={{ display: 'none' }} 
@@ -87,11 +87,18 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              display: 'block',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
               minWidth: 0
             }}
           >
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedOption ? (
+              <>
+                {selectedOption.icon && <span style={{ display: 'flex', alignItems: 'center' }}>{selectedOption.icon}</span>}
+                {selectedOption.label}
+              </>
+            ) : placeholder}
           </div>
           {currentValue && (
             <span
@@ -155,7 +162,10 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                 )}
                 onClick={() => handleSelect(opt.value)}
               >
-                <span>{opt.label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  {opt.icon && <span style={{ display: 'flex', alignItems: 'center' }}>{opt.icon}</span>}
+                  <span>{opt.label}</span>
+                </div>
                 {opt.value === currentValue && <Check size={16} style={{ color: 'var(--color-primary)' }} />}
               </div>
             ))}

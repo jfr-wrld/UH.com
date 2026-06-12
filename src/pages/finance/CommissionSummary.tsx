@@ -8,6 +8,7 @@ import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { TrendingUp, Users, Building, Package, Download, Eye, Percent, CheckCircle, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 // PRD Section 12: Commission Summary
 
@@ -22,7 +23,7 @@ return () => clearTimeout(timer);
 
   // PRD: Commission Types — Platform, Agent, Public, Travel Agency
   // PRD: Commission Status — Pending, Earned, Reversed, Settlement Ready, Settled
-  const commissionList = [
+const initialCommissionList = [
   {
     "id": "comm_1",
     "bookingId": "BK-1001",
@@ -223,6 +224,8 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: commissionList, remove } = useLocalStorageCrud('commission', initialCommissionList);
+
   const columns = [
     { header: 'Commission ID', accessor: 'id' as const, sortable: true },
     { header: 'Booking ID', accessor: 'bookingId' as const, sortable: true },
@@ -261,7 +264,8 @@ return () => clearTimeout(timer);
           triggerLabel=""
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => console.log('View', row.id) },
-            { id: 'approve', label: 'Approve Payout', icon: <CheckCircle size={16} />, onClick: () => console.log('Approve', row.id) }
+            { id: 'approve', label: 'Approve Payout', icon: <CheckCircle size={16} />, onClick: () => console.log('Approve', row.id) },
+            { id: 'delete', label: 'Delete', icon: <Percent size={16} />, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) }, danger: true }
           ]}
         />
       ),

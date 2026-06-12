@@ -8,34 +8,42 @@ import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMe
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { Eye, ChevronRight } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const FlightDetails: React.FC<{ navigate: (route: string, data?: any) => void, flightId?: string }> = ({ navigate, flightId = 'fl_1' }) => {
   const [status, setStatus] = useState('Scheduled');
   const [activeTab, setActiveTab] = useState('overview');
+  const { getById } = useLocalStorageCrud('flight');
+
+  const flData = getById(flightId) || {
+    id: flightId,
+    airline: 'Unknown Airline',
+    logo: 'NA',
+    number: 'NA',
+    route: 'NA',
+    type: 'Direct',
+    departure: '-',
+    arrival: '-',
+    duration: '-',
+    status: status,
+    available: false
+  };
 
   // Mock Data
   const flight = {
-    id: flightId,
-    airline: 'Saudia Airlines',
-    logo: 'SV',
-    number: 'SV841',
-    route: 'KUL → JED',
+    ...flData,
     direction: 'Outbound',
-    type: 'Direct',
-    status: status,
-    available: true,
     aircraft: 'Boeing 777',
     
     origin: 'KUL - Kuala Lumpur International Airport',
     originTerminal: 'Terminal 1',
-    departureTime: '14:30',
+    departureTime: flData.departure,
     departureTz: 'Asia/Kuala_Lumpur',
     
     destination: 'JED - King Abdulaziz International Airport',
     destinationTerminal: 'Terminal 1',
-    arrivalTime: '18:45',
+    arrivalTime: flData.arrival,
     arrivalTz: 'Asia/Riyadh',
-    
-    duration: '8h 15m',
     
     cabinClass: 'Economy',
     checkedBaggage: '30 kg',

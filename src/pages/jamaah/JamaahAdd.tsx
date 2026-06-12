@@ -5,8 +5,30 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const JamaahAdd: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [source, setSource] = useState<'new' | 'existing'>('new');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const { create } = useLocalStorageCrud('jamaah');
+
+  const handleSave = () => {
+    create({
+      code: `JAM-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+      name: name || 'New Jamaah',
+      phone: phone || '-',
+      email: email || '-',
+      passport: '-',
+      agency: 'Zamzam Travels',
+      status: 'Active',
+      type: 'Standard',
+      lastUpdated: new Date().toLocaleDateString('en-CA')
+    });
+    if(showToast) showToast('Success', 'Jamaah added successfully', 'success');
+    navigate('jamaah-list');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -15,8 +37,8 @@ export const JamaahAdd: React.FC<{ navigate: (route: string, data?: any) => void
         breadcrumbs={[{ label: 'Home' }, { label: 'Jamaah List', onClick: () => navigate('jamaah-list') }, { label: 'Add Jamaah' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('jamaah-list'); }}>Cancel</Button>
-            <Button onClick={() => navigate('jamaah-list')}>Save Jamaah</Button>
+            <Button variant="ghost" onClick={() => { navigate('jamaah-list'); }}>Cancel</Button>
+            <Button onClick={handleSave}>Save Jamaah</Button>
           </div>
         }
       />
@@ -46,17 +68,17 @@ export const JamaahAdd: React.FC<{ navigate: (route: string, data?: any) => void
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Jamaah Identity & Contact</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Full Name" required>
-                  <Input placeholder="Enter full name according to passport" />
+                  <Input placeholder="Enter full name according to passport" value={name} onChange={e => setName(e.target.value)} />
                 </FormField>
                 <FormField label="Email Address" required helpText="Used for login and invitation. Must be unique.">
-                  <Input type="email" placeholder="email@domain.com" />
+                  <Input type="email" placeholder="email@domain.com" value={email} onChange={e => setEmail(e.target.value)} />
                 </FormField>
                 <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 'var(--space-3)' }}>
                   <FormField label="Code" required>
                     <Select options={[{value: '+62', label: '+62 (ID)'}, {value: '+60', label: '+60 (MY)'}]} value="+62" onChange={() => {}} />
                   </FormField>
                   <FormField label="Phone Number" required>
-                    <Input placeholder="8123456789" />
+                    <Input placeholder="8123456789" value={phone} onChange={e => setPhone(e.target.value)} />
                   </FormField>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>

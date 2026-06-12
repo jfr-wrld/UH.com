@@ -9,22 +9,25 @@ import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMe
 import { Key, ShieldOff, LogOut, CheckCircle2, ShieldAlert, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => void, userId?: string }> = ({ navigate, userId = 'usr_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [userStatus, setUserStatus] = useState('Active');
+  const { getById } = useLocalStorageCrud('users');
 
   // Mock User Data
-  const user = {
+  const user = getById(userId) || {
     id: userId,
-    name: 'Ahmad Ibrahim',
-    email: 'ahmad@umrahhaji.com',
-    phone: '+62 812 3456 7890',
-    type: 'Super Admin',
-    status: 'Active',
-    created: '1 Jan 2026',
-    lastLogin: '10 Jun 2026, 09:41 AM',
-    portals: ['Admin Panel'],
-    roles: ['Super Admin'],
+    name: 'Unknown User',
+    email: 'N/A',
+    phone: 'N/A',
+    type: 'User',
+    status: 'Inactive',
+    created: 'N/A',
+    lastLogin: 'N/A',
+    portals: [],
+    roles: [],
     linkedProfiles: []
   };
 

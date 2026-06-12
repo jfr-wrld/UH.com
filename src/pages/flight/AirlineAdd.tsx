@@ -6,7 +6,30 @@ import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { FileUploader } from '../../components/inputs/FileUploader';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
+  const [name, setName] = useState('');
+  const [iata, setIata] = useState('');
+  const [icao, setIcao] = useState('');
+  const [country, setCountry] = useState('');
+
+  const { create } = useLocalStorageCrud('airline');
+
+  const handleSave = () => {
+    create({
+      name: name || 'New Airline',
+      iata: iata || 'NA',
+      icao: icao || 'NAA',
+      country: country || 'Unknown',
+      flights: 0,
+      available: true,
+      status: 'Active'
+    });
+    if(showToast) showToast('Success', 'Airline published successfully', 'success');
+    navigate('flight-list');
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
       <PageHeader 
@@ -16,7 +39,7 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('flight-list'); }}>Cancel</Button>
             <Button variant="secondary" onClick={() => navigate('flight-list')}>Save as Draft</Button>
-            <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('flight-list'); }}>Publish Airline</Button>
+            <Button onClick={handleSave}>Publish Airline</Button>
           </div>
         }
       />
@@ -28,19 +51,19 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Airline Profile</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Airline Name" required>
-              <Input placeholder="Enter official airline name" />
+              <Input placeholder="Enter official airline name" value={name} onChange={e => setName(e.target.value)} />
             </FormField>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="IATA Airline Code" required helpText="2 alphanumeric characters (e.g. MH, SV)">
-                <Input placeholder="IATA Code" maxLength={2} />
+                <Input placeholder="IATA Code" maxLength={2} value={iata} onChange={e => setIata(e.target.value)} />
               </FormField>
               <FormField label="ICAO Airline Code" helpText="3 letters (e.g. MAS, SVA)">
-                <Input placeholder="ICAO Code" maxLength={3} />
+                <Input placeholder="ICAO Code" maxLength={3} value={icao} onChange={e => setIcao(e.target.value)} />
               </FormField>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <FormField label="Airline Country">
-                <Select options={[{value: 'sa', label: 'Saudi Arabia'}, {value: 'my', label: 'Malaysia'}, {value: 'id', label: 'Indonesia'}]} placeholder="Select Country" value="" onChange={() => {}} />
+                <Select options={[{value: 'sa', label: 'Saudi Arabia'}, {value: 'my', label: 'Malaysia'}, {value: 'id', label: 'Indonesia'}]} placeholder="Select Country" value={country} onChange={setCountry} />
               </FormField>
               <FormField label="Website">
                 <Input type="url" placeholder="https://..." />

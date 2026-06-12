@@ -12,26 +12,38 @@ import { Users, CreditCard, Share2, AlertTriangle, FileText, Download, Eye, Chev
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) => void, bookingId?: string }> = ({ navigate, bookingId = 'bk_1' }) => {
   const [status, setStatus] = useState('Confirmed');
   const [activeTab, setActiveTab] = useState('overview');
+  const { getById } = useLocalStorageCrud('booking');
+
+  const bkData = getById(bookingId) || {
+    id: bookingId,
+    code: 'BKG-000',
+    customer: 'Unknown',
+    agency: 'Unknown',
+    package: 'Unknown',
+    price: 'RM 0',
+    status: status,
+    payment: 'Unpaid',
+    date: '-'
+  };
 
   // Mock Data
   const booking = {
-    id: bookingId,
-    bookingId: 'BKG-2026-001',
-    agency: 'Zamzam Travels',
+    ...bkData,
+    bookingId: bkData.code,
+    booker: bkData.customer,
     source: 'Admin Assisted',
-    package: 'Premium Umrah Safar (v2.1)',
     schedule: '15 Dec 2026 - 26 Dec 2026',
-    booker: 'Ahmad Hassan',
     participants: 4,
-    status: status,
-    paymentStatus: 'Partially Paid',
+    paymentStatus: bkData.payment,
     allocationStatus: 'Not Allocated',
-    totalAmount: 48000,
+    totalAmount: parseInt(bkData.price.replace(/\D/g, '')) || 48000,
     paidAmount: 10000,
-    balance: 38000
+    balance: (parseInt(bkData.price.replace(/\D/g, '')) || 48000) - 10000
   };
 
   const tabs = [

@@ -8,6 +8,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const JamaahList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedJamaah, setSelectedJamaah] = useState<string[]>([]);
@@ -18,8 +19,7 @@ export const JamaahList: React.FC<{ navigate: (route: string, data?: any) => voi
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const jamaahList = [
+const initialJamaahList = [
   {
     "id": "jam_1",
     "code": "JAM-2026-001",
@@ -238,6 +238,7 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: jamaahList, remove, removeMany } = useLocalStorageCrud('jamaah', initialJamaahList);
   const columns = [
     { header: 'Jamaah ID', accessor: 'code' as const, sortable: true },
     { 
@@ -271,7 +272,7 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('jamaah-details', { id: row.id }) },
             { id: 'edit', label: 'Edit', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id) }
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
           ]}
         />
       ),

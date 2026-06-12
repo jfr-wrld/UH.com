@@ -14,6 +14,7 @@ export interface FileUploaderProps {
   error?: string;
   label?: string;
   required?: boolean;
+  mockFile?: { name: string, size: number } | null;
 }
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
@@ -26,7 +27,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   className,
   error,
   label,
-  required
+  required,
+  mockFile
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -116,6 +118,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     if (uploadedFiles.length > 0) {
       const url = URL.createObjectURL(uploadedFiles[0]);
       setPreviewUrl(url);
+    } else if (mockFile) {
+      alert("This is a mock document. Preview is not available.");
     }
   };
 
@@ -147,8 +151,8 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     );
   }
 
-  if (uploadedFiles.length > 0) {
-    const file = uploadedFiles[0];
+  if (uploadedFiles.length > 0 || mockFile) {
+    const file = uploadedFiles.length > 0 ? uploadedFiles[0] : (mockFile as any);
     return (
       <div className={classNames('file-uploader-compact', className)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', padding: 'var(--space-3)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--surface-sunken)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

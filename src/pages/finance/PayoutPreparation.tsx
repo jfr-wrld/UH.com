@@ -8,12 +8,13 @@ import { FilterBar } from '../../components/inputs/FilterBar';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
 import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('mutawwif');
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const mutawwifPayouts = [
+  const initialMutawwifPayouts = [
   {
     "id": "po_m_1",
     "recipient": "Ustaz Don Daniyal",
@@ -196,7 +197,7 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
   }
 ];
 
-  const agentPayouts = [
+  const initialAgentPayouts = [
   {
     "id": "po_a_1",
     "recipient": "Agent Partner 1",
@@ -378,6 +379,9 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
     "dateReady": "28 Nov 2026"
   }
 ];
+
+  const { data: mutawwifPayouts } = useLocalStorageCrud('payout-mutawwif', initialMutawwifPayouts);
+  const { data: agentPayouts } = useLocalStorageCrud('payout-agent', initialAgentPayouts);
 
   const columns = [
     {

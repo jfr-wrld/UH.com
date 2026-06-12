@@ -8,6 +8,7 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Star, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const MutawwifList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedMutawwif, setSelectedMutawwif] = useState<string[]>([]);
@@ -18,8 +19,7 @@ export const MutawwifList: React.FC<{ navigate: (route: string, data?: any) => v
 return () => clearTimeout(timer);
   }, []);
 
-  // Mock Data
-  const mutawwifList = [
+const initialMutawwifList = [
   {
     "id": "mut_1",
     "name": "Ustaz Don Daniyal (Batch 1)",
@@ -280,6 +280,7 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: mutawwifList, remove } = useLocalStorageCrud('mutawwif', initialMutawwifList);
   const columns = [
     { header: 'Mutawwif ID', accessor: 'id' as const, sortable: true },
     { 
@@ -325,7 +326,7 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('mutawwif-details', { id: row.id }) },
             { id: 'edit', label: 'Edit', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id) }
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
           ]}
         />
       ),

@@ -11,8 +11,11 @@ import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal
 import { Star, MapPin, Calendar, Briefcase, Award, CheckCircle2, ChevronRight, Eye } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
-export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) => void, mutawwifId?: string }> = ({ navigate, mutawwifId = 'mt_1' }) => {
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
+export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) => void, mutawwifId?: string }> = ({ navigate, mutawwifId = 'mut_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
+  const { getById } = useLocalStorageCrud('mutawwif');
   
   const [certChecklist, setCertChecklist] = useState<{id: string, label: string, required: boolean, status: ChecklistStatus}[]>([
     { id: 'hajj', label: 'Ministry of Hajj Guide License', required: true, status: 'pass' },
@@ -26,26 +29,26 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
   };
 
   // Mock Mutawwif Data
-  const mutawwif = {
+  const mutawwif = getById(mutawwifId) || {
     id: mutawwifId,
-    name: 'Ustaz Ahmad Rizal',
-    email: 'ahmad@mutawwif.com',
-    phone: '+966 50 123 4567',
-    jobType: 'Full Time',
-    location: 'Makkah, Saudi Arabia',
-    verification: 'Verified',
-    availability: 'Available',
-    rating: 4.9,
-    reviews: 120,
-    languages: ['Arabic', 'Indonesian', 'English'],
-    specializations: ['Umrah', 'Hajj', 'Ziarah'],
-    gender: 'Male',
-    dob: '12 Aug 1985',
-    nationality: 'Indonesian',
-    identityType: 'Passport',
-    identityNumber: 'C123456789',
-    bankName: 'Bank Islam',
-    bankAccount: '12345678901234'
+    name: 'Unknown Mutawwif',
+    email: '-',
+    phone: '-',
+    jobType: '-',
+    location: '-',
+    verification: 'Unverified',
+    availability: 'Unavailable',
+    rating: 0,
+    reviews: 0,
+    languages: [],
+    specializations: [],
+    gender: '-',
+    dob: '-',
+    nationality: '-',
+    identityType: '-',
+    identityNumber: '-',
+    bankName: '-',
+    bankAccount: '-'
   };
 
   const tabs = [

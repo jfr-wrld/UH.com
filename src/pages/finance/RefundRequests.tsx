@@ -8,6 +8,7 @@ import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { RotateCcw, Clock, CheckCircle, XCircle, AlertTriangle, Download, Info, Eye, RefreshCcw, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 // PRD Section 11: Refund Requests
 
@@ -20,10 +21,9 @@ export const RefundRequests: React.FC<{ navigate: (route: string, data?: any) =>
 return () => clearTimeout(timer);
   }, []);
 
-  // PRD: Refund Flow — statuses: Pending, Need Info, Approved, Rejected, Refunded
-  // PRD: Refund Source — Invoice, Booking, Payment, Manual
   // PRD: Reason — Cancellation, Overpayment, Service Issue, Duplicate Payment, Other
-  const refundList = [
+
+const initialRefundList = [
   {
     "id": "ref_1",
     "bookingId": "BK-1001",
@@ -206,6 +206,8 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: refundList, remove } = useLocalStorageCrud('refund', initialRefundList);
+
   const columns = [
     { header: 'Refund ID', accessor: 'id' as const, sortable: true },
     { header: 'Booking ID', accessor: 'bookingId' as const, sortable: true },
@@ -232,7 +234,7 @@ return () => clearTimeout(timer);
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => console.log('View', row.id) },
             { id: 'approve', label: 'Approve Refund', icon: <CheckCircle size={16} />, onClick: () => console.log('Approve', row.id) },
-            { id: 'reject', label: 'Reject Refund', icon: <XCircle size={16} />, onClick: () => console.log('Reject', row.id), variant: 'danger' }
+            { id: 'reject', label: 'Delete Request', icon: <XCircle size={16} />, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) }, variant: 'danger' }
           ]}
         />
       ),

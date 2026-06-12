@@ -13,8 +13,11 @@ import type { Remark } from '../../components/domain/RemarkPanel';
 import { Edit2, Eye, EyeOff, FileText, CheckCircle, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: any) => void, agencyId?: string }> = ({ navigate, agencyId }) => {
   const [activeTab, setActiveTab] = useState('profile');
+  const { getById } = useLocalStorageCrud('travel-agencies');
   
   const [remarks, setRemarks] = useState<Remark[]>([
     { id: '1', author: 'System', timestamp: '10 Nov 2026', content: 'Agency account verified automatically via MOTAC integration.', priority: 'normal', category: 'compliance' }
@@ -31,22 +34,20 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
     }, ...prev]);
   };
 
-  // Mock Data
-  const agencyNames: Record<string, string> = {
-    'TA-001': 'Zamzam Travels',
-    'TA-002': 'Makkah Tours',
-    'TA-003': 'Safir Travel',
-    'TA-004': 'Nusantara Umrah',
-  };
-  const agencyName = agencyNames[agencyId || 'TA-001'] || 'Zamzam Travels';
-
-  const agency = {
+  const agency = getById(agencyId || '') || {
     id: agencyId || 'TA-001',
-    name: agencyName,
-    status: agencyId === 'TA-002' ? 'Suspended' : agencyId === 'TA-003' ? 'Inactive' : 'Active',
-    rating: 4.8,
-    reviews: 120,
-    logo: 'https://picsum.photos/seed/901/200/200'
+    name: 'Unknown Agency',
+    status: 'Inactive',
+    rating: 0,
+    reviews: 0,
+    logo: '',
+    type: '',
+    licenseCategory: '',
+    officeType: '',
+    location: '',
+    ssm: '',
+    motac: '',
+    validityEnd: ''
   };
 
   const usersData = [
@@ -78,10 +79,10 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
         <div style={{ flex: 1 }}>
           <h3 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Agency Information</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 'var(--space-4)' }}>
-            <div><div className="text-caption text-muted">Type</div><div className="text-body-medium">Travel Agency</div></div>
-            <div><div className="text-caption text-muted">License Category</div><div className="text-body-medium">Umrah/Ziarah</div></div>
-            <div><div className="text-caption text-muted">Office Type</div><div className="text-body-medium">Head Office</div></div>
-            <div><div className="text-caption text-muted">Location</div><div className="text-body-medium">Kuala Lumpur, MY</div></div>
+            <div><div className="text-caption text-muted">Type</div><div className="text-body-medium">{agency.type || 'Travel Agency'}</div></div>
+            <div><div className="text-caption text-muted">License Category</div><div className="text-body-medium">{agency.licenseCategory || 'Umrah/Ziarah'}</div></div>
+            <div><div className="text-caption text-muted">Office Type</div><div className="text-body-medium">{agency.officeType || 'Head Office'}</div></div>
+            <div><div className="text-caption text-muted">Location</div><div className="text-body-medium">{agency.location || 'Kuala Lumpur, MY'}</div></div>
           </div>
         </div>
       </section>
@@ -92,20 +93,20 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
           <div style={{ marginBottom: 'var(--space-2)' }}>
             <SensitiveDataReveal
               label="SSM Number"
-              realValue="201901004455"
-              maskedValue="••••••••4455"
+              realValue={agency.ssm || "201901004455"}
+              maskedValue={agency.ssm ? `••••••••${agency.ssm.slice(-4)}` : "••••••••4455"}
             />
           </div>
           <div style={{ marginBottom: 'var(--space-2)' }}>
             <SensitiveDataReveal
               label="MOTAC License"
-              realValue="KPK/LN: 9988"
-              maskedValue="KPK/LN: ••••"
+              realValue={agency.motac || "KPK/LN: 9988"}
+              maskedValue={agency.motac ? `KPK/LN: ••••` : "KPK/LN: ••••"}
             />
           </div>
           <div>
             <div className="text-caption text-muted">License Expiry</div>
-            <div className="text-body-medium">31 Dec 2027</div>
+            <div className="text-body-medium">{agency.validityEnd || '31 Dec 2027'}</div>
           </div>
         </div>
         

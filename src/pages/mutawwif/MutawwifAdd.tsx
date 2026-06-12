@@ -5,8 +5,29 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [source, setSource] = useState<'invite' | 'full' | 'existing'>('invite');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const { create } = useLocalStorageCrud('mutawwif');
+
+  const handleSave = () => {
+    create({
+      name: name || 'New Mutawwif',
+      phone: phone || '-',
+      email: email || '-',
+      rating: 0,
+      tripsCount: 0,
+      status: 'Active',
+      lastUpdated: new Date().toLocaleDateString('en-CA'),
+      languages: ['Malay', 'Arabic']
+    });
+    if(showToast) showToast('Success', 'Mutawwif added successfully', 'success');
+    navigate('mutawwif-list');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -15,8 +36,8 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
         breadcrumbs={[{ label: 'Home' }, { label: 'Mutawwif List', onClick: () => navigate('mutawwif-list') }, { label: 'Add Mutawwif' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('mutawwif-list'); }}>Cancel</Button>
-            <Button onClick={() => navigate('mutawwif-list')}>Save Mutawwif</Button>
+            <Button variant="ghost" onClick={() => { navigate('mutawwif-list'); }}>Cancel</Button>
+            <Button onClick={handleSave}>Save Mutawwif</Button>
           </div>
         }
       />
@@ -51,17 +72,17 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Invitation Details</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Full Name" required>
-                  <Input placeholder="Enter mutawwif's full name" />
+                  <Input placeholder="Enter mutawwif's full name" value={name} onChange={e => setName(e.target.value)} />
                 </FormField>
                 <FormField label="Email Address" required helpText="An invitation will be sent to this email to complete their profile.">
-                  <Input type="email" placeholder="email@domain.com" />
+                  <Input type="email" placeholder="email@domain.com" value={email} onChange={e => setEmail(e.target.value)} />
                 </FormField>
                 <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 'var(--space-3)' }}>
                   <FormField label="Code" required>
                     <Select options={[{value: '+966', label: '+966 (SA)'}, {value: '+62', label: '+62 (ID)'}]} value="+966" onChange={() => {}} />
                   </FormField>
                   <FormField label="Phone Number" required>
-                    <Input placeholder="501234567" />
+                    <Input placeholder="501234567" value={phone} onChange={e => setPhone(e.target.value)} />
                   </FormField>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
@@ -99,17 +120,17 @@ export const MutawwifAdd: React.FC<{ navigate: (route: string, data?: any) => vo
               <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Identity & Contact</h2>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Full Name" required>
-                  <Input placeholder="Enter mutawwif's full name" />
+                  <Input placeholder="Enter mutawwif's full name" value={name} onChange={e => setName(e.target.value)} />
                 </FormField>
                 <FormField label="Email Address" required helpText="Used for login and receiving the invitation link.">
-                  <Input type="email" placeholder="email@domain.com" />
+                  <Input type="email" placeholder="email@domain.com" value={email} onChange={e => setEmail(e.target.value)} />
                 </FormField>
                 <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 'var(--space-3)' }}>
                   <FormField label="Code" required>
                     <Select options={[{value: '+966', label: '+966 (SA)'}, {value: '+62', label: '+62 (ID)'}]} value="+966" onChange={() => {}} />
                   </FormField>
                   <FormField label="Phone Number" required>
-                    <Input placeholder="501234567" />
+                    <Input placeholder="501234567" value={phone} onChange={e => setPhone(e.target.value)} />
                   </FormField>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>

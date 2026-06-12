@@ -6,6 +6,8 @@ import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { Package, Users, BedDouble, CreditCard, ChevronDown, ChevronRight, Check, UserPlus } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     package: true,
@@ -13,6 +15,23 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
     pricing: false,
     payment: false
   });
+
+  const { create } = useLocalStorageCrud('booking');
+
+  const handleSave = () => {
+    create({
+      code: `BK-${Math.floor(Math.random() * 10000)}`,
+      customer: 'Ahmad Hassan (Family of 1)',
+      agency: 'Zamzam Travels',
+      package: 'Premium Umrah Safar (v2.1)',
+      price: 'RM 12000',
+      status: 'Confirmed',
+      payment: 'Partial',
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    });
+    if(showToast) showToast('Success', 'Booking submitted successfully', 'success');
+    navigate('booking-list');
+  };
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -42,7 +61,7 @@ export const BookingCreate: React.FC<{ navigate: (route: string, data?: any) => 
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => navigate('booking-list')}>Cancel</Button>
             <Button variant="secondary" onClick={() => navigate('booking-list')}>Save as Draft</Button>
-            <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('booking-list'); }}>Submit Booking</Button>
+            <Button onClick={handleSave}>Submit Booking</Button>
           </div>
         }
       />

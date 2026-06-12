@@ -5,9 +5,28 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const AllowanceCreate: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
   const [recipientType, setRecipientType] = useState('mutawwif');
   const [settlementRequired, setSettlementRequired] = useState(true);
+  const [amount, setAmount] = useState('2000');
+  const [mutawwif, setMutawwif] = useState('Ustaz Don Daniyal');
+
+  const { create } = useLocalStorageCrud('allowance');
+
+  const handleSave = () => {
+    create({
+      mutawwif: mutawwif || 'Unknown',
+      trip: 'TRP-' + Math.floor(Math.random() * 10000),
+      role: 'Mutawwif',
+      allowance: parseInt(amount) || 0,
+      payout: 'Cash / Bank Transfer',
+      status: 'Pending'
+    });
+    if(showToast) showToast('Success', 'Allowance requested successfully', 'success');
+    navigate('fin-allowance');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -18,7 +37,7 @@ export const AllowanceCreate: React.FC<{ navigate: (route: string, data?: any) =
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('fin-allowance'); }}>Cancel</Button>
             <Button variant="secondary">Save Draft</Button>
-            <Button onClick={() => navigate('fin-allowance')}>Submit Request</Button>
+            <Button onClick={handleSave}>Submit Request</Button>
           </div>
         }
       />
@@ -91,7 +110,7 @@ export const AllowanceCreate: React.FC<{ navigate: (route: string, data?: any) =
               </FormField>
               
               <FormField label="Select Recipient" required>
-                <Input placeholder={`Search ${recipientType}...`} />
+                <Input placeholder={`Search ${recipientType}...`} value={mutawwif} onChange={e => setMutawwif(e.target.value)} />
               </FormField>
             </div>
             
@@ -122,7 +141,7 @@ export const AllowanceCreate: React.FC<{ navigate: (route: string, data?: any) =
                 </div>
                 <div style={{ flex: 2 }}>
                   <FormField label="Requested Amount" required>
-                    <Input type="number" placeholder="0.00" />
+                    <Input type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} />
                   </FormField>
                 </div>
               </div>

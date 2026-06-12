@@ -9,24 +9,27 @@ import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal
 import { CheckCircle2, UserPlus, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
-export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => void, jamaahId?: string }> = ({ navigate, jamaahId = 'jm_1' }) => {
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
+export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => void, jamaahId?: string }> = ({ navigate, jamaahId = 'jam_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
+  const { getById } = useLocalStorageCrud('jamaah');
 
   // Mock Jamaah Data
-  const jamaah = {
+  const jamaah = getById(jamaahId) || {
     id: jamaahId,
-    name: 'Muhammad Ali',
-    email: 'm.ali@example.com',
-    phone: '+62 812 3456 7890',
-    gender: 'Male',
-    dob: '12 Aug 1985',
-    country: 'Indonesia',
-    nationality: 'Indonesian',
-    identityType: 'Passport',
-    passport: 'A1234567',
-    status: 'Ready for Departure',
-    agency: 'Zamzam Travels',
-    trip: 'Umrah Premium Dec (TRP-1001)',
+    name: 'Unknown Jamaah',
+    email: '-',
+    phone: '-',
+    gender: '-',
+    dob: '-',
+    country: '-',
+    nationality: '-',
+    identityType: '-',
+    passport: '-',
+    status: 'Inactive',
+    agency: '-',
+    trip: '-',
   };
 
   const tabs = [

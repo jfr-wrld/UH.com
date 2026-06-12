@@ -7,9 +7,11 @@ import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ConfirmationDialog } from '../../components/feedback/ConfirmationDialog';
 import { FormField } from '../../components/inputs/FormField';
-import { Plus, Eye, Edit, Mail, Key, ChevronRight, Lock, Unlock, ShieldOff, Power, PowerOff } from 'lucide-react';
+import { Plus, Eye, Edit, Mail, Key, ChevronRight, Lock, Unlock, ShieldOff, Power, PowerOff, Trash2 } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const UserList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -22,8 +24,7 @@ return () => clearTimeout(timer);
   const [deactivateDialog, setDeactivateDialog] = useState<{ isOpen: boolean; userId: string; name: string; isDeactivating: boolean }>({ isOpen: false, userId: '', name: '', isDeactivating: true });
   const [actionReason, setActionReason] = useState('');
 
-  // Mock Data
-  const users = [
+const initialUsers = [
   {
     "id": "usr_1",
     "name": "Siti Aminah (User 1)",
@@ -314,6 +315,8 @@ return () => clearTimeout(timer);
   }
 ];
 
+  const { data: users, remove, isLoading: hookLoading } = useLocalStorageCrud('users', initialUsers);
+
   const columns = [
     { 
       header: 'User', 
@@ -376,6 +379,7 @@ return () => clearTimeout(timer);
             { id: 'lock', label: row.status === 'Locked' ? 'Unlock Account' : 'Lock Account', icon: row.status === 'Locked' ? <Unlock size={16} /> : <Lock size={16} />, onClick: () => console.log('Lock Toggle', row.id) },
             { id: 'revoke', label: 'Revoke Sessions', icon: <ShieldOff size={16} />, onClick: () => console.log('Revoke Sessions', row.id), disabled: row.status !== 'Active' },
             { id: 'deactivate', label: row.status === 'Inactive' ? 'Reactivate' : 'Deactivate', icon: row.status === 'Inactive' ? <Power size={16} /> : <PowerOff size={16} />, danger: row.status !== 'Inactive', onClick: () => row.status !== 'Inactive' ? setDeactivateDialog({ isOpen: true, userId: row.id, name: row.name, isDeactivating: true }) : console.log('Reactivate', row.id) },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } },
           ]}
         />
       ),

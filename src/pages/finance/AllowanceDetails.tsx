@@ -6,23 +6,36 @@ import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { CheckCircle, XCircle, CreditCard, UploadCloud, FileText } from 'lucide-react';
 
+import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 export const AllowanceDetails: React.FC<{ navigate: (route: string, data?: any) => void, allowanceId?: string }> = ({ navigate, allowanceId = 'alw_1' }) => {
+  const { getById } = useLocalStorageCrud('allowance');
+
+  const alwData = getById(allowanceId) || {
+    id: allowanceId,
+    mutawwif: 'Unknown',
+    trip: 'Unknown',
+    role: 'Unknown',
+    allowance: 0,
+    payout: 'Unknown',
+    status: 'Pending'
+  };
+
   // Mock Data representing a "Pending Approval" state
   const allowance = {
-    id: allowanceId,
-    allowanceId: 'ALW-2026-001',
-    title: 'Meal Budget for Group Trip 1001',
-    status: 'Pending Approval',
-    amount: 15000,
+    ...alwData,
+    allowanceId: alwData.id,
+    title: `Budget for ${alwData.trip}`,
+    amount: alwData.allowance,
     currency: 'MYR',
     relatedType: 'Group Trip',
-    relatedRecord: 'TRP-1001 (Premium Umrah)',
-    type: 'Meal Budget',
+    relatedRecord: alwData.trip,
+    type: 'Allowance',
     requester: 'Ops Team',
     neededDate: '10 Dec 2026',
-    description: 'Requested funds for daily meals (lunch and dinner) during the 10-day trip in Makkah and Madinah.',
-    paymentMethod: 'Bank Transfer',
-    bankRef: 'Maybank 1234567890 (Mutawwif Lead)',
+    description: `Requested funds for ${alwData.mutawwif} (${alwData.role})`,
+    paymentMethod: alwData.payout,
+    bankRef: 'Maybank 1234567890',
     financeRemark: ''
   };
 
