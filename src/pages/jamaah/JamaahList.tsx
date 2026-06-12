@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, ChevronRight, Users, UserCheck, UserX, UserPlus, Building2, BadgeCheck } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -242,18 +243,48 @@ const initialJamaahList = [
   const columns = [
     { header: 'Jamaah ID', accessor: 'code' as const, sortable: true },
     { 
-      header: 'Name', 
+      header: 'Jamaah Profile', 
       accessor: (row: typeof jamaahList[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.name}</span>
-          <span className="text-caption text-muted">{row.type}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <img 
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(row.name)}&background=random&color=fff&size=40`} 
+            alt={row.name} 
+            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} 
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="text-body-bold">{row.name}</span>
+            <span className="text-caption text-muted">{row.email}</span>
+          </div>
         </div>
       )
     },
     { header: 'Passport', accessor: 'passport' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof jamaahList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-pill)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              {logo ? (
+                <img src={logo} alt={row.agency} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <Building2 size={14} style={{ color: 'var(--text-muted)' }} />
+              )}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
+                <span className="text-body-bold">{row.agency}</span>
+                {isVerified && <BadgeCheck size={14} className="text-primary" style={{ color: 'var(--color-primary)' }} />}
+              </div>
+              <span className="text-caption text-muted">{row.agency.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com'}</span>
+            </div>
+          </div>
+        );
+      }
+    },
     { header: 'Phone', accessor: 'phone' as const },
-    { header: 'Email', accessor: 'email' as const },
     { 
       header: 'Status', 
       accessor: (row: typeof jamaahList[0]) => {
@@ -404,7 +435,12 @@ const initialJamaahList = [
     syncToUrl: true
   });
 
-return (
+  const totalJamaah = jamaahList.length;
+  const activeJamaah = jamaahList.filter(j => j.status === 'Active').length;
+  const inactiveJamaah = jamaahList.filter(j => j.status === 'Inactive').length;
+  const newThisMonth = Math.floor(totalJamaah * 0.15);
+
+  return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
       <PageHeader 
         title="Jamaah Management"
@@ -418,6 +454,13 @@ return (
           </div>
         }
       />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard title="Total Jamaah" value={totalJamaah} trend="up" trendValue="+12%" icon={<Users />} />
+        <MetricCard title="Active Jamaah" value={activeJamaah} trend="up" trendValue="+5%" icon={<UserCheck />} iconBg="var(--color-success-light)" accentColor="var(--color-success)" />
+        <MetricCard title="Inactive Jamaah" value={inactiveJamaah} trend="down" trendValue="-2%" icon={<UserX />} iconBg="var(--color-danger-light)" accentColor="var(--color-danger)" />
+        <MetricCard title="New This Month" value={newThisMonth} trend="up" trendValue="+8%" icon={<UserPlus />} iconBg="var(--color-warning-light)" accentColor="var(--color-warning)" />
+      </div>
 
       <FilterBar 
         groups={filterGroups}

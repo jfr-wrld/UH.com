@@ -3,10 +3,11 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { Tabs } from '../../components/navigation/Tabs';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud } from 'lucide-react';
+import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud, CheckCircle2, Ticket } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -721,12 +722,43 @@ return (
             <Button variant="secondary" leftIcon={<Plane size={16} />} onClick={() => navigate('airline-add')}>
               Add Airline
             </Button>
-            <Button leftIcon={<Plus size={16} />} onClick={() => navigate('flight-add')}>
-              Add Flight
+            <Button leftIcon={<Plus size={16} />} onClick={() => activeTab === 'flights' ? navigate('flight-add') : navigate('airline-add')}>
+              {activeTab === 'flights' ? 'Add Flight Route' : 'Add Airline'}
             </Button>
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Flights" 
+          value={flightList.length.toString()} 
+          trend="up" 
+          trendValue="+15%" 
+          icon={<Plane />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Active Airlines" 
+          value={airlineList.filter(a => a.status === 'Active').length.toString()} 
+          trend="up" 
+          trendValue="+2" 
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Total Available Seats" 
+          value={flightList.reduce((acc, f) => acc + (f.availableSeats || 0), 0).toString()} 
+          trend="up" 
+          trendValue="+12%" 
+          icon={<Ticket />} 
+          iconBg="var(--color-info-light)" 
+          accentColor="var(--color-info)" 
+        />
+      </div>
 
       <Tabs 
         tabs={[

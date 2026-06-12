@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ConfirmationDialog } from '../../components/feedback/ConfirmationDialog';
 import { FormField } from '../../components/inputs/FormField';
-import { Plus, Eye, Edit, Mail, Key, ChevronRight, Lock, Unlock, ShieldOff, Power, PowerOff, Trash2 } from 'lucide-react';
+import { Plus, Eye, Edit, Mail, Key, ChevronRight, Lock, Unlock, ShieldOff, Power, PowerOff, Trash2, Users, CheckCircle2, UserPlus } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -463,6 +464,46 @@ return (
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Users" 
+          value={totalItems.toString()} 
+          trend="up" 
+          trendValue="+12" 
+          icon={<Users />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Active Users" 
+          value={users.filter(u => u.status === 'Active').length.toString()} 
+          trend="up" 
+          trendValue="+5" 
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Pending Invites" 
+          value={users.filter(u => u.status === 'Invited' || u.invitationStatus === 'Pending').length.toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<UserPlus />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)" 
+        />
+        <MetricCard 
+          title="Locked Accounts" 
+          value={users.filter(u => u.status === 'Locked').length.toString()} 
+          trend="down" 
+          trendValue="-1" 
+          icon={<Lock />} 
+          iconBg="var(--color-danger-light)" 
+          accentColor="var(--color-danger)" 
+        />
+      </div>
 
       <FilterBar 
         groups={filterGroups}

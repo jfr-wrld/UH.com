@@ -5,7 +5,8 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Tabs } from '../../components/navigation/Tabs';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Star, ShieldAlert, Eye, ChevronRight } from 'lucide-react';
+import { Star, ShieldAlert, Eye, ChevronRight, MessageSquare, ThumbsUp } from 'lucide-react';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -798,6 +799,46 @@ return (
       />
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={(t) => { setActiveTab(t); setSelectedItems(new Set()); }} />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Feedback" 
+          value="452" 
+          trend="up" 
+          trendValue="+12" 
+          icon={<MessageSquare />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Average Rating" 
+          value="4.8" 
+          trend="up" 
+          trendValue="+0.1" 
+          icon={<Star />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)" 
+        />
+        <MetricCard 
+          title="Published Testimonials" 
+          value="128" 
+          trend="up" 
+          trendValue="+5" 
+          icon={<ThumbsUp />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Reported Issues" 
+          value="3" 
+          trend="down" 
+          trendValue="-2" 
+          icon={<ShieldAlert />} 
+          iconBg="var(--color-danger-light)" 
+          accentColor="var(--color-danger)" 
+        />
+      </div>
 
       <FilterBar 
         groups={activeTab !== 'mutawwif' ? filterGroups : []}

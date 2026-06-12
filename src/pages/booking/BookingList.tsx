@@ -5,7 +5,8 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Download, Eye, Edit, ChevronRight, XCircle, Archive } from 'lucide-react';
+import { Plus, Download, Eye, Edit, ChevronRight, XCircle, Archive, FileText, CheckCircle2, CreditCard } from 'lucide-react';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -323,6 +324,46 @@ return (
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Bookings" 
+          value={bookingList.length.toString()} 
+          trend="up" 
+          trendValue="+15%" 
+          icon={<FileText />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Confirmed" 
+          value={bookingList.filter(b => b.status === 'Confirmed').length.toString()} 
+          trend="up" 
+          trendValue="+5%" 
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Pending Payment" 
+          value={bookingList.filter(b => b.status === 'Pending Payment').length.toString()} 
+          trend="down" 
+          trendValue="-2%" 
+          icon={<CreditCard />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)" 
+        />
+        <MetricCard 
+          title="Cancelled" 
+          value={bookingList.filter(b => b.status === 'Cancelled').length.toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<XCircle />} 
+          iconBg="var(--color-danger-light)" 
+          accentColor="var(--color-danger)" 
+        />
+      </div>
 
       <FilterBar 
         groups={filterGroups}

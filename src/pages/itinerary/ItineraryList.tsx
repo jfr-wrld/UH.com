@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, ChevronRight, FileText, CheckCircle2, Clock } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -475,6 +476,37 @@ return (
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Templates" 
+          value={itineraryList.length.toString()} 
+          trend="up" 
+          trendValue="+2" 
+          icon={<FileText />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Published Templates" 
+          value={itineraryList.filter(i => i.status === 'Published').length.toString()} 
+          trend="up" 
+          trendValue="+1" 
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Draft Templates" 
+          value={itineraryList.filter(i => i.status === 'Draft').length.toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<Clock />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)" 
+        />
+      </div>
 
       <FilterBar 
         groups={filterGroups}

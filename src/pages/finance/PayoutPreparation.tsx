@@ -6,7 +6,8 @@ import { Tabs } from '../../components/navigation/Tabs';
 import { Button } from '../../components/actions/Button';
 import { FilterBar } from '../../components/inputs/FilterBar';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
-import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight, Clock, FileText, Send } from 'lucide-react';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
@@ -477,6 +478,46 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
       </div>
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={(t) => { setActiveTab(t); setSelectedItems([]); }} />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Payouts Ready" 
+          value="15" 
+          trend="up" 
+          trendValue="RM 85,400" 
+          icon={<FileText />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Mutawwif Fees" 
+          value="12" 
+          trend="up" 
+          trendValue="RM 42,500" 
+          icon={<CreditCard />} 
+          iconBg="var(--color-info-light)" 
+          accentColor="var(--color-info)" 
+        />
+        <MetricCard 
+          title="Agency Commissions" 
+          value="3" 
+          trend="neutral" 
+          trendValue="RM 42,900" 
+          icon={<Clock />} 
+          iconBg="var(--color-warning-light)" 
+          accentColor="var(--color-warning)" 
+        />
+        <MetricCard 
+          title="Processed Today" 
+          value="5" 
+          trend="up" 
+          trendValue="RM 12,000" 
+          icon={<Send />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+      </div>
 
       {selectedItems.length > 0 && (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-4)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>

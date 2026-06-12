@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { Button } from '../../components/actions/Button';
 import { IconButton } from '../../components/actions/IconButton';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Shield, ShieldCheck, UserCog } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -76,6 +77,37 @@ export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void 
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Roles" 
+          value={roles.length.toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<Shield />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Built-in Roles" 
+          value={roles.filter(r => r.type === 'Built-in').length.toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<ShieldCheck />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Custom Roles" 
+          value={roles.filter(r => r.type === 'Custom').length.toString()} 
+          trend="up" 
+          trendValue="+1" 
+          icon={<UserCog />} 
+          iconBg="var(--color-info-light)" 
+          accentColor="var(--color-info)" 
+        />
+      </div>
 
       <DataTable 
         data={roles}

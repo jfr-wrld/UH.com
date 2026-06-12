@@ -319,7 +319,7 @@ const initialAgencies = [
               <div className="text-body-bold">{row.name}</div>
               {row.isVerified && <BadgeCheck size={16} className="text-primary" style={{ color: 'var(--color-primary)' }} />}
             </div>
-            <div className="text-caption text-muted">{row.id}</div>
+            <div className="text-caption text-muted">{row.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com'}</div>
           </div>
         </div>
       )

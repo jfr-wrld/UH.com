@@ -751,7 +751,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
   
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', minHeight: 'calc(100vh - 120px)' }}>
       <PageHeader 
         title={agencyId ? 'Edit Travel Agency' : 'Add Travel Agency'} 
         subtitle={agencyId ? 'Modify an existing travel agency profile.' : 'Create a new agency profile, verify legal documents, and set settlement details.'}
@@ -778,7 +778,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
       </div>
 
       {/* Sticky Footer */}
-      <div style={{ position: 'sticky', bottom: '-32px', margin: '0 -32px', backgroundColor: 'var(--surface-base)', borderTop: '1px solid var(--border-default)', padding: 'var(--space-4) var(--space-8)', display: 'flex', justifyContent: 'space-between', zIndex: 10 }}>
+      <div style={{ marginTop: 'auto', position: 'sticky', bottom: '-32px', margin: 'auto -32px -32px -32px', backgroundColor: 'var(--surface-base)', borderTop: '1px solid var(--border-default)', padding: 'var(--space-4) var(--space-8)', display: 'flex', justifyContent: 'space-between', zIndex: 10 }}>
         <Button 
           variant="outline" 
           disabled={currentStep === 0}

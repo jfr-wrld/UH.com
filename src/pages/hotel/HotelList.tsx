@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Star, MapPin, Image as ImageIcon, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Plus, Star, MapPin, Image as ImageIcon, Eye, Edit, Trash2, ChevronRight, Building2, CheckCircle2, BedDouble } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -400,6 +401,37 @@ return (
           </div>
         }
       />
+
+      {/* Stats Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard 
+          title="Total Hotels" 
+          value={hotelList.length.toString()} 
+          trend="up" 
+          trendValue="+5" 
+          icon={<Building2 />} 
+          iconBg="var(--color-primary-light)" 
+          accentColor="var(--color-primary)" 
+        />
+        <MetricCard 
+          title="Active Hotels" 
+          value={hotelList.filter(h => h.status === 'Active').length.toString()} 
+          trend="up" 
+          trendValue="+3" 
+          icon={<CheckCircle2 />} 
+          iconBg="var(--color-success-light)" 
+          accentColor="var(--color-success)" 
+        />
+        <MetricCard 
+          title="Total Room Capacity" 
+          value={hotelList.reduce((acc, h) => acc + h.rooms, 0).toString()} 
+          trend="neutral" 
+          trendValue="0" 
+          icon={<BedDouble />} 
+          iconBg="var(--color-info-light)" 
+          accentColor="var(--color-info)" 
+        />
+      </div>
 
       <FilterBar 
         groups={filterGroups}

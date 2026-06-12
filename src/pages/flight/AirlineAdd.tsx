@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { FileUploader } from '../../components/inputs/FileUploader';
+import { Edit } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
@@ -30,24 +31,27 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
     navigate('flight-list');
   };
 
+  const handleFillExample = () => {
+    setName('Saudia Airlines');
+    setIata('SV');
+    setIcao('SVA');
+    setCountry('sa');
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', minHeight: 'calc(100vh - 120px)' }}>
       <PageHeader 
         title="Add Airline"
         breadcrumbs={[{ label: 'Home' }, { label: 'Flight Catalog', onClick: () => navigate('flight-list') }, { label: 'Add Airline' }]}
         actions={
-          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="ghost" onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success'); navigate('flight-list'); }}>Cancel</Button>
-            <Button variant="secondary" onClick={() => navigate('flight-list')}>Save as Draft</Button>
-            <Button onClick={handleSave}>Publish Airline</Button>
-          </div>
+          <Button variant="outline" onClick={handleFillExample} leftIcon={<Edit size={16} />}>Fill Example</Button>
         }
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 800px)', gap: 'var(--space-6)' }}>
+      <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-default)', padding: 'var(--space-6)', maxWidth: '900px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
         
         {/* Airline Profile */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Airline Profile</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Airline Name" required>
@@ -79,7 +83,7 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
         </section>
 
         {/* Airline Logo */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Airline Logo</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <span className="text-body text-muted">Upload a clear, optimized logo (SVG, PNG, WebP) under 512KB.</span>
@@ -92,7 +96,7 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
         </section>
 
         {/* Visibility */}
-        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', padding: 'var(--space-6)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+        <section style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'none' }}>
           <h2 className="text-section-title" style={{ marginBottom: 'var(--space-4)' }}>Status & Visibility</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             <FormField label="Status" required>
@@ -114,7 +118,13 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
             </label>
           </div>
         </section>
+      </div>
 
+      {/* Sticky Footer */}
+      <div style={{ marginTop: 'auto', position: 'sticky', bottom: '-32px', margin: 'auto -32px -32px -32px', backgroundColor: 'var(--surface-base)', borderTop: '1px solid var(--border-default)', padding: 'var(--space-4) var(--space-8)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)', zIndex: 10 }}>
+        <Button variant="ghost" onClick={() => navigate('flight-list')}>Cancel</Button>
+        <Button variant="secondary" onClick={() => navigate('flight-list')}>Save as Draft</Button>
+        <Button onClick={handleSave}>Publish Airline</Button>
       </div>
     </div>
   );

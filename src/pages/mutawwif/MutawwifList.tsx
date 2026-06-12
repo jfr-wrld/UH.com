@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Star, Eye, Edit, Trash2, ChevronRight } from 'lucide-react';
+import { Plus, Star, Eye, Edit, Trash2, ChevronRight, Users, UserCheck, ShieldCheck } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -284,18 +285,22 @@ const initialMutawwifList = [
   const columns = [
     { header: 'Mutawwif ID', accessor: 'id' as const, sortable: true },
     { 
-      header: 'Name', 
+      header: 'Mutawwif Profile', 
       accessor: (row: typeof mutawwifList[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.name}</span>
-          <span className="text-caption text-muted">
-            {row.languages.join(', ')}
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <img 
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(row.name)}&background=random&color=fff&size=40`} 
+            alt={row.name} 
+            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} 
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="text-body-bold">{row.name}</span>
+            <span className="text-caption text-muted">{row.email}</span>
+          </div>
         </div>
       )
     },
     { header: 'Phone', accessor: 'phone' as const },
-    { header: 'Email', accessor: 'email' as const },
     { 
       header: 'Rating', 
       accessor: (row: typeof mutawwifList[0]) => (
@@ -461,7 +466,11 @@ const initialMutawwifList = [
     syncToUrl: true
   });
 
-return (
+  const totalMutawwif = mutawwifList.length;
+  const activeMutawwif = mutawwifList.filter(m => m.status === 'Active').length;
+  const topRated = mutawwifList.filter(m => m.rating >= 4.8).length;
+
+  return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
       <PageHeader 
         title="Mutawwif Management"
@@ -475,6 +484,13 @@ return (
           </div>
         }
       />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-4)' }}>
+        <MetricCard title="Total Mutawwif" value={totalMutawwif} trend="up" trendValue="+4%" icon={<Users />} />
+        <MetricCard title="Active Mutawwif" value={activeMutawwif} trend="up" trendValue="+2%" icon={<UserCheck />} iconBg="var(--color-success-light)" accentColor="var(--color-success)" />
+        <MetricCard title="Top Rated (4.8+)" value={topRated} icon={<Star />} iconBg="var(--color-warning-light)" accentColor="var(--color-warning)" />
+        <MetricCard title="Certified" value="85%" icon={<ShieldCheck />} iconBg="var(--color-primary-light)" accentColor="var(--color-primary)" />
+      </div>
 
       <FilterBar 
         groups={filterGroups}
