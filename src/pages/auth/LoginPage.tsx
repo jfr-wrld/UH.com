@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Button } from '../../components/actions/Button';
 import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
-import { ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 export const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -137,11 +138,21 @@ export const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
                 <a href="#" className="text-caption text-primary" style={{ fontWeight: 500 }}>Forgot password?</a>
               </div>
               <Input 
-                type="password" 
+                type={showPassword ? "text" : "password"} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 leftIcon={<Lock size={16} />}
+                rightIcon={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--color-text-muted)' }}
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                }
               />
             </div>
 
