@@ -4,9 +4,10 @@ import { Badge } from '../../components/data-display/Badge';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Tabs } from '../../components/navigation/Tabs';
 import { Button } from '../../components/actions/Button';
-import { FilterBar } from '../../components/inputs/FilterBar';
+import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
-import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight, Clock, FileText, Send } from 'lucide-react';
+import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight, Clock, FileText, Send, Plus, Filter, FileSpreadsheet, Eye, AlertCircle } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -388,17 +389,20 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
     {
       header: 'Recipient',
       accessor: (row: any) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.recipient}</span>
-          <span className="text-caption text-muted">
-            {row.bankRef.split(' ')[0]} {/* Bank Name */}
-            <SensitiveDataReveal 
-              label="" 
-              realValue={row.bankRef.substring(row.bankRef.indexOf(' ') + 1)} 
-              maskedValue={`••••${row.bankRef.slice(-4)}`} 
-            />
-          </span>
-        </div>
+        <UserProfileCell
+          name={row.recipient}
+          isVerified={true}
+          subtitleNode={
+            <>
+              {row.bankRef.split(' ')[0]} {/* Bank Name */}
+              <SensitiveDataReveal 
+                label="" 
+                realValue={row.bankRef.substring(row.bankRef.indexOf(' ') + 1)} 
+                maskedValue={`••••${row.bankRef.slice(-4)}`} 
+              />
+            </>
+          }
+        />
       )
     },
     {

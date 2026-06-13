@@ -6,7 +6,9 @@ import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Eye, Edit, Trash2, ChevronRight, Users, UserCheck, UserX, UserPlus, Building2, BadgeCheck } from 'lucide-react';
+import { Edit, Eye, Filter, Plus, FileSpreadsheet, MapPin, Building2, BadgeCheck } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -245,17 +247,10 @@ const initialJamaahList = [
     { 
       header: 'Jamaah Profile', 
       accessor: (row: typeof jamaahList[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <img 
-            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(row.name)}&background=random&color=fff&size=40`} 
-            alt={row.name} 
-            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} 
-          />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span className="text-body-bold">{row.name}</span>
-            <span className="text-caption text-muted">{row.email}</span>
-          </div>
-        </div>
+        <UserProfileCell 
+          name={row.name} 
+          email={row.email} 
+        />
       )
     },
     { header: 'Passport', accessor: 'passport' as const, sortable: true },
@@ -265,22 +260,11 @@ const initialJamaahList = [
         const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
         const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <div style={{ width: 28, height: 28, borderRadius: 'var(--radius-pill)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              {logo ? (
-                <img src={logo} alt={row.agency} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <Building2 size={14} style={{ color: 'var(--text-muted)' }} />
-              )}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
-                <span className="text-body-bold">{row.agency}</span>
-                {isVerified && <BadgeCheck size={14} className="text-primary" style={{ color: 'var(--color-primary)' }} />}
-              </div>
-              <span className="text-caption text-muted">{row.agency.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com'}</span>
-            </div>
-          </div>
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
         );
       }
     },

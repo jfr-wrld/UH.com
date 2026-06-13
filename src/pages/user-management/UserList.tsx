@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
@@ -322,16 +323,12 @@ const initialUsers = [
     { 
       header: 'User', 
       accessor: (row: typeof users[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--surface-sunken)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--text-secondary)' }}>
-            {row.name.charAt(0)}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span className="text-body-bold">{row.name}</span>
-            <span className="text-caption text-muted">{row.email}</span>
-            {row.phone && <span className="text-caption text-muted">{row.phone}</span>}
-          </div>
-        </div>
+        <UserProfileCell 
+          name={row.name} 
+          email={row.email} 
+          phone={row.phone} 
+          isVerified={row.status === 'Active'} 
+        />
       )
     },
     { header: 'Type', accessor: 'type' as const },
@@ -344,7 +341,18 @@ const initialUsers = [
       )
     },
     { header: 'Role', accessor: 'role' as const },
-    { header: 'Linked Profile', accessor: (row: typeof users[0]) => row.linkedProfile || '-' },
+    { 
+      header: 'Linked Profile', 
+      accessor: (row: typeof users[0]) => {
+        if (!row.linkedProfile) return '-';
+        return (
+          <UserProfileCell 
+            name={row.linkedProfile} 
+            isVerified={true} 
+          />
+        );
+      }
+    },
     { 
       header: 'Account Status', 
       accessor: (row: typeof users[0]) => {

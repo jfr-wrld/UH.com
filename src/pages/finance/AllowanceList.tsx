@@ -7,6 +7,7 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Download, DollarSign, Clock, CheckCircle, Send, AlertCircle, FileText, Eye, ChevronRight } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -188,7 +189,15 @@ const initialAllowanceList = [
 
   const columns = [
     { header: 'Allowance ID', accessor: 'id' as const, sortable: true },
-    { header: 'Mutawwif', accessor: 'mutawwif' as const, sortable: true },
+    { 
+      header: 'Mutawwif', 
+      accessor: (row: typeof allowanceList[0]) => (
+        <UserProfileCell 
+          name={row.mutawwif} 
+          isVerified={true} 
+        />
+      )
+    },
     { header: 'Trip Code', accessor: 'trip' as const, sortable: true },
     { header: 'Role', accessor: 'role' as const, sortable: true },
     { 

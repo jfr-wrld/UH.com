@@ -6,6 +6,7 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { TrendingUp, Users, Building, Package, Download, Eye, Percent, CheckCircle, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -229,7 +230,20 @@ const initialCommissionList = [
   const columns = [
     { header: 'Commission ID', accessor: 'id' as const, sortable: true },
     { header: 'Booking ID', accessor: 'bookingId' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof commissionList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
+        );
+      }
+    },
     { header: 'Package Name', accessor: 'packageName' as const, sortable: true },
     { 
       header: 'Total Price', 

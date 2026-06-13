@@ -6,7 +6,8 @@ import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Star, Eye, Edit, Trash2, ChevronRight, Users, UserCheck, ShieldCheck } from 'lucide-react';
+import { Eye, Edit, Trash2, Filter, Plus, FileSpreadsheet, MapPin, Star } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -287,17 +288,10 @@ const initialMutawwifList = [
     { 
       header: 'Mutawwif Profile', 
       accessor: (row: typeof mutawwifList[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <img 
-            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(row.name)}&background=random&color=fff&size=40`} 
-            alt={row.name} 
-            style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} 
-          />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span className="text-body-bold">{row.name}</span>
-            <span className="text-caption text-muted">{row.email}</span>
-          </div>
-        </div>
+        <UserProfileCell 
+          name={row.name} 
+          email={row.email} 
+        />
       )
     },
     { header: 'Phone', accessor: 'phone' as const },

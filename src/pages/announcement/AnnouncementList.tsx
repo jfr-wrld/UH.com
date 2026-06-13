@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { MetricCard } from '../../components/data-display/MetricCard';
-import { FilterBar } from '../../components/inputs/FilterBar';
+import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { SearchInput } from '../../components/inputs/SearchInput';
 import { Select } from '../../components/inputs/Select';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Button } from '../../components/actions/Button';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { Plus, Megaphone, Send, Clock, AlertTriangle, Eye, Edit, Copy, Archive } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 export const AnnouncementList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
-  const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -271,7 +271,7 @@ return () => clearTimeout(timer);
     },
     {
       header: 'Audience',
-      accessor: 'audience'
+      accessor: 'audience' as const
     },
     {
       header: 'Channels',
@@ -283,7 +283,12 @@ return () => clearTimeout(timer);
     },
     {
       header: 'Author',
-      accessor: (row: typeof mockAnnouncements[0]) => <span className="text-body text-muted">{row.author}</span>
+      accessor: (row: typeof mockAnnouncements[0]) => (
+        <UserProfileCell 
+          name={row.author} 
+          isVerified={true} 
+        />
+      )
     },
     {
       header: 'Status',
@@ -316,6 +321,28 @@ return () => clearTimeout(timer);
       align: 'right' as const
     }
   ];
+  const filterGroups: FilterGroup[] = [
+    {
+      id: 'type',
+      label: 'Type',
+      options: [
+        { value: 'platform', label: 'Platform Notice' },
+        { value: 'trip', label: 'Group Trip Update' },
+        { value: 'finance', label: 'Finance Reminder' },
+        { value: 'compliance', label: 'Compliance Notice' }
+      ]
+    },
+    {
+      id: 'status',
+      label: 'Status',
+      options: [
+        { value: 'draft', label: 'Draft' },
+        { value: 'scheduled', label: 'Scheduled' },
+        { value: 'sent', label: 'Sent' }
+      ]
+    }
+  ];
+
   const {
     searchQuery,
     setSearchQuery,
@@ -339,7 +366,7 @@ return () => clearTimeout(timer);
     syncToUrl: true
   });
 
-return (
+  return (
     <div>
       <PageHeader 
         title="Announcement Management" 
@@ -365,28 +392,16 @@ return (
       </div>
 
       <div style={{ marginBottom: 'var(--space-4)' }}>
-        <FilterBar hasActiveFilters={searchValue !== ''} onClearFilters={() => setSearchValue('')}>
-          <div style={{ width: '300px' }}>
-            <SearchInput 
-              placeholder="Search announcements..." 
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onClear={() => setSearchValue('')}
-            />
-          </div>
-          <Select defaultValue="all">
-            <option value="all">All Types</option>
-            <option value="platform">Platform Notice</option>
-            <option value="trip">Group Trip Update</option>
-            <option value="finance">Finance Reminder</option>
-          </Select>
-          <Select defaultValue="all">
-            <option value="all">All Statuses</option>
-            <option value="draft">Draft</option>
-            <option value="scheduled">Scheduled</option>
-            <option value="sent">Sent</option>
-          </Select>
-        </FilterBar>
+        <FilterBar 
+          groups={filterGroups}
+          onFilterChange={handleFilterChange}
+          activeFilters={activeFilters}
+          onSearch={setSearchQuery}
+          searchValue={searchQuery}
+          onClearFilters={clearFilters}
+          hasActiveFilters={hasActiveFilters}
+          searchPlaceholder="Search announcements..."
+        />
       </div>
 
       <DataTable 

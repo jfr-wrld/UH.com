@@ -5,7 +5,9 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Download, Eye, Edit, ChevronRight, XCircle, Archive, FileText, CheckCircle2, CreditCard } from 'lucide-react';
+import { Plus, Filter, FileSpreadsheet, Edit, Trash2, Eye, FileText, Send, XCircle } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
@@ -225,8 +227,29 @@ const initialBookingList = [
 
   const columns = [
     { header: 'Booking ID', accessor: 'code' as const, sortable: true },
-    { header: 'Customer', accessor: 'customer' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
+    { 
+      header: 'Customer', 
+      accessor: (row: typeof bookingList[0]) => (
+        <UserProfileCell 
+          name={row.customer} 
+          isVerified={true} 
+        />
+      )
+    },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof bookingList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
+        );
+      }
+    },
     { header: 'Package', accessor: 'package' as const, sortable: true },
     { header: 'Price', accessor: 'price' as const, sortable: true },
     {

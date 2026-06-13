@@ -7,6 +7,8 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Users, Download, Link as LinkIcon, Star, Plane, FileText, Eye, Edit, Trash2, ChevronRight, Navigation, CheckCircle2 } from 'lucide-react';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -274,8 +276,29 @@ const initialTripList = [
       )
     },
     { header: 'Package', accessor: 'package' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
-    { header: 'Mutawwif', accessor: 'mutawwif' as const, sortable: true },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof tripList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
+        );
+      }
+    },
+    { 
+      header: 'Mutawwif', 
+      accessor: (row: typeof tripList[0]) => (
+        <UserProfileCell 
+          name={row.mutawwif} 
+          isVerified={true} 
+        />
+      )
+    },
     { 
       header: 'Seats (Booked/Total)', 
       accessor: (row: typeof tripList[0]) => (

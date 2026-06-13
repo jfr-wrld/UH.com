@@ -6,6 +6,8 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { RotateCcw, Clock, CheckCircle, XCircle, AlertTriangle, Download, Info, Eye, RefreshCcw, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -211,8 +213,29 @@ const initialRefundList = [
   const columns = [
     { header: 'Refund ID', accessor: 'id' as const, sortable: true },
     { header: 'Booking ID', accessor: 'bookingId' as const, sortable: true },
-    { header: 'Customer', accessor: 'customer' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
+    { 
+      header: 'Customer', 
+      accessor: (row: typeof refundList[0]) => (
+        <UserProfileCell 
+          name={row.customer} 
+          isVerified={true} 
+        />
+      )
+    },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof refundList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
+        );
+      }
+    },
     { header: 'Amount', accessor: 'amount' as const, sortable: true },
     { header: 'Reason', accessor: 'reason' as const },
     { 

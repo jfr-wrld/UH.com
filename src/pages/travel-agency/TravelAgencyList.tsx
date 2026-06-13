@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
-import { DataTable } from '../../components/data-display/DataTable';
+import { MetricCard } from '../../components/data-display/MetricCard';
 import { Badge } from '../../components/data-display/Badge';
-import { Button } from '../../components/actions/Button';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
+import { DataTable } from '../../components/data-display/DataTable';
 import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck, CheckCircle2, Users, Trash2 } from 'lucide-react';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
-import { MetricCard } from '../../components/data-display/MetricCard';
+import { Button } from '../../components/actions/Button';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+
 
 const initialAgencies = [
   {
@@ -302,26 +304,19 @@ const initialAgencies = [
   }
 ];
 
+export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const { data: agencies, isLoading, remove, removeMany } = useLocalStorageCrud('travel-agencies', initialAgencies);
+
   const columns = [
     { 
       header: 'Travel Agency Name', 
       accessor: (row: typeof agencies[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-pill)', backgroundColor: 'var(--surface-sunken)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            {row.logo ? (
-              <img src={row.logo} alt={row.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-              <Building2 size={16} style={{ color: 'var(--text-muted)' }} />
-            )}
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <div className="text-body-bold">{row.name}</div>
-              {row.isVerified && <BadgeCheck size={16} className="text-primary" style={{ color: 'var(--color-primary)' }} />}
-            </div>
-            <div className="text-caption text-muted">{row.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com'}</div>
-          </div>
-        </div>
+        <AgencyProfileCell 
+          name={row.name} 
+          logo={row.logo} 
+          isVerified={row.isVerified} 
+        />
       )
     },
     { 
@@ -426,10 +421,6 @@ const initialAgencies = [
       align: 'right' as const
     }
   ];
-
-export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const { data: agencies, isLoading, remove, removeMany } = useLocalStorageCrud('travel-agencies', initialAgencies);
 
   const filterGroups: FilterGroup[] = [
     {

@@ -6,6 +6,7 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { Plus, FileText, CheckCircle, Clock, Eye, Star, Edit, Trash2, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
@@ -188,7 +189,15 @@ return () => clearTimeout(timer);
   const columns = [
     { header: 'Article ID', accessor: 'id' as const, sortable: true },
     { header: 'Title', accessor: 'title' as const, sortable: true },
-    { header: 'Author', accessor: 'author' as const, sortable: true },
+    { 
+      header: 'Author', 
+      accessor: (row: typeof articleList[0]) => (
+        <UserProfileCell 
+          name={row.author} 
+          isVerified={true} 
+        />
+      )
+    },
     { header: 'Category', accessor: 'category' as const, sortable: true },
     { 
       header: 'Views', 

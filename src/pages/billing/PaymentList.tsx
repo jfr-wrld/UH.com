@@ -7,6 +7,7 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Download, TrendingUp, AlertTriangle, CheckCircle, Clock, Percent, Eye, ChevronRight } from 'lucide-react';
+import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -206,7 +207,20 @@ return () => clearTimeout(timer);
   const columns = [
     { header: 'Payment ID', accessor: 'id' as const, sortable: true },
     { header: 'Invoice ID', accessor: 'invoiceId' as const, sortable: true },
-    { header: 'Travel Agency', accessor: 'agency' as const, sortable: true },
+    { 
+      header: 'Travel Agency', 
+      accessor: (row: typeof paymentList[0]) => {
+        const logo = row.agency === 'Zamzam Travels' ? 'https://picsum.photos/seed/452/150/150' : null;
+        const isVerified = ['Ansar Medina', 'Salam Travel', 'Kauthar Travel', 'Global Travel Agency'].includes(row.agency);
+        return (
+          <AgencyProfileCell 
+            name={row.agency} 
+            logo={logo} 
+            isVerified={isVerified} 
+          />
+        );
+      }
+    },
     { header: 'Package Name', accessor: 'packageName' as const, sortable: true },
     { 
       header: 'Amount', 
