@@ -5,7 +5,7 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Filter, FileSpreadsheet, Edit, Trash2, Eye, FileText, Send, XCircle } from 'lucide-react';
+import { Plus, Filter, FileSpreadsheet, Edit, Trash2, Eye, FileText, Send, XCircle, Download, CheckCircle2, CreditCard, Archive } from 'lucide-react';
 import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { MetricCard } from '../../components/data-display/MetricCard';
