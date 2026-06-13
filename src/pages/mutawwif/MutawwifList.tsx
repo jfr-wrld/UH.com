@@ -6,7 +6,7 @@ import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Eye, Edit, Trash2, Filter, Plus, FileSpreadsheet, MapPin, Star } from 'lucide-react';
+import { Eye, Edit, Trash2, Filter, Plus, FileSpreadsheet, MapPin, Star, Users, UserCheck, ShieldCheck } from 'lucide-react';
 import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
