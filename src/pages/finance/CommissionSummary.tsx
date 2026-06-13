@@ -360,18 +360,18 @@ return (
         <MetricCard title="Pending Verification" value={`RM ${totalPending.toLocaleString()}`} icon={<Percent size={20} className="text-warning" />} iconBg="var(--color-warning-light)" trend="neutral" trendValue="Awaiting payment verification" />
         <MetricCard title="Settlement Ready" value={`RM ${totalSettlementReady.toLocaleString()}`} icon={<Eye size={20} className="text-primary" />} iconBg="var(--color-primary-light)" trend="neutral" trendValue="Ready for finance processing" />
         <MetricCard title="Reversed" value={`RM ${totalReversed.toLocaleString()}`} icon={<Building size={20} className="text-danger" />} iconBg="var(--color-danger-light)" className="text-danger" />
-        <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
-            <span className="text-caption" style={{ color: 'var(--color-primary-dark)' }}>Commission Split</span>
+        <div className="metric-card" style={{ backgroundColor: 'var(--color-primary-light)', border: '1px solid var(--color-primary)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <span className="text-caption" style={{ color: 'var(--color-primary-dark)', fontWeight: 600 }}>Commission Split</span>
           </div>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'baseline' }}>
-            <div>
-              <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>{platformCount}</span>
-              <span className="text-caption" style={{ color: 'var(--color-primary-dark)', marginLeft: '4px' }}>Platform</span>
+          <div style={{ display: 'flex', gap: 'var(--space-6)', alignItems: 'baseline', marginTop: 'auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)', fontSize: '24px', lineHeight: 1 }}>{platformCount}</span>
+              <span className="text-caption" style={{ color: 'var(--color-primary-dark)', marginTop: '4px' }}>Platform</span>
             </div>
-            <div>
-              <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>{agentCount}</span>
-              <span className="text-caption" style={{ color: 'var(--color-primary-dark)', marginLeft: '4px' }}>Agent/Other</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)', fontSize: '24px', lineHeight: 1 }}>{agentCount}</span>
+              <span className="text-caption" style={{ color: 'var(--color-primary-dark)', marginTop: '4px' }}>Agent/Other</span>
             </div>
           </div>
         </div>

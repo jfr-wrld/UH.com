@@ -25,7 +25,7 @@ export const Stepper: React.FC<StepperProps> = ({ steps, currentStepIndex, class
         const clickable = onStepClick !== undefined;
 
         return (
-          <React.Fragment key={step.id}>
+          <div key={step.id} style={{ display: 'contents' }}>
             <div 
               className={classNames('stepper-step', isActive && 'active', isCompleted && 'completed', isError && 'error')}
               onClick={() => { if (clickable) onStepClick(index); }}
@@ -41,7 +41,7 @@ export const Stepper: React.FC<StepperProps> = ({ steps, currentStepIndex, class
             {index < steps.length - 1 && (
               <div className={classNames('stepper-line', isCompleted && 'completed')} style={isError ? { backgroundColor: 'var(--color-danger)' } : {}} />
             )}
-          </React.Fragment>
+          </div>
         );
       })}
     </div>

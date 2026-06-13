@@ -1,6 +1,7 @@
 import React from 'react';
 import { classNames } from '../../lib/utils';
 import { EmptyState } from './EmptyState';
+import { ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from 'lucide-react';
 
 export interface Column<T> {
   header: string;
@@ -279,10 +280,7 @@ export function DataTable<T>({
       </table>
       
       {pagination && (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+        <div className="pagination-container" style={{
           padding: 'var(--space-3) var(--space-4)',
           borderTop: '1px solid var(--gray-200)',
           color: 'var(--gray-500)',
@@ -293,56 +291,51 @@ export function DataTable<T>({
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <span>Rows per page:</span>
+              <span className="text-body text-muted">Rows per page:</span>
               <select 
                 value={pagination.rowsPerPage}
                 onChange={e => pagination.onRowsPerPageChange?.(Number(e.target.value))}
                 style={{
-                  border: '1px solid var(--gray-200)',
+                  border: '1px solid var(--gray-300)',
                   borderRadius: 'var(--radius-sm)',
-                  padding: '2px 8px',
+                  padding: '4px 24px 4px 8px',
                   backgroundColor: 'var(--surface-base)',
                   color: 'var(--color-text-neutral)',
-                  outline: 'none'
+                  outline: 'none',
+                  cursor: 'pointer',
+                  appearance: 'none',
+                  backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'16\' height=\'16\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'%3E%3C/polyline%3E%3C/svg%3E")',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 4px center',
+                  backgroundSize: '16px'
                 }}
               >
                 {[10, 25, 50, 100].map(v => <option key={v} value={v}>{v}</option>)}
               </select>
             </div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
+            <div className="pagination-controls">
               <button 
+                className="pagination-btn"
                 onClick={() => pagination.onPageChange?.(Math.max(1, pagination.currentPage - 1))}
                 disabled={pagination.currentPage === 1}
-                style={{
-                  background: 'none', border: 'none', cursor: pagination.currentPage === 1 ? 'not-allowed' : 'pointer',
-                  padding: '4px 8px', color: pagination.currentPage === 1 ? 'var(--gray-300)' : 'var(--gray-600)',
-                  borderRadius: 'var(--radius-sm)', fontWeight: 600
-                }}
+                aria-label="Previous page"
               >
-                &lt;
+                <ChevronLeft size={16} />
               </button>
               
               <div style={{ display: 'flex', gap: '2px' }}>
                 {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(page => {
                   if (page > 3 && page < pagination.totalPages && page !== pagination.currentPage) {
-                    if (page === 4) return <span key={page} style={{ padding: '4px 8px' }}>...</span>;
+                    if (page === 4) return <span key={page} style={{ padding: '0 var(--space-1)', color: 'var(--gray-500)' }}>...</span>;
                     return null;
                   }
                   
                   return (
                     <button
                       key={page}
+                      className={classNames('pagination-btn', pagination.currentPage === page && 'active')}
                       onClick={() => pagination.onPageChange?.(page)}
-                      style={{
-                        background: pagination.currentPage === page ? 'var(--gray-100)' : 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        borderRadius: 'var(--radius-sm)',
-                        color: pagination.currentPage === page ? 'var(--color-text-neutral)' : 'var(--gray-500)',
-                        fontWeight: pagination.currentPage === page ? 600 : 400
-                      }}
                     >
                       {page}
                     </button>
@@ -351,15 +344,12 @@ export function DataTable<T>({
               </div>
 
               <button 
+                className="pagination-btn"
                 onClick={() => pagination.onPageChange?.(Math.min(pagination.totalPages, pagination.currentPage + 1))}
                 disabled={pagination.currentPage === pagination.totalPages}
-                style={{
-                  background: 'none', border: 'none', cursor: pagination.currentPage === pagination.totalPages ? 'not-allowed' : 'pointer',
-                  padding: '4px 8px', color: pagination.currentPage === pagination.totalPages ? 'var(--gray-300)' : 'var(--gray-600)',
-                  borderRadius: 'var(--radius-sm)', fontWeight: 600
-                }}
+                aria-label="Next page"
               >
-                &gt;
+                <ChevronRight size={16} />
               </button>
             </div>
           </div>

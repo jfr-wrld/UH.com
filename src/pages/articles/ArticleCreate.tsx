@@ -4,6 +4,8 @@ import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Textarea } from '../../components/inputs/Textarea';
+import { RichTextEditor } from '../../components/inputs/RichTextEditor';
+import { FileUploader } from '../../components/inputs/FileUploader';
 import { Button } from '../../components/actions/Button';
 import { Save, Eye, Send, Image as ImageIcon } from 'lucide-react';
 
@@ -48,27 +50,9 @@ export const ArticleCreate: React.FC<{ navigate: (route: string, data?: any) => 
                 />
               </FormField>
 
-              {/* Placeholder for a Rich Text Editor */}
+              {/* Rich Text Editor */}
               <FormField label="Article Content" required>
-                <div style={{ border: 'none', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-                  {/* Fake Editor Toolbar */}
-                  <div style={{ display: 'flex', gap: 'var(--space-2)', padding: 'var(--space-2)', borderBottom: '1px solid var(--border-default)', backgroundColor: 'var(--surface-sunken)' }}>
-                     <Button variant="ghost" size="sm">B</Button>
-                     <Button variant="ghost" size="sm">I</Button>
-                     <Button variant="ghost" size="sm">U</Button>
-                     <span style={{ borderLeft: '1px solid var(--border-default)', margin: '0 var(--space-2)' }} />
-                     <Button variant="ghost" size="sm">H1</Button>
-                     <Button variant="ghost" size="sm">H2</Button>
-                     <Button variant="ghost" size="sm">Quote</Button>
-                     <span style={{ borderLeft: '1px solid var(--border-default)', margin: '0 var(--space-2)' }} />
-                     <Button variant="ghost" size="sm" leftIcon={<ImageIcon size={14} />}>Add Media</Button>
-                  </div>
-                  {/* Fake Editor Body */}
-                  <Textarea 
-                    style={{ width: '100%', padding: 'var(--space-4)', minHeight: '400px', border: 'none', resize: 'vertical', outline: 'none' }} 
-                    placeholder="Write your article content here..." 
-                  />
-                </div>
+                <RichTextEditor placeholder="Write your article content here..." />
               </FormField>
 
             </div>
@@ -167,9 +151,8 @@ export const ArticleCreate: React.FC<{ navigate: (route: string, data?: any) => 
             <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Featured Image</h3>
             <p className="text-caption text-muted" style={{ marginBottom: 'var(--space-4)' }}>Recommended size: 1200 x 630 px. (Max 3MB)</p>
             
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-6)', backgroundColor: 'var(--surface-sunken)', border: '1px dashed var(--border-default)', borderRadius: 'var(--radius-md)' }}>
-              <ImageIcon size={32} className="text-muted" style={{ marginBottom: 'var(--space-2)' }} />
-              <Button variant="secondary" size="sm">Upload Image</Button>
+            <div style={{ marginTop: 'var(--space-2)' }}>
+              <FileUploader accept=".jpg,.png" maxSizeMB={3} id="article-thumbnail" />
             </div>
           </div>
 

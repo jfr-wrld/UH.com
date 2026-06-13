@@ -478,7 +478,7 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
       />
 
       <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', border: 'none' }}>
-        <p className="text-body">This workspace gathers confirmed payables (like completed Mutawwif trips or earned commissions) that are ready to be transferred. Select items below to mark them as paid after you complete the manual bank transfers.</p>
+        <p className="text-body" style={{ margin: 0 }}>This workspace gathers confirmed payables (like completed Mutawwif trips or earned commissions) that are ready to be transferred. Select items below to mark them as paid after you complete the manual bank transfers.</p>
       </div>
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={(t) => { setActiveTab(t); setSelectedItems([]); }} />

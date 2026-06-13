@@ -3,6 +3,7 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
+import { FileUploader } from '../../components/inputs/FileUploader';
 import { Button } from '../../components/actions/Button';
 import { Stepper } from '../../components/navigation/Stepper';
 import { Plus, Trash2, Calendar, Map, BedDouble, Plane, DollarSign, Image as ImageIcon, FileText } from 'lucide-react';
@@ -14,7 +15,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Umrah');
   const [type, setType] = useState('Premium');
-  const { create } = useLocalStorageCrud('package');
+  const { create } = useLocalStorageCrud<any>('package');
 
   const handleSave = () => {
     create({
@@ -70,7 +71,6 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
       <PageHeader 
         title="Create New Package"
         breadcrumbs={[{ label: 'Home' }, { label: 'Packages', onClick: () => navigate('package-list') }, { label: 'Create Package' }]}
-        actions={{}}
       />
 
       <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-default)', padding: 'var(--space-6)', maxWidth: '900px', margin: '0 auto', width: '100%' }}>
@@ -377,19 +377,11 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                 </div>
                 
                 <FormField label="Primary Thumbnail (Max 2MB)" style={{ marginBottom: 'var(--space-6)' }}>
-                  <div style={{ border: '2px dashed var(--border-default)', borderRadius: 'var(--radius-md)', padding: 'var(--space-8)', textAlign: 'center', backgroundColor: 'var(--surface-sunken)' }}>
-                    <ImageIcon size={32} className="text-muted" style={{ margin: '0 auto var(--space-3)' }} />
-                    <p className="text-body-bold">Upload primary package image</p>
-                    <Button variant="secondary" size="sm" style={{ marginTop: 'var(--space-3)' }}>Select File</Button>
-                  </div>
+                  <FileUploader accept=".jpg,.png" maxSizeMB={2} id="package-thumbnail" />
                 </FormField>
 
                 <FormField label="Gallery Images (Optional, Max 10 Files, 2MB each)" style={{ marginBottom: 'var(--space-6)' }}>
-                  <div style={{ border: '2px dashed var(--border-default)', borderRadius: 'var(--radius-md)', padding: 'var(--space-6)', textAlign: 'center', backgroundColor: 'var(--surface-sunken)' }}>
-                    <ImageIcon size={24} className="text-muted" style={{ margin: '0 auto var(--space-2)' }} />
-                    <p className="text-body text-muted">Drag and drop gallery images here</p>
-                    <Button variant="secondary" size="sm" style={{ marginTop: 'var(--space-2)' }}>Browse Images</Button>
-                  </div>
+                  <FileUploader accept=".jpg,.png" maxSizeMB={2} multiple id="package-gallery" />
                 </FormField>
 
                 <FormField label="Short Video URL (Optional)" style={{ marginBottom: 'var(--space-6)' }}>
@@ -412,7 +404,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
         {/* Sticky Footer */}
         <div style={{ marginTop: 'auto', position: 'sticky', bottom: '-32px', margin: 'auto -32px -32px -32px', backgroundColor: 'var(--surface-base)', borderTop: '1px solid var(--border-default)', padding: 'var(--space-4) var(--space-8)', display: 'flex', justifyContent: 'space-between', zIndex: 10 }}>
           <Button 
-            variant="outline" 
+            variant="secondary" 
             disabled={currentStep === 0}
             onClick={handlePrev}
           >
