@@ -431,7 +431,7 @@ const initialJamaahList = [
         breadcrumbs={[{ label: 'Home' }, { label: 'Jamaah List' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="jamaah" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('jamaah-add')}>
             Add Jamaah
           </Button>

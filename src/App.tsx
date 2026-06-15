@@ -186,7 +186,7 @@ export function ComponentShowcase() {
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { 
       id: 'travel-agency', 
-      label: 'Travel Agency', 
+      label: 'Travel Agencies', 
       category: 'Network & Users',
       icon: <Building size={20} />,
       children: [
@@ -197,7 +197,7 @@ export function ComponentShowcase() {
     },
     {
       id: 'jamaah-list',
-      label: 'Jamaah List',
+      label: 'Jamaah',
       category: 'Network & Users',
       onClick: () => navigate('jamaah-list'),
       isActive: currentRoute.startsWith('jamaah-list') || currentRoute.startsWith('jamaah-add') || currentRoute.startsWith('jamaah-details'),
@@ -205,23 +205,15 @@ export function ComponentShowcase() {
     },
     { 
       id: 'mutawwif-list', 
-      label: 'Mutawwif List', 
+      label: 'Mutawwif', 
       category: 'Network & Users',
       icon: <UserCheck size={20} />,
       onClick: () => navigate('mutawwif-list'),
       isActive: currentRoute.startsWith('mutawwif-list') || currentRoute.startsWith('mutawwif-add') || currentRoute.startsWith('mutawwif-details')
     },
     { 
-      id: 'itinerary-list', 
-      label: 'Itinerary', 
-      category: 'Operations',
-      icon: <Calendar size={20} />,
-      onClick: () => navigate('itinerary-list'),
-      isActive: currentRoute.startsWith('itinerary-list') || currentRoute.startsWith('itinerary-add') || currentRoute.startsWith('itinerary-details')
-    },
-    { 
       id: 'package-list', 
-      label: 'Package Management', 
+      label: 'Packages', 
       category: 'Operations',
       icon: <Package size={20} />,
       onClick: () => navigate('package-list'),
@@ -229,7 +221,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'booking-list', 
-      label: 'Booking', 
+      label: 'Bookings', 
       category: 'Operations',
       icon: <Ticket size={20} />,
       onClick: () => navigate('booking-list'),
@@ -237,7 +229,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'group-trip-list', 
-      label: 'Group Trip', 
+      label: 'Trips', 
       category: 'Operations',
       icon: <Users size={20} />,
       onClick: () => navigate('group-trip-list'),
@@ -245,7 +237,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'flight-list', 
-      label: 'Flight', 
+      label: 'Flights', 
       category: 'Operations',
       icon: <Plane size={20} />,
       onClick: () => navigate('flight-list'),
@@ -253,15 +245,23 @@ export function ComponentShowcase() {
     },
     { 
       id: 'hotel-list', 
-      label: 'Hotel', 
+      label: 'Hotels', 
       category: 'Operations',
       icon: <Bed size={20} />,
       onClick: () => navigate('hotel-list'),
       isActive: currentRoute.startsWith('hotel-list') || currentRoute.startsWith('hotel-add') || currentRoute.startsWith('hotel-details')
     },
     { 
+      id: 'itinerary-list', 
+      label: 'Itineraries', 
+      category: 'Operations',
+      icon: <Calendar size={20} />,
+      onClick: () => navigate('itinerary-list'),
+      isActive: currentRoute.startsWith('itinerary-list') || currentRoute.startsWith('itinerary-add') || currentRoute.startsWith('itinerary-details')
+    },
+    { 
       id: 'season-list', 
-      label: 'Season Management', 
+      label: 'Seasons', 
       category: 'Operations',
       icon: <CalendarDays size={20} />,
       onClick: () => navigate('season-list'),
@@ -269,7 +269,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'finance', 
-      label: 'Finance Management',
+      label: 'Finance',
       category: 'Finance',
       icon: <DollarSign size={20} />,
       children: [
@@ -299,7 +299,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'billing-list', 
-      label: 'Billing & Payment', 
+      label: 'Payments', 
       category: 'Finance',
       icon: <CreditCard size={20} />,
       onClick: () => navigate('billing-list'),
@@ -308,7 +308,7 @@ export function ComponentShowcase() {
     { 
       id: 'articles', 
       label: 'Articles', 
-      category: 'Content & Support',
+      category: 'Content',
       icon: <FileEdit size={20} />,
       children: [
         { id: 'article-list', label: 'Article List', onClick: () => navigate('article-list'), isActive: currentRoute === 'article-list' || currentRoute.startsWith('article-details') },
@@ -317,8 +317,8 @@ export function ComponentShowcase() {
     },
     { 
       id: 'announcement', 
-      label: 'Announcement', 
-      category: 'Content & Support',
+      label: 'Announcements', 
+      category: 'Content',
       icon: <Megaphone size={20} />,
       children: [
         { id: 'announcement-list', label: 'Announcement List', onClick: () => navigate('announcement-list'), isActive: currentRoute === 'announcement-list' || currentRoute.startsWith('announcement-details') },
@@ -328,7 +328,7 @@ export function ComponentShowcase() {
     { 
       id: 'testimonial', 
       label: 'Testimonials', 
-      category: 'Content & Support',
+      category: 'Content',
       icon: <MessageSquare size={20} />,
       children: [
         { id: 'testimonial-list', label: 'Testimonial List', onClick: () => navigate('testimonial-list'), isActive: currentRoute === 'testimonial-list' || currentRoute.startsWith('testimonial-details') || currentRoute.startsWith('mutawwif-report-details') },
@@ -337,7 +337,7 @@ export function ComponentShowcase() {
     { 
       id: 'issue-reports', 
       label: 'Reports', 
-      category: 'Content & Support',
+      category: 'Content',
       icon: <BarChart2 size={20} />,
       children: [
         { id: 'report-list', label: 'All Reports', onClick: () => navigate('report-list'), isActive: currentRoute === 'report-list' || currentRoute.startsWith('report-details') },
@@ -346,7 +346,7 @@ export function ComponentShowcase() {
     },
     { 
       id: 'user-management', 
-      label: 'User Management', 
+      label: 'Users', 
       category: 'System',
       icon: <Users size={20} />,
       children: [

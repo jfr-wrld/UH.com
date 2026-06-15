@@ -299,7 +299,7 @@ return () => clearTimeout(timer);
         breadcrumbs={[{ label: 'Finance' }, { label: 'Billing' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export List</Button>
+            <ExportControl data={filteredData} filename="payment-list" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('invoice-create')}>Create Invoice</Button>
           </div>
         }

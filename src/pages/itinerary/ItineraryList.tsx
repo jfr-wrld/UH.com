@@ -483,7 +483,7 @@ return (
         breadcrumbs={[{ label: 'Home' }, { label: 'Itineraries' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="itineraries" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('itinerary-add')}>
             Create Itinerary
           </Button>

@@ -7,45 +7,63 @@ import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar';
 import { Package, Map, Calendar, BedDouble, Plane, DollarSign, Image as ImageIcon, Users, Eye, ChevronRight } from 'lucide-react';
-import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: any, packageId?: string }> = ({ navigate, showToast, packageId = 'pkg_1' }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [status, setStatus] = useState('Pending Approval');
-  const { getById } = useLocalStorageCrud('package');
+  const { getById, update } = useLocalStorageCrud('package');
 
-  // Mock Data
-  const pkgData = getById(packageId) || {
-    id: packageId,
-    code: '-',
-    name: 'Unknown Package',
-    agency: '-',
-    category: '-',
-    type: '-',
-    status: status,
-    hotel: '-',
-    flight: '-',
-    price: '-',
-    schedule: '-',
-    commission: '-',
-    dateCreated: '-',
-    labels: []
-  };
+  // Real Data fetch
+  const pkgData = getById(packageId);
 
+  if (!pkgData) {
+    return (
+      <div style={{ padding: 'var(--space-6)' }}>
+        <PageHeader title="Package Not Found" breadcrumbs={[{ label: 'Home' }, { label: 'Packages', onClick: () => navigate('package-list') }]} />
+        <p className="text-body text-muted">The package you are looking for does not exist or has been deleted.</p>
+        <Button onClick={() => navigate('package-list')} style={{ marginTop: 'var(--space-4)' }}>Back to Packages</Button>
+      </div>
+    );
+  }
+
+  // Fallbacks for older dummy packages
   const pkg = {
     ...pkgData,
-    visibility: 'Public',
-    availability: 'Open',
+    visibility: pkgData.visibility || 'Public',
+    availability: pkgData.availability || 'Open',
     promoLabels: pkgData.labels || [],
-    description: 'An exclusive 11-day Premium Umrah package featuring stays at the Swissotel Makkah and Pullman Zamzam Madinah. Includes full board meals and private transportation.',
-    features: ['Mutawwif Guide', '24/7 Support', 'VIP Transport'],
-    inclusions: ['Flight Tickets', 'Hotel Stay', 'Visa Processing', 'Daily Breakfast', 'Zam-zam Water'],
-    thumbnail: 'https://picsum.photos/seed/479/600/400',
-    cancellationPolicy: 'Cancellations made 45 days prior to departure will receive a full refund minus a RM 500 processing fee.',
-    refundPolicy: 'Refunds are processed within 14-21 working days after approval.',
-    amendmentPolicy: 'Name changes are allowed up to 30 days prior to departure subject to airline policies.'
+    description: pkgData.description || 'An exclusive Umrah package.',
+    features: pkgData.features || ['Mutawwif Guide', '24/7 Support'],
+    inclusions: pkgData.inclusions || ['Flight Tickets', 'Hotel Stay', 'Visa Processing'],
+    thumbnail: pkgData.thumbnailUrl || 'https://picsum.photos/seed/479/600/400',
+    cancellationPolicy: pkgData.cancellationPolicy || 'Standard cancellation policy applies.',
+    refundPolicy: pkgData.refundPolicy || 'Refunds processed within 14-21 days.',
+    amendmentPolicy: pkgData.amendmentPolicy || 'Name changes allowed up to 30 days prior.',
+    disclaimers: pkgData.disclaimers || 'Terms and conditions apply.',
+    roomPrices: pkgData.roomPrices || [
+      { type: 'Double', adult: pkgData.price || 'RM 8500', child: 'RM 6000', childNoBed: 'RM 5500', infant: 'RM 2500' }
+    ],
+    schedules: pkgData.schedules || [
+      { id: '1', departureDate: pkgData.schedule || 'TBD', returnDate: 'TBD', visibility: 'visible' }
+    ],
+    airline: pkgData.airline || 'mh',
+    flight: pkgData.flight || 'Malaysia Airlines (MH)',
+    depAirport: pkgData.depAirport || 'KUL',
+    arrAirport: pkgData.arrAirport || 'JED',
+    retDepAirport: pkgData.retDepAirport || 'MED',
+    retArrAirport: pkgData.retArrAirport || 'KUL',
+    hotel: pkgData.hotel || 'Swissotel Makkah',
+    makkahHotel: pkgData.makkahHotel || pkgData.hotel || 'Swissotel Makkah',
+    madinahHotel: pkgData.madinahHotel || 'Pullman Zamzam Madinah',
+    depositAmount: pkgData.depositAmount || 'RM 1500',
+    agentCommission: pkgData.agentCommission || pkgData.commission || 'RM 500',
+    status: pkgData.status || 'Draft'
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    update(pkg.id, { ...pkgData, status: newStatus });
+    if(showToast) showToast('Status Updated', `Package status changed to ${newStatus}`, 'success');
   };
 
   const tabs = [
@@ -60,16 +78,6 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
     { id: 'terms', label: 'Terms' },
     { id: 'versions', label: 'Versions' },
   ];
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeFilters,
-    handleFilterChange,
-    clearFilters,
-    hasActiveFilters,
-    filteredData
-  } = useDataFilter(tabs);
-
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -83,9 +91,9 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
               <h1 className="text-page-title">{pkg.name}</h1>
               <StatusTransitionMenu 
-                currentStatus={status}
+                currentStatus={pkg.status}
                 allowedTransitions={['Draft', 'Pending Approval', 'Published', 'Archived']}
-                onTransition={setStatus}
+                onTransition={handleStatusChange}
               />
             </div>
             <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
@@ -102,11 +110,11 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
         </div>
       </div>
 
-      {status === 'Pending Approval' && (
+      {pkg.status === 'Pending Approval' && (
         <ApprovalDecisionBar 
-          onApprove={() => { setStatus('Published'); if(showToast) showToast('Approved', 'Package published successfully.', 'success'); }}
-          onReject={() => { setStatus('Draft'); if(showToast) showToast('Rejected', 'Package returned to draft.', 'error'); }}
-          onRevise={() => { setStatus('Draft'); if(showToast) showToast('Revision Requested', 'Sent revision notes to agency.', 'warning'); }}
+          onApprove={() => handleStatusChange('Published')}
+          onReject={() => handleStatusChange('Draft')}
+          onRevise={() => handleStatusChange('Draft')}
         />
       )}
 
@@ -124,15 +132,15 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               
               <div>
                 <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Key Features</h3>
-                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                  {pkg.features.map(f => <Badge key={f} variant="primary">{f}</Badge>)}
+                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                  {pkg.features.map((f: string) => <Badge key={f} variant="primary">{f}</Badge>)}
                 </div>
               </div>
 
               <div>
                 <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Package Inclusions</h3>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {pkg.inclusions.map(i => <div key={i} className="text-body" style={{ padding: '4px 12px', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>✓ {i}</div>)}
+                  {pkg.inclusions.map((i: string) => <div key={i} className="text-body" style={{ padding: '4px 12px', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>✓ {i}</div>)}
                 </div>
               </div>
             </div>
@@ -140,29 +148,27 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
               <h3 className="text-subsection-title">Configuration</h3>
               <div>
+                <span className="text-caption text-muted" style={{ display: 'block' }}>Category & Type</span>
+                <span className="text-body-bold">{pkg.category} • {pkg.type}</span>
+              </div>
+              <div>
                 <span className="text-caption text-muted" style={{ display: 'block' }}>Visibility</span>
-                <span className="text-body-bold">{pkg.visibility}</span>
+                <span className="text-body-bold" style={{ textTransform: 'capitalize' }}>{pkg.visibility}</span>
               </div>
               <div>
                 <span className="text-caption text-muted" style={{ display: 'block' }}>Booking Availability</span>
-                <span className="text-body-bold text-success">{pkg.availability}</span>
+                <span className="text-body-bold text-success" style={{ textTransform: 'capitalize' }}>{pkg.availability.replace('_', ' ')}</span>
               </div>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Promo Labels</span>
-                <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
-                  {pkg.promoLabels.map(label => (
-                    <Badge key={label} variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>{label}</Badge>
-                  ))}
+              {pkg.promoLabels.length > 0 && (
+                <div>
+                  <span className="text-caption text-muted" style={{ display: 'block' }}>Promo Labels</span>
+                  <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
+                    {pkg.promoLabels.map((label: string) => (
+                      <Badge key={label} variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>{label}</Badge>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Creation Source</span>
-                <span className="text-body">Travel Agency</span>
-              </div>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Terms Status</span>
-                <span className="text-body text-success">Completed</span>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -180,34 +186,32 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                     <th>Room Type</th>
                     <th>Adult Price</th>
                     <th>Child Price</th>
+                    <th>Child (w/o Bed)</th>
                     <th>Infant Price</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style={{ backgroundColor: 'var(--color-primary-light)' }}>
-                    <td><span className="text-body-bold">Double (Default)</span></td>
-                    <td><span className="text-body">RM 8,500</span></td>
-                    <td><span className="text-body">RM 6,000</span></td>
-                    <td><span className="text-body">RM 2,500</span></td>
-                  </tr>
-                  <tr>
-                    <td><span className="text-body-bold">Triple</span></td>
-                    <td><span className="text-body">RM 8,200</span></td>
-                    <td><span className="text-body">-</span></td>
-                    <td><span className="text-body">-</span></td>
-                  </tr>
+                  {pkg.roomPrices.map((room: any, idx: number) => (
+                    <tr key={idx} style={room.isDefault ? { backgroundColor: 'var(--color-primary-light)' } : {}}>
+                      <td><span className="text-body-bold">{room.type} {room.isDefault ? '(Default)' : ''}</span></td>
+                      <td><span className="text-body">{room.adult || '-'}</span></td>
+                      <td><span className="text-body">{room.child || '-'}</span></td>
+                      <td><span className="text-body">{room.childNoBed || '-'}</span></td>
+                      <td><span className="text-body">{room.infant || '-'}</span></td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
-              <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
+              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Payment</span>
-                <span className="text-body">Deposit Required: <strong>RM 1,500</strong></span>
+                <span className="text-body">Deposit Required: <strong>{pkg.depositAmount}</strong></span>
               </div>
-              <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
+              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Commission</span>
-                <span className="text-body">Agent Commission: <strong>RM 500 / pax</strong></span>
+                <span className="text-body">Agent Commission: <strong>{pkg.agentCommission}</strong></span>
               </div>
             </div>
           </div>
@@ -220,20 +224,18 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <h3 className="text-subsection-title">Trip Schedules</h3>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-                  <span className="text-body-bold">15 Dec 2026 - 26 Dec 2026 (11 Days)</span>
-                  <span className="text-caption text-muted">Season: High Season - Dec 2026</span>
+              {pkg.schedules.map((sched: any, idx: number) => (
+                <div key={idx} style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                    <span className="text-body-bold">
+                      {sched.departureDate ? new Date(sched.departureDate).toLocaleDateString('en-GB') : 'TBD'} 
+                      {sched.returnDate ? ` - ${new Date(sched.returnDate).toLocaleDateString('en-GB')}` : ''}
+                    </span>
+                    <span className="text-caption text-muted">Visibility: <span style={{ textTransform: 'capitalize' }}>{sched.visibility}</span> • Capacity: {sched.capacity || 45} Pax</span>
+                  </div>
+                  <Badge variant={sched.flightStatus === 'confirmed' ? 'success' : 'warning'}>Flight: {sched.flightStatus || 'pending'}</Badge>
                 </div>
-                <Badge variant="success">Enabled</Badge>
-              </div>
-              <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-                  <span className="text-body-bold">20 Jan 2027 - 31 Jan 2027 (11 Days)</span>
-                  <span className="text-caption text-muted">Season: Low Season - Winter 2027</span>
-                </div>
-                <Badge variant="success">Enabled</Badge>
-              </div>
+              ))}
             </div>
           </div>
         )}
@@ -246,10 +248,9 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <h3 className="text-subsection-title">Flight Details</h3>
               </div>
               <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
-                <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Saudi Airlines (SV)</span>
-                <span className="text-body" style={{ display: 'block' }}>Departure: KUL ➔ JED</span>
-                <span className="text-body" style={{ display: 'block' }}>Return: MED ➔ KUL</span>
-                <Badge variant="success" style={{ marginTop: 'var(--space-3)' }}>Confirmed</Badge>
+                <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>{pkg.flight}</span>
+                <span className="text-body" style={{ display: 'block', textTransform: 'uppercase' }}>Departure: {pkg.depAirport} ➔ {pkg.arrAirport}</span>
+                <span className="text-body" style={{ display: 'block', textTransform: 'uppercase' }}>Return: {pkg.retDepAirport} ➔ {pkg.retArrAirport}</span>
               </div>
             </div>
 
@@ -260,14 +261,13 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               </div>
               <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 <div>
-                  <span className="text-caption text-muted" style={{ display: 'block' }}>Makkah (7 Nights)</span>
-                  <span className="text-body-bold">Swissotel Makkah</span>
+                  <span className="text-caption text-muted" style={{ display: 'block' }}>Makkah Hotel</span>
+                  <span className="text-body-bold">{pkg.makkahHotel === 'swiss' ? 'Swissotel Makkah' : pkg.makkahHotel}</span>
                 </div>
                 <div>
-                  <span className="text-caption text-muted" style={{ display: 'block' }}>Madinah (4 Nights)</span>
-                  <span className="text-body-bold">Pullman Zamzam Madinah</span>
+                  <span className="text-caption text-muted" style={{ display: 'block' }}>Madinah Hotel</span>
+                  <span className="text-body-bold">{pkg.madinahHotel === 'pullman' ? 'Pullman Zamzam Madinah' : pkg.madinahHotel}</span>
                 </div>
-                <Badge variant="success" style={{ width: 'fit-content', marginTop: 'var(--space-2)' }}>Confirmed</Badge>
               </div>
             </div>
           </div>
@@ -279,8 +279,8 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <Map className="text-primary" size={20} />
               <h3 className="text-subsection-title">Itinerary Reference</h3>
             </div>
-            <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
-              <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Standard 12 Days Umrah Template</span>
+            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+              <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Template: {pkg.itineraryTemplate || 'Standard 12 Days Umrah Template'}</span>
               <span className="text-body text-muted">This package inherits the standard Umrah operational itinerary. Days will map exactly to the selected schedule dates when a Group Trip is created.</span>
             </div>
           </div>
@@ -305,7 +305,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <h3 className="text-subsection-title">Group Trip Usage</h3>
             </div>
             <p className="text-body text-muted">The following group trips have been spawned from this package.</p>
-            <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span className="text-body-bold">TRP-1001: Premium Umrah (Dec 26)</span>
                 <span className="text-caption text-muted">45 Pax • Departing 15 Dec 2026</span>
@@ -319,9 +319,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
           <div>
             <AuditLogPanel 
               logs={[
-                { id: '1', timestamp: '1 day ago', actor: 'Agency Admin', action: 'Published Package', module: 'Package', details: 'Status changed to Published' },
-                { id: '2', timestamp: '2 days ago', actor: 'Agency Admin', action: 'Updated Pricing', module: 'Package', details: 'Changed Adult Price from RM 8000 to RM 8500' },
-                { id: '3', timestamp: '1 week ago', actor: 'Agency Admin', action: 'Created Package', module: 'Package', details: 'Draft created' }
+                { id: '1', timestamp: 'Just now', actor: 'System', action: 'Viewed', module: 'Package', details: 'Viewed details' }
               ]}
             />
           </div>
@@ -331,15 +329,19 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
             <div>
               <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Cancellation Policy</h3>
-              <p className="text-body">{pkg.cancellationPolicy}</p>
+              <p className="text-body" style={{ whiteSpace: 'pre-wrap' }}>{pkg.cancellationPolicy}</p>
             </div>
             <div>
               <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Refund Policy</h3>
-              <p className="text-body">{pkg.refundPolicy}</p>
+              <p className="text-body" style={{ whiteSpace: 'pre-wrap' }}>{pkg.refundPolicy}</p>
             </div>
             <div>
               <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Amendment Policy</h3>
-              <p className="text-body">{pkg.amendmentPolicy}</p>
+              <p className="text-body" style={{ whiteSpace: 'pre-wrap' }}>{pkg.amendmentPolicy}</p>
+            </div>
+            <div>
+              <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Disclaimers</h3>
+              <p className="text-body" style={{ whiteSpace: 'pre-wrap' }}>{pkg.disclaimers}</p>
             </div>
           </div>
         )}
@@ -352,20 +354,10 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <div style={{ padding: 'var(--space-4)', border: '1px solid var(--color-primary)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <span className="text-body-bold">Version 2.0</span>
+                    <span className="text-body-bold">Version 1.0</span>
                     <Badge variant="success">Current Published</Badge>
                   </div>
-                  <span className="text-caption text-muted">Published on 15 Jun 2026 by Agency Admin</span>
-                </div>
-                <Button variant="secondary" size="sm">View</Button>
-              </div>
-              <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <span className="text-body-bold">Version 1.0</span>
-                    <Badge variant="neutral">Archived</Badge>
-                  </div>
-                  <span className="text-caption text-muted">Published on 01 Jun 2026 by Agency Admin</span>
+                  <span className="text-caption text-muted">Published by Admin</span>
                 </div>
                 <Button variant="secondary" size="sm">View</Button>
               </div>

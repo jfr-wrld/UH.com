@@ -4,6 +4,7 @@ import { Badge } from '../../components/data-display/Badge';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Tabs } from '../../components/navigation/Tabs';
 import { Button } from '../../components/actions/Button';
+import { ExportControl } from '../../components/domain/ExportControl';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
 import { Download, CheckCircle, CreditCard, CheckCircle2, ChevronRight, Clock, FileText, Send, Plus, Filter, FileSpreadsheet, Eye, AlertCircle } from 'lucide-react';
@@ -472,7 +473,7 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
         breadcrumbs={[{ label: 'Finance' }, { label: 'Payouts' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export Bank File</Button>
+            <ExportControl data={filteredData} filename="payout-bank-file" />
           </div>
         }
       />

@@ -376,7 +376,7 @@ return () => clearTimeout(timer);
         ]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="announcements" />
             <Button variant="primary" leftIcon={<Plus size={16} />} onClick={() => navigate('announcement-create')}>
               Create Announcement
             </Button>

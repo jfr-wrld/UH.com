@@ -3,6 +3,7 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { Badge } from '../../components/data-display/Badge';
 import { DataTable } from '../../components/data-display/DataTable';
+import { ExportControl } from '../../components/domain/ExportControl';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Skeleton } from '../../components/data-display/Skeleton';
@@ -121,7 +122,7 @@ export const FinanceOverview: React.FC<{ navigate: (route: string, data?: any) =
         breadcrumbs={[{ label: 'Finance Management' }, { label: 'Overview' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export Summary</Button>
+            <ExportControl data={filteredData} filename="finance-overview" />
           </div>
         }
       />

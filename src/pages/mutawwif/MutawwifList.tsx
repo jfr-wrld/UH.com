@@ -471,7 +471,7 @@ const initialMutawwifList = [
         breadcrumbs={[{ label: 'Home' }, { label: 'Mutawwif List' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="mutawwif" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('mutawwif-add')}>
             Add Mutawwif
           </Button>

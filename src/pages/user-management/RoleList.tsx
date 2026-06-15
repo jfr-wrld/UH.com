@@ -70,7 +70,7 @@ export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void 
         breadcrumbs={[{ label: 'Settings' }, { label: 'Roles' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={roles} filename="roles" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('um-role-form')}>
             Create Role
           </Button>

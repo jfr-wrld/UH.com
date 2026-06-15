@@ -332,7 +332,7 @@ export const ReportList: React.FC<{ navigate: (route: string, data?: any) => voi
         breadcrumbs={[{ label: 'Support & Ops' }, { label: 'Reports' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export Log</Button>
+            <ExportControl data={filteredData} filename="report-log" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('report-create')}>Create / Escalate Report</Button>
           </div>
         }

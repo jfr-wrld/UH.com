@@ -488,7 +488,11 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
             <FormField label="Search User" required error={showErrors && !selectedExistingUserId ? 'Wajib diisi' : undefined}>
               <Select 
-                options={mockUsers.map(u => ({ value: u.id, label: `${u.name} (${u.email})` }))} 
+                options={mockUsers.map(u => ({ 
+                  value: u.id, 
+                  label: `${u.name} (${u.email})`,
+                  icon: <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random&color=fff&size=24`} alt={u.name.charAt(0)} style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
+                }))} 
                 value={selectedExistingUserId} 
                 onChange={e => setSelectedExistingUserId(e.target.value)} 
                 placeholder="Search by name or email"
@@ -731,6 +735,7 @@ export const TravelAgencyForm: React.FC<{ navigate: (route: string, data?: any) 
         <FormField label="Internal Notes (Visible to Admins only)">
           <textarea 
             className="input-base" 
+            style={{ width: '100%', minWidth: '100%', height: '120px', resize: 'vertical' }}
             rows={4} 
             placeholder="Add any internal remarks or findings during verification..."
             value={formData.internalNotes}

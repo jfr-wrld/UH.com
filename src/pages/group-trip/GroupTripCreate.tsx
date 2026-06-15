@@ -163,7 +163,7 @@ export const GroupTripCreate: React.FC<{ navigate: (route: string, data?: any) =
                 <FormField label="Destination Type" required>
                   <Select options={[{value: 'makkah_madinah', label: 'Makkah + Madinah'}, {value: 'makkah', label: 'Makkah Only'}]} value="makkah_madinah" onChange={() => {}} />
                 </FormField>
-                <FormField label="Mutawwif"><Select options={[{value: 'm1', label: 'Ustaz Ahmad'}]} value="m1" onChange={() => {}} /></FormField>
+                <FormField label="Mutawwif"><Select options={[{value: 'm1', label: 'Ustaz Ahmad', icon: <img src="https://ui-avatars.com/api/?name=Ustaz+Ahmad&background=random&color=fff&size=24" alt="U" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />}]} value="m1" onChange={() => {}} /></FormField>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>

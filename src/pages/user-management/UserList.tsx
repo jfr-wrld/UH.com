@@ -465,7 +465,7 @@ return (
         breadcrumbs={[{ label: 'Settings' }, { label: 'Users' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="users" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('um-invite')}>
             Invite User
           </Button>

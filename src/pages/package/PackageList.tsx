@@ -323,7 +323,7 @@ const initialPackageList = [
   }
 ];
 
-  const { data: packageList, remove } = useLocalStorageCrud('package', initialPackageList);
+  const { data: packageList, remove, update } = useLocalStorageCrud('package', initialPackageList);
   const {
     searchQuery,
     setSearchQuery,
@@ -351,16 +351,23 @@ const initialPackageList = [
     {
       header: 'Package',
       accessor: (row: typeof packageList[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.name}</span>
-          <span className="text-caption text-muted">{row.code}</span>
-          {row.labels.length > 0 && (
-            <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
-              {row.labels.map(label => (
-                <Badge key={label} variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>{label}</Badge>
-              ))}
-            </div>
-          )}
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <img 
+            src={(row as any).thumbnailUrl || 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=100&q=80'} 
+            alt={row.name} 
+            style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--border-subtle)' }} 
+          />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="text-body-bold">{row.name}</span>
+            <span className="text-caption text-muted">{row.code}</span>
+            {row.labels && row.labels.length > 0 && (
+              <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
+                {row.labels.map(label => (
+                  <Badge key={label} variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>{label}</Badge>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )
     },
@@ -419,10 +426,17 @@ const initialPackageList = [
           triggerLabel=""
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('package-details', { id: row.id }) },
-            { id: 'edit', label: 'Edit Package', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'share', label: 'Copy Share Link', icon: <LinkIcon size={16} />, onClick: () => console.log('Share', row.id) },
-            { id: 'draft', label: 'Set as Draft', icon: <FileEdit size={16} />, onClick: () => console.log('Set Draft', row.id) },
-            { id: 'archive', label: 'Archive', icon: <Archive size={16} />, onClick: () => console.log('Archive', row.id) },
+            { id: 'edit', label: 'Edit Package', icon: <Edit size={16} />, onClick: () => navigate('package-create', { id: row.id }) },
+            { id: 'share', label: 'Copy Share Link', icon: <LinkIcon size={16} />, onClick: () => {
+              navigator.clipboard.writeText(`${window.location.origin}/package-details?id=${row.id}`);
+              alert('Link copied to clipboard!');
+            }},
+            { id: 'draft', label: 'Set as Draft', icon: <FileEdit size={16} />, onClick: () => {
+              if (update) update(row.id, { ...row, status: 'Draft' });
+            }},
+            { id: 'archive', label: 'Archive', icon: <Archive size={16} />, onClick: () => {
+              if (update) update(row.id, { ...row, status: 'Archived' });
+            }},
             { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } },
           ]}
         />
@@ -504,7 +518,7 @@ return (
         breadcrumbs={[{ label: 'Home' }, { label: 'Packages' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export</Button>
+            <ExportControl data={filteredData} filename="packages" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('package-create')}>Create Package</Button>
           </div>
         }
@@ -532,8 +546,13 @@ return (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', padding: 'var(--space-3)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)' }}>
           <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>{selectedPackages.length} packages selected</span>
           <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-            <Button variant="secondary" size="sm" onClick={() => console.log('Export')}>Export Selected</Button>
-            <Button variant="secondary" size="sm" onClick={() => console.log('Archive')}>Archive Selected</Button>
+            <ExportControl data={filteredData.filter((p: any) => selectedPackages.includes(p.id))} filename="packages-selected" />
+            <Button variant="danger" size="sm" onClick={() => {
+              if (window.confirm(`Are you sure you want to delete ${selectedPackages.length} packages?`)) {
+                selectedPackages.forEach(id => remove(id));
+                setSelectedPackages([]);
+              }
+            }}>Delete</Button>
           </div>
         </div>
       )}

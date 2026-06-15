@@ -4,6 +4,7 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { Badge } from '../../components/data-display/Badge';
 import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Plus, Building2, Eye, Edit, ChevronRight, RefreshCw, Ban, BadgeCheck, CheckCircle2, Users, Trash2 } from 'lucide-react';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
@@ -356,15 +357,11 @@ export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) 
       accessor: (row: any) => {
         const picName = row.pic || row.picName || 'Unknown';
         return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <div style={{ width: 24, height: 24, borderRadius: 'var(--radius-pill)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--surface-sunken)' }}>
-              <img src={`https://i.pravatar.cc/150?u=${row.id}`} alt={picName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-            <div>
-              <div className="text-body-bold">{picName}</div>
-              <div className="text-caption text-muted" style={{ fontSize: '11px' }}>{picName.toLowerCase().replace(/\s+/g, '.')}@example.com</div>
-            </div>
-          </div>
+          <UserProfileCell 
+            name={picName} 
+            email={`${picName.toLowerCase().replace(/\s+/g, '.')}@example.com`} 
+            isVerified={row.isVerified}
+          />
         );
       }
     },
@@ -482,7 +479,7 @@ return (
         breadcrumbs={[{ label: 'Travel Agency Management' }, { label: 'List' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="travel-agencies" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('ta-add')}>Add Travel Agency</Button>
           </div>
         }

@@ -394,7 +394,7 @@ return (
         breadcrumbs={[{ label: 'Home' }, { label: 'Hotels' }]}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-            <ExportControl onExport={(f) => console.log(f)} />
+            <ExportControl data={filteredData} filename="hotels" />
             <Button leftIcon={<Plus size={16} />} onClick={() => navigate('hotel-add')}>
             Add Hotel
           </Button>

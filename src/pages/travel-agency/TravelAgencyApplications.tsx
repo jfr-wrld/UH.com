@@ -3,6 +3,7 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { DataTable } from '../../components/data-display/DataTable';
 import { Badge } from '../../components/data-display/Badge';
+import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { MetricCard } from '../../components/data-display/MetricCard';
@@ -226,14 +227,12 @@ return () => clearTimeout(timer);
     {
       header: 'PIC Details',
       accessor: (row: typeof applications[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.picName}</span>
-          <span className="text-caption text-muted">
-            <a href={`tel:${row.picPhone.replace(/[^0-9+]/g, '')}`} onClick={(e) => e.stopPropagation()} style={{ textDecoration: 'none', color: 'inherit' }}>{row.picPhone}</a>
-            {' • '}
-            <a href={`mailto:${row.picEmail}`} onClick={(e) => e.stopPropagation()} style={{ textDecoration: 'none', color: 'inherit' }}>{row.picEmail}</a>
-          </span>
-        </div>
+        <UserProfileCell 
+          name={row.picName} 
+          email={row.picEmail} 
+          phone={row.picPhone} 
+          isVerified={row.status === 'Approved'} 
+        />
       )
     },
     { header: 'Submitted', accessor: 'submittedDate' as const, sortable: true },
@@ -361,7 +360,7 @@ return (
         breadcrumbs={[{ label: 'Travel Agency' }, { label: 'Applications' }]}
         actions={
           <>
-            <Button variant="secondary" leftIcon={<Download size={16} />}>Export</Button>
+            <ExportControl data={filteredData} filename="travel-agency-applications" />
             <Button variant="primary" leftIcon={<Plus size={16} />}>Add Travel Agency</Button>
           </>
         }
