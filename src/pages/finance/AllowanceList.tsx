@@ -315,7 +315,8 @@ return (
         searchPlaceholder="Search by ID, Related Record..."
       />
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('allowance-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

@@ -6,8 +6,9 @@ import { Badge } from '../../components/data-display/Badge';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
+import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud, CheckCircle2, Ticket } from 'lucide-react';
+import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud, CheckCircle2, Ticket, Clock, Map } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
@@ -533,15 +534,26 @@ const initialAirlineList = [
     },
     { 
       header: 'Route & Schedule', 
-      accessor: (row: typeof flightList[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span className="text-body-bold">{row.route}</span>
-            <Badge variant={row.type === 'Direct' ? 'success' : 'warning'}>{row.type}</Badge>
+      accessor: (row: typeof flightList[0]) => {
+        const [origin, dest] = (row.route || '').split(' → ');
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="text-body-bold">{origin || row.route}</span>
+                {dest && <Plane size={14} style={{ color: 'var(--color-primary)' }} />}
+                {dest && <span className="text-body-bold">{dest}</span>}
+              </div>
+              <Badge variant={row.type === 'Direct' ? 'success' : 'warning'} style={{ padding: '2px 6px', fontSize: '10px' }}>{row.type}</Badge>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Clock size={12} className="text-muted" />
+              <span className="text-caption text-muted">{row.departure} - {row.arrival}</span>
+              <span className="text-caption" style={{ color: 'var(--color-primary)', fontWeight: 500 }}>({row.duration})</span>
+            </div>
           </div>
-          <span className="text-caption text-muted">{row.departure} - {row.arrival} ({row.duration})</span>
-        </div>
-      )
+        );
+      }
     },
     { 
       header: 'Available for Package', 
@@ -706,8 +718,8 @@ const initialAirlineList = [
     sortKey,
     sortOrder,
     onSort
-  } = useDataFilter(airlineList, {
-    defaultSort: { key: 'flightDate', order: 'asc' },
+  } = useDataFilter(activeTab === 'flights' ? flightList : airlineList, {
+    defaultSort: { key: 'status', order: 'asc' },
     defaultPerPage: 10,
     syncToUrl: true
   });
@@ -781,7 +793,8 @@ return (
         hasActiveFilters={hasActiveFilters}
             searchPlaceholder="Search flight number, route, or airline..."
           />
-          <DataTable 
+          <DataTable
+            onRowClick={(row: any) => navigate('flight-details', { id: row.id })} 
             data={filteredData}
           sort={{
             key: sortKey,
@@ -809,12 +822,30 @@ return (
         <>
           <FilterBar 
             groups={airlineFilters}
-            onFilterChange={(g, v) => console.log(g, v)}
-            onSearch={(q) => console.log(q)}
+            onFilterChange={handleFilterChange}
+            activeFilters={activeFilters}
+            onSearch={setSearchQuery}
+            searchValue={searchQuery}
+            onClearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
             searchPlaceholder="Search airline name or IATA code..."
           />
-          <DataTable 
-            data={airlineList}
+          <DataTable
+            onRowClick={(row: any) => navigate('airline-details', { id: row.id })} 
+            data={filteredData}
+            sort={{
+              key: sortKey,
+              order: sortOrder,
+              onSort
+            }}
+            pagination={{
+              currentPage,
+              totalPages,
+              rowsPerPage,
+              totalItems,
+              onPageChange,
+              onRowsPerPageChange
+            }}
             columns={airlineColumns}
             keyExtractor={(r) => r.id}
             isLoading={isLoading}

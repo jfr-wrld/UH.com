@@ -1,0 +1,4 @@
+{
+  "name": "uh-erp",
+  "installCommand": "npm install --no-package-lock"
+}

@@ -147,7 +147,8 @@ export const FinanceOverview: React.FC<{ navigate: (route: string, data?: any) =
           <h2 className="text-section-title">Recent Payments</h2>
           <Button variant="ghost" size="sm" rightIcon={<Eye size={14} />} onClick={() => navigate('billing-list')}>View All Payments</Button>
         </div>
-        <DataTable 
+        <DataTable
+        onRowClick={(row: any) => navigate('billing-list')} 
           data={recentPayments}
           columns={paymentColumns}
           keyExtractor={(r) => r.id}

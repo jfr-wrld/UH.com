@@ -470,7 +470,8 @@ const initialJamaahList = [
         </div>
       )}
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('jamaah-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

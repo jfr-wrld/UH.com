@@ -49,7 +49,10 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     <div className={classNames('dropdown-container', className)} ref={containerRef}>
       <Button 
         variant={variant} 
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
         leftIcon={leftIcon}
         rightIcon={iconOnly ? undefined : (!triggerLabel ? <MoreVertical size={16} /> : <ChevronDown size={16} />)}
         disabled={disabled}
@@ -67,7 +70,8 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
               key={item.id}
               className={classNames('dropdown-item', item.danger && 'danger')}
               role="menuitem"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 item.onClick();
                 setIsOpen(false);
               }}

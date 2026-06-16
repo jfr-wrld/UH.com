@@ -5,24 +5,29 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { FileUploader } from '../../components/inputs/FileUploader';
 import { Button } from '../../components/actions/Button';
+import { Modal } from '../../components/feedback/Modal';
 import { Stepper } from '../../components/navigation/Stepper';
-import { Plus, Trash2, Calendar, Map, BedDouble, Plane, DollarSign, Image as ImageIcon, FileText, Edit, CheckCircle, Save, ChevronLeft, ArrowLeft, Building, Bus, ChevronUp, Gift, Heart, Star, Users, Flame, MapPin, Check, Train, User, Droplet, BookOpen } from 'lucide-react';
+import { RichTextEditor } from '../../components/inputs/RichTextEditor';
+import { Plus, Trash2, Calendar, Map, BedDouble, Plane, DollarSign, Image as ImageIcon, FileText, Edit, CheckCircle, Save, ChevronLeft, ArrowLeft, Building, Bus, ChevronUp, ChevronDown, GripVertical, Gift, Heart, Star, Users, Flame, MapPin, Check, Train, User, Droplet, BookOpen, PlaneTakeoff, PlaneLanding, Clock, Package } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
 export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast  }) => {
-  const { create } = useLocalStorageCrud<any>('package');
+  const { create, data } = useLocalStorageCrud<any>('package');
   const [showErrors, setShowErrors] = useState(false);
   const [isDraftSaved, setIsDraftSaved] = useState(false);
   const [draftTime, setDraftTime] = useState('');
+  
+  const [selectedPackageToCopy, setSelectedPackageToCopy] = useState<string>('');
 
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     { id: '1', label: 'Basic Info' },
     { id: '2', label: 'Accommodation & Logistics' },
-    { id: '3', label: 'Terms & Policies' },
-    { id: '4', label: 'Gallery & Media' },
-    { id: '5', label: 'Preview & Publish' }
+    { id: '3', label: 'Itinerary Planning' },
+    { id: '4', label: 'Terms & Policies' },
+    { id: '5', label: 'Gallery & Media' },
+    { id: '6', label: 'Preview & Publish' }
   ];
 
   const [formData, setFormData] = useState({
@@ -40,6 +45,29 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
     makkahNights: 7,
     madinahNights: 4,
     itineraryTemplate: 'tmpl_1',
+    itineraryDays: [
+      {
+        id: 'day_1',
+        dayNumber: 1,
+        title: 'Departure',
+        location: 'Kuala Lumpur',
+        isExpanded: true,
+        activities: [
+          { id: 'act_1', name: 'Departure from KLIA 1', time: '10:00 PM', icon: 'PlaneTakeoff', description: 'KLIA to Jeddah on MAS AMAL' }
+        ]
+      },
+      {
+        id: 'day_2',
+        dayNumber: 2,
+        title: 'Arrive',
+        location: 'Makkah',
+        isExpanded: true,
+        activities: [
+          { id: 'act_2', name: 'Arrival at Jeddah', time: '5:00 AM', icon: 'PlaneLanding', description: 'Arrival at King Abdulaziz Airport' },
+          { id: 'act_3', name: 'Transfer to Makkah', time: '7:00 AM', icon: 'Bus', description: 'Bus transfer to hotel in Makkah' }
+        ]
+      }
+    ],
     schedules: [
       { id: '1', departureDate: '2026-12-15', returnDate: '2026-12-26', flightStatus: 'pending', hotelStatus: 'pending', visibility: 'visible', capacity: 45, cutoffDate: '2026-11-15' }
     ],
@@ -77,6 +105,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
     cancellationPolicy: '',
     refundPolicy: '',
     amendmentPolicy: '',
+    forceMajeurePolicy: '',
     disclaimers: '',
     thumbnailUrl: '',
     videoUrl: ''
@@ -105,6 +134,39 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
       makkahNights: 7,
       madinahNights: 4,
       itineraryTemplate: 'tmpl_1',
+      itineraryDays: [
+        {
+          id: 'day_1',
+          dayNumber: 1,
+          title: 'Departure',
+          location: 'Kuala Lumpur',
+          isExpanded: true,
+          activities: [
+            { id: 'act_1', name: 'Departure from KLIA 1', time: '10:00 PM', icon: 'PlaneTakeoff', description: 'KLIA to Jeddah on MAS AMAL' }
+          ]
+        },
+        {
+          id: 'day_2',
+          dayNumber: 2,
+          title: 'Arrive',
+          location: 'Makkah',
+          isExpanded: true,
+          activities: [
+            { id: 'act_2', name: 'Arrival at Jeddah', time: '5:00 AM', icon: 'PlaneLanding', description: 'Arrival at King Abdulaziz Airport' },
+            { id: 'act_3', name: 'Transfer to Makkah', time: '7:00 AM', icon: 'Bus', description: 'Bus transfer to hotel in Makkah' }
+          ]
+        },
+        {
+          id: 'day_3',
+          dayNumber: 3,
+          title: 'Umrah',
+          location: 'Makkah',
+          isExpanded: false,
+          activities: [
+            { id: 'act_4', name: 'First Umrah', time: '8:00 AM', icon: 'Users', description: 'Guided Umrah with Mutawwif' }
+          ]
+        }
+      ],
       schedules: [
         { id: '1', departureDate: '2026-12-15', returnDate: '2026-12-26', flightStatus: 'confirmed', hotelStatus: 'confirmed', visibility: 'visible', capacity: 45, cutoffDate: '2026-11-15' },
         { id: '2', departureDate: '2027-01-20', returnDate: '2027-01-31', flightStatus: 'pending', hotelStatus: 'pending', visibility: 'visible', capacity: 40, cutoffDate: '2026-12-20' }
@@ -141,7 +203,11 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
       intercityTransportStatus: 'confirmed',
       transportNotes: 'Haramain Train Business Class for Makkah-Madinah transfer.',
       cancellationPolicy: 'Cancellations 45 days before departure: 100% refund minus RM 500 processing fee.\nCancellations 30 days before departure: 50% refund.\nCancellations under 30 days: Non-refundable.',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80',
+      refundPolicy: 'Refunds will be processed within 14-21 working days.',
+      amendmentPolicy: 'Name changes allowed up to 30 days prior to departure for RM 200 fee.',
+      forceMajeurePolicy: 'In the event of sudden visa suspension by Saudi Govt, packages will be postponed to the next available date.',
+      disclaimers: 'Prices are subject to change without prior notice.',
+      thumbnailUrl: '/images/makkah.jpg',
       videoUrl: 'https://youtube.com/watch?v=example'
     });
     if(showToast) showToast('Filled', 'Example data has been filled', 'info');
@@ -233,17 +299,91 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
     updateForm('roomPrices', newRooms);
   };
 
+  const handleApplyPolicies = () => {
+    if (!selectedPackageToCopy) return;
+
+    if (selectedPackageToCopy === 'template_standard') {
+      updateForm('cancellationPolicy', '<p>Cancellation 45 days prior to departure: 100% refund minus RM 1,000 admin fee.</p><p>Cancellation 30 days prior: 50% refund.</p><p>Cancellation within 30 days: Non-refundable.</p>');
+      updateForm('refundPolicy', '<p>Refund processing requires 14-30 working days upon receipt of the official cancellation letter and management approval.</p>');
+      updateForm('amendmentPolicy', '<p>Name changes are permitted up to 30 days before departure subject to an RM 500 amendment fee.</p><p>Rescheduling will be subject to the latest package pricing adjustments.</p>');
+      updateForm('forceMajeurePolicy', '<p>In the event of visa suspension by the Saudi Government or flight restrictions by MOTAC / Malaysian Government, the departure will be rescheduled without additional charges. <strong>No cash refunds will be provided.</strong></p>');
+      updateForm('disclaimers', '<p>Umrah Visa approval is strictly the prerogative of the Saudi Embassy. Non-refundable visa costs apply for rejected applications.</p><p>Excess baggage beyond 30kg is strictly the passenger\'s responsibility.</p>');
+      if (showToast) showToast('Success', 'Standard MOTAC Template applied successfully', 'success');
+      return;
+    }
+
+    if (selectedPackageToCopy === 'template_premium') {
+      updateForm('cancellationPolicy', '<p>Cancellation 60 days prior to departure: 100% refund.</p><p>Cancellation 30 days prior: 75% refund.</p><p>Cancellation within 30 days: Non-refundable (Exceptions made for severe medical reasons supported by official medical records).</p>');
+      updateForm('refundPolicy', '<p>Priority Lane: Refund processing is expedited to a maximum of 7 working days.</p>');
+      updateForm('amendmentPolicy', '<p>Complimentary name changes up to 15 days before departure. Rescheduling is free of charge for the first request.</p>');
+      updateForm('forceMajeurePolicy', '<p>Comprehensive travel insurance covering Force Majeure is included. Funds can be refunded 100% in cash or rescheduled according to the passenger\'s preference.</p>');
+      updateForm('disclaimers', '<p>This package includes VIP baggage handling (up to 40kg). Any visa rejection will be actively appealed by our legal team.</p>');
+      if (showToast) showToast('Success', 'Premium Template applied successfully', 'success');
+      return;
+    }
+
+    const pkg = data.find((p: any) => p.id === selectedPackageToCopy);
+    if (pkg) {
+      updateForm('cancellationPolicy', pkg.cancellationPolicy || '<p>Policy not defined in this package.</p>');
+      updateForm('refundPolicy', pkg.refundPolicy || '<p>Policy not defined in this package.</p>');
+      updateForm('amendmentPolicy', pkg.amendmentPolicy || '<p>Policy not defined in this package.</p>');
+      updateForm('forceMajeurePolicy', pkg.forceMajeurePolicy || '<p>Policy not defined in this package.</p>');
+      updateForm('disclaimers', pkg.disclaimers || '<p>Policy not defined in this package.</p>');
+      if (showToast) showToast('Copied Successfully', `Policies copied from ${pkg.name}`, 'success');
+    }
+  };
+
+  const addItineraryDay = () => {
+    const newDay = {
+      id: `day_${Math.random().toString(36).substring(2, 9)}`,
+      dayNumber: formData.itineraryDays.length + 1,
+      title: 'New Day',
+      location: formData.itineraryDays.length > 0 ? formData.itineraryDays[formData.itineraryDays.length - 1].location : 'Makkah',
+      isExpanded: true,
+      activities: []
+    };
+    updateForm('itineraryDays', [...formData.itineraryDays, newDay]);
+  };
+
+  const removeItineraryDay = (dayId: string) => {
+    const newDays = formData.itineraryDays.filter(d => d.id !== dayId).map((d, idx) => ({ ...d, dayNumber: idx + 1 }));
+    updateForm('itineraryDays', newDays);
+  };
+
+  const updateItineraryDay = (dayId: string, field: string, value: any) => {
+    updateForm('itineraryDays', formData.itineraryDays.map(d => d.id === dayId ? { ...d, [field]: value } : d));
+  };
+
+  const addActivity = (dayId: string) => {
+    const newActivity = {
+      id: `act_${Math.random().toString(36).substring(2, 9)}`,
+      name: 'New Activity',
+      time: '12:00 PM',
+      icon: 'Check',
+      description: ''
+    };
+    updateForm('itineraryDays', formData.itineraryDays.map(d => d.id === dayId ? { ...d, activities: [...d.activities, newActivity] } : d));
+  };
+
+  const removeActivity = (dayId: string, actId: string) => {
+    updateForm('itineraryDays', formData.itineraryDays.map(d => d.id === dayId ? { ...d, activities: d.activities.filter(a => a.id !== actId) } : d));
+  };
+
+  const updateActivity = (dayId: string, actId: string, field: string, value: any) => {
+    updateForm('itineraryDays', formData.itineraryDays.map(d => d.id === dayId ? { ...d, activities: d.activities.map(a => a.id === actId ? { ...a, [field]: value } : a) } : d));
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', minHeight: 'calc(100vh - 120px)' }}>
       <PageHeader 
         title="Create New Package"
         breadcrumbs={[{ label: 'Home' }, { label: 'Packages', onClick: () => navigate('package-list') }, { label: 'Create Package' }]}
         actions={
-          <Button variant="outline" onClick={handleFillExample} leftIcon={<Edit size={16} />}>Fill Example</Button>
+          <Button variant="secondary" onClick={handleFillExample} leftIcon={<Edit size={16} />}>Fill Example</Button>
         }
       />
 
-      <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-default)', padding: 'var(--space-6)', maxWidth: '900px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
+      <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-default)', padding: 'var(--space-6)', maxWidth: '1100px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
         
         <Stepper steps={steps} currentStepIndex={currentStep} onStepClick={handleStepClick} />
 
@@ -330,21 +470,6 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                 </div>
               </div>
             </section>
-
-            {/* Section 3: Itinerary */}
-            <section>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <Map size={20} className="text-primary" />
-                <h2 className="text-section-title">Itinerary Planning</h2>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
-                <FormField label="Makkah Nights"><Input type="number" value={formData.makkahNights} onChange={(e) => updateForm('makkahNights', parseInt(e.target.value) || 0)} /></FormField>
-                <FormField label="Madinah Nights"><Input type="number" value={formData.madinahNights} onChange={(e) => updateForm('madinahNights', parseInt(e.target.value) || 0)} /></FormField>
-              </div>
-              <FormField label="Itinerary Template Reference">
-                <Select options={[{value: 'tmpl_1', label: 'Standard 12 Days Umrah Template'}]} value={formData.itineraryTemplate} onChange={(e) => updateForm('itineraryTemplate', e.target.value)} />
-              </FormField>
-            </section>
           </div>
         )}
 
@@ -359,7 +484,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
               <p className="text-body text-muted" style={{ marginBottom: 'var(--space-4)' }}>Define the available departure dates and their resolved season references.</p>
               
               {formData.schedules.map((schedule, idx) => (
-                <div key={schedule.id} style={{ padding: 'var(--space-4)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-3)' }}>
+                <div key={schedule.id} style={{ padding: 'var(--space-4)', border: '1px solid var(--gray-300)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-3)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                       <input type="checkbox" defaultChecked /> <span className="text-body-bold">Schedule #{idx + 1}</span>
@@ -528,31 +653,179 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
 
         {currentStep === 2 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginTop: 'var(--space-4)' }}>
+            <section>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <Map size={20} className="text-primary" />
+                  <h2 className="text-section-title">Itinerary Planning</h2>
+                </div>
+                <span className="text-body text-muted">Itinerary Template: <span className="text-body-bold text-neutral">Premium Umrah 7D6N</span></span>
+              </div>
+              
+              {/* Configuration Summary Box */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: '#F0F9FF', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-6)', border: '1px solid #BAE6FD' }}>
+                <div>
+                  <h4 className="text-body-bold" style={{ color: '#0369A1' }}>Current Package Configuration</h4>
+                  <p className="text-caption" style={{ color: '#0284C7' }}>This configuration filters suitable itinerary templates.</p>
+                </div>
+                <div style={{ display: 'flex', gap: 'var(--space-8)' }}>
+                  <div style={{ textAlign: 'center' }}><div className="text-caption text-muted">Package Category</div><div className="text-body-bold">{formData.category}</div></div>
+                  <div style={{ textAlign: 'center' }}><div className="text-caption text-muted">Total Days</div><div className="text-body-bold">{formData.makkahNights + formData.madinahNights + 1} Days</div></div>
+                  <div style={{ textAlign: 'center' }}><div className="text-caption text-muted">Total Nights</div><div className="text-body-bold">{formData.makkahNights + formData.madinahNights} Nights</div></div>
+                  <div style={{ textAlign: 'center' }}><div className="text-caption text-muted">Makkah Nights</div><div className="text-body-bold">{formData.makkahNights} Nights</div></div>
+                  <div style={{ textAlign: 'center' }}><div className="text-caption text-muted">Madinah Nights</div><div className="text-body-bold">{formData.madinahNights} Nights</div></div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 'var(--space-6)' }}>
+                <FormField label="Select Itinerary Template">
+                  <Select options={[{value: 'tmpl_1', label: 'Premium Umrah 7D6N'}, {value: 'tmpl_2', label: 'Standard Umrah 12D10N'}]} value={formData.itineraryTemplate} onChange={(e) => updateForm('itineraryTemplate', e.target.value)} />
+                </FormField>
+              </div>
+
+              {/* Days List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+                {formData.itineraryDays.map((day, dIdx) => (
+                  <div key={day.id} style={{ border: '1px solid var(--gray-300)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', backgroundColor: 'var(--surface-base)' }}>
+                    {/* Day Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', flex: 1 }}>
+                        <GripVertical size={16} className="text-muted" style={{ cursor: 'grab' }} />
+                        <span className="text-body-bold" style={{ minWidth: '60px' }}>Day {day.dayNumber}:</span>
+                        <div style={{ width: '200px' }}>
+                          <Select 
+                            options={[{value: 'Departure', label: 'Departure'}, {value: 'Arrive', label: 'Arrive'}, {value: 'Umrah', label: 'Umrah'}, {value: 'Ziarah', label: 'Ziarah'}, {value: 'Free & Easy', label: 'Free & Easy'}]} 
+                            value={day.title} 
+                            onChange={(e) => updateItineraryDay(day.id, 'title', e.target.value)} 
+                          />
+                        </div>
+                        <div style={{ width: '200px' }}>
+                          <Select 
+                            options={[{value: 'Kuala Lumpur', label: 'Kuala Lumpur'}, {value: 'Makkah', label: 'Makkah'}, {value: 'Madinah', label: 'Madinah'}, {value: 'Jeddah', label: 'Jeddah'}]} 
+                            value={day.location} 
+                            onChange={(e) => updateItineraryDay(day.id, 'location', e.target.value)} 
+                          />
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                        <div onClick={() => removeItineraryDay(day.id)} style={{ cursor: 'pointer', padding: '4px', backgroundColor: '#FEF2F2', borderRadius: '4px', display: 'flex', alignItems: 'center' }}>
+                          <Trash2 size={16} color="#DC2626" />
+                        </div>
+                        <div onClick={() => updateItineraryDay(day.id, 'isExpanded', !day.isExpanded)} style={{ cursor: 'pointer', padding: '4px' }}>
+                          {day.isExpanded ? <ChevronUp size={20} className="text-muted" /> : <ChevronDown size={20} className="text-muted" />}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Activities List */}
+                    {day.isExpanded && (
+                      <div style={{ marginTop: 'var(--space-4)', paddingLeft: 'var(--space-6)' }}>
+                        <h5 className="text-body-bold" style={{ marginBottom: 'var(--space-3)' }}>Activities</h5>
+                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+                          {day.activities.map((act, aIdx) => (
+                            <div key={act.id} style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', backgroundColor: 'var(--surface-sunken)', position: 'relative' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-3)' }}>
+                                <GripVertical size={14} className="text-muted" style={{ cursor: 'grab' }} />
+                                <span className="text-body-bold">Activity {aIdx + 1}</span>
+                                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <div onClick={() => removeActivity(day.id, act.id)} style={{ cursor: 'pointer', padding: '4px', backgroundColor: '#FEF2F2', borderRadius: '4px', display: 'flex', alignItems: 'center' }}>
+                                    <Trash2 size={14} color="#DC2626" />
+                                  </div>
+                                  <ChevronUp size={16} className="text-muted" style={{ cursor: 'pointer' }} />
+                                </div>
+                              </div>
+                              
+                              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 'var(--space-3)', marginBottom: 'var(--space-3)' }}>
+                                <FormField label="Activity Name">
+                                  <Input value={act.name} onChange={(e) => updateActivity(day.id, act.id, 'name', e.target.value)} />
+                                </FormField>
+                                <FormField label="Time">
+                                  <Input value={act.time} onChange={(e) => updateActivity(day.id, act.id, 'time', e.target.value)} />
+                                </FormField>
+                                <FormField label="Select Icon">
+                                  <Select 
+                                    options={[
+                                      {value: 'PlaneTakeoff', label: 'Departure'}, 
+                                      {value: 'PlaneLanding', label: 'Arrival'}, 
+                                      {value: 'Bus', label: 'Bus Transfer'}, 
+                                      {value: 'Users', label: 'Group Meeting'}, 
+                                      {value: 'Check', label: 'Check-in'}
+                                    ]} 
+                                    value={act.icon} 
+                                    onChange={(e) => updateActivity(day.id, act.id, 'icon', e.target.value)} 
+                                  />
+                                </FormField>
+                              </div>
+                              <FormField label="Short Description">
+                                <textarea className="input-base" rows={2} value={act.description} onChange={(e) => updateActivity(day.id, act.id, 'description', e.target.value)} style={{ width: '100%', minWidth: '100%', resize: 'vertical' }} />
+                              </FormField>
+                            </div>
+                          ))}
+                        </div>
+
+                        <Button variant="secondary" size="sm" onClick={() => addActivity(day.id)} leftIcon={<Plus size={14} />} style={{ color: 'var(--color-primary)', borderColor: 'var(--color-primary)' }}>Add Activity</Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 'var(--space-6)' }}>
+                 <Button variant="secondary" onClick={addItineraryDay} leftIcon={<Plus size={16} />}>Add Day</Button>
+              </div>
+
+            </section>
+          </div>
+        )}
+
+        {currentStep === 3 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginTop: 'var(--space-4)' }}>
             {/* Section 8: Terms */}
             <section>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <FileText size={20} className="text-primary" />
-                <h2 className="text-section-title">Terms & Policies</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <FileText size={20} className="text-primary" />
+                  <h2 className="text-section-title">Terms & Policies</h2>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div style={{ width: '280px' }}>
+                    <Select 
+                      options={[
+                        { value: '', label: 'Select template/package...' },
+                        { value: 'template_standard', label: 'Standard MOTAC Template', icon: <FileText size={14} /> },
+                        { value: 'template_premium', label: 'Premium Policy Template', icon: <Star size={14} /> },
+                        ...data.map((pkg: any) => ({ value: pkg.id, label: `${pkg.code || 'Draft'} - ${pkg.name}`, icon: <Package size={14} /> }))
+                      ]} 
+                      value={selectedPackageToCopy}
+                      onChange={(e) => setSelectedPackageToCopy(e.target.value)}
+                    />
+                  </div>
+                  <Button onClick={handleApplyPolicies} disabled={!selectedPackageToCopy}>Apply Template</Button>
+                </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
                 <FormField label="Cancellation Policy" required error={showErrors && !formData.cancellationPolicy ? 'Required' : undefined}>
-                  <textarea className="input-base" rows={4} value={formData.cancellationPolicy} onChange={(e) => updateForm('cancellationPolicy', e.target.value)} placeholder="Terms regarding cancellation..." style={{ width: '100%', minWidth: '100%', height: '120px', resize: 'vertical' }} />
+                  <RichTextEditor minHeight="150px" value={formData.cancellationPolicy} onChange={(val) => updateForm('cancellationPolicy', val)} placeholder="Fokus ke hangusnya tiket/land arrangement..." />
                 </FormField>
                 <FormField label="Refund Policy">
-                  <textarea className="input-base" rows={4} value={formData.refundPolicy} onChange={(e) => updateForm('refundPolicy', e.target.value)} placeholder="Terms regarding refund..." style={{ width: '100%', minWidth: '100%', height: '120px', resize: 'vertical' }} />
+                  <RichTextEditor minHeight="150px" value={formData.refundPolicy} onChange={(val) => updateForm('refundPolicy', val)} placeholder="Fokus ke persentase potongan berdasarkan H- minus keberangkatan..." />
                 </FormField>
                 <FormField label="Amendment Policy">
-                  <textarea className="input-base" rows={4} value={formData.amendmentPolicy} onChange={(e) => updateForm('amendmentPolicy', e.target.value)} placeholder="Terms regarding name or date changes..." style={{ width: '100%', minWidth: '100%', height: '120px', resize: 'vertical' }} />
+                  <RichTextEditor minHeight="150px" value={formData.amendmentPolicy} onChange={(val) => updateForm('amendmentPolicy', val)} placeholder="Fokus ke ganti nama jamaah, ganti paspor, atau pindah tanggal..." />
                 </FormField>
-                <FormField label="Disclaimers">
-                  <textarea className="input-base" rows={4} value={formData.disclaimers} onChange={(e) => updateForm('disclaimers', e.target.value)} placeholder="Visa, Flight, or Hotel disclaimers..." style={{ width: '100%', minWidth: '100%', height: '120px', resize: 'vertical' }} />
+                <FormField label="Force Majeure & Govt Regulation">
+                  <RichTextEditor minHeight="150px" value={formData.forceMajeurePolicy} onChange={(val) => updateForm('forceMajeurePolicy', val)} placeholder="Fokus ke regulasi Saudi/Kemenag..." />
+                </FormField>
+                <FormField label="General Disclaimers" style={{ gridColumn: '1 / -1' }}>
+                  <RichTextEditor minHeight="150px" value={formData.disclaimers} onChange={(val) => updateForm('disclaimers', val)} placeholder="Fokus ke visa non-reguler, bagasi, dll..." />
                 </FormField>
               </div>
             </section>
           </div>
         )}
 
-        {currentStep === 3 && (
+        {currentStep === 4 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginTop: 'var(--space-4)' }}>
             {/* Section 9: Media */}
             <section>
@@ -584,7 +857,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
           </div>
         )}
 
-        {currentStep === 4 && (
+        {currentStep === 5 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', marginTop: 'var(--space-4)' }}>
             <section>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -597,7 +870,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                 <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-card)', border: '1px solid var(--border-subtle)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', maxWidth: '350px' }}>
                   {/* Image Section */}
                   <div style={{ position: 'relative', height: '220px', backgroundColor: 'var(--surface-muted)' }}>
-                    <img src={formData.thumbnailUrl || 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80'} alt="Package" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80'; }} />
+                    <img src={formData.thumbnailUrl || '/images/makkah.jpg'} alt="Package" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
                     <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '8px' }}>
                        <span style={{ backgroundColor: '#FFF4E6', color: '#EA580C', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}><Flame size={12} color="currentColor" /> Hot Deal</span>
                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' }}>{formData.type || 'Promo'}</span>
@@ -703,14 +976,11 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '8px', height: '140px' }}>
                       <div style={{ width: '100%', height: '100%', minHeight: 0 }}>
-                        <img src={formData.thumbnailUrl || 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80'} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80'; }} />
+                        <img src={formData.thumbnailUrl || '/images/makkah.jpg'} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                         <img src="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?w=600&q=80" style={{ width: '100%', height: '66px', objectFit: 'cover', borderRadius: '8px' }} />
-                         <div style={{ position: 'relative', width: '100%', height: '66px', borderRadius: '8px', overflow: 'hidden' }}>
-                           <img src="https://images.unsplash.com/photo-1542042161784-26ab9e041e89?w=600&q=80" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                           <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>+3</div>
-                         </div>
+                         <img src="/images/madinah.jpg" style={{ width: '100%', height: '66px', objectFit: 'cover', borderRadius: '8px' }} />
+                         <img src="/images/masjid-nabawi.jpg" style={{ width: '100%', height: '66px', objectFit: 'cover', borderRadius: '8px' }} />
                       </div>
                     </div>
                   </div>
@@ -789,7 +1059,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                     </div>
                     
                     <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: 'var(--space-3)', display: 'flex', gap: 'var(--space-3)' }}>
-                      <img src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
+                      <img src="/images/makkah.jpg" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
                       <div style={{ flex: 1 }}>
                          <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
                            <span style={{ fontSize: '10px', backgroundColor: 'var(--surface-muted)', padding: '2px 6px', borderRadius: '4px' }}>{formData.makkahNights || 0}N</span>
@@ -806,7 +1076,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                     </div>
 
                     <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: 'var(--space-3)', display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-3)' }}>
-                      <img src="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?w=600&q=80" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
+                      <img src="/images/madinah.jpg" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover' }} />
                       <div style={{ flex: 1 }}>
                          <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
                            <span style={{ fontSize: '10px', backgroundColor: 'var(--surface-muted)', padding: '2px 6px', borderRadius: '4px' }}>{formData.madinahNights || 0}N</span>
@@ -822,7 +1092,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
                       </div>
                     </div>
                     
-                    <Button variant="outline" style={{ width: '100%', marginTop: 'var(--space-3)', fontSize: '12px' }}>👁️ Hotel Details</Button>
+                    <Button variant="secondary" style={{ width: '100%', marginTop: 'var(--space-3)', fontSize: '12px' }}>👁️ Hotel Details</Button>
                   </div>
 
                   {/* Transport Section */}
@@ -889,7 +1159,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
       {/* Sticky Footer */}
       <div style={{ marginTop: 'auto', position: 'sticky', bottom: '0', margin: 'auto -32px -32px -32px', backgroundColor: 'var(--surface-base)', borderTop: '1px solid var(--border-default)', padding: 'var(--space-4) var(--space-8)', display: 'flex', justifyContent: 'space-between', zIndex: 10, boxShadow: 'var(--shadow-sm)' }}>
         <Button 
-          variant="outline" 
+          variant="secondary" 
           disabled={currentStep === 0}
           onClick={handlePrev}
           leftIcon={<ChevronLeft size={16} />}
@@ -900,7 +1170,7 @@ export const PackageCreate: React.FC<{ navigate: (route: string, data?: any) => 
           {isDraftSaved && <span className="text-caption text-muted">Draft saved {draftTime}</span>}
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => navigate('package-list')}>Cancel</Button>
-            <Button variant="outline" onClick={() => handleSave(true)} leftIcon={<Save size={16} />}>Save as Draft</Button>
+            <Button variant="secondary" onClick={() => handleSave(true)} leftIcon={<Save size={16} />}>Save as Draft</Button>
             {currentStep === steps.length - 1 ? (
               <Button onClick={() => handleSave(false)} leftIcon={<CheckCircle size={16} />}>Publish Package</Button>
             ) : (

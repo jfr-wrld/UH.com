@@ -543,7 +543,8 @@ return (
         </div>
       )}
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('itinerary-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

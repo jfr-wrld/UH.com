@@ -404,7 +404,8 @@ return () => clearTimeout(timer);
         />
       </div>
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('announcement-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

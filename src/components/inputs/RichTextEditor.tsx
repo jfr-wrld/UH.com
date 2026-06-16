@@ -1,14 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { Button } from '../actions/Button';
-import { Image as ImageIcon, Bold, Italic, Underline, Heading1, Heading2, Quote } from 'lucide-react';
+import { Image as ImageIcon, Bold, Italic, Underline, Heading1, Heading2, Quote, List, ListOrdered } from 'lucide-react';
 
 export interface RichTextEditorProps {
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
+  minHeight?: string;
 }
 
-export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value = '', onChange, placeholder }) => {
+export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value = '', onChange, placeholder, minHeight = '400px' }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const initialValue = useRef(value);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,6 +61,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value = '', onCh
       overflow: 'hidden',
       backgroundColor: 'var(--surface-base)'
     }}>
+      <style>{`
+        .rich-text-editor-content ul { padding-left: 24px; list-style-type: disc; margin-bottom: 8px; }
+        .rich-text-editor-content ol { padding-left: 24px; list-style-type: decimal; margin-bottom: 8px; }
+        .rich-text-editor-content p { margin-bottom: 8px; }
+      `}</style>
       {/* Toolbar */}
       <div style={{ 
         display: 'flex', 
@@ -89,6 +95,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value = '', onCh
           <Quote size={16} />
         </Button>
         <span style={{ borderLeft: '1px solid var(--gray-300)', margin: '0 var(--space-2)' }} />
+        <Button variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); execCommand('insertUnorderedList'); }} aria-label="Bulleted List">
+          <List size={16} />
+        </Button>
+        <Button variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); execCommand('insertOrderedList'); }} aria-label="Numbered List">
+          <ListOrdered size={16} />
+        </Button>
+        <span style={{ borderLeft: '1px solid var(--gray-300)', margin: '0 var(--space-2)' }} />
         <Button variant="ghost" size="sm" leftIcon={<ImageIcon size={14} />} onMouseDown={(e) => { 
           e.preventDefault(); 
           fileInputRef.current?.click();
@@ -107,12 +120,11 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ value = '', onCh
         style={{ 
           width: '100%', 
           padding: 'var(--space-4)', 
-          minHeight: '400px', 
+          minHeight: minHeight, 
           border: 'none', 
           outline: 'none',
           overflowY: 'auto'
         }}
-        dangerouslySetInnerHTML={{ __html: initialValue.current }}
         data-placeholder={placeholder}
         className="rich-text-editor-content"
       />

@@ -508,7 +508,8 @@ const initialMutawwifList = [
         </div>
       )}
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('mutawwif-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

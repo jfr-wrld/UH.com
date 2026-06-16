@@ -6,7 +6,7 @@ import { Button } from '../../components/actions/Button';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar';
-import { Package, Map, Calendar, BedDouble, Plane, DollarSign, Image as ImageIcon, Users, Eye, ChevronRight } from 'lucide-react';
+import { Package, Map, Calendar, BedDouble, Plane, DollarSign, Image as ImageIcon, Users, Eye, ChevronRight, BadgeCheck } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
@@ -15,9 +15,9 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
   const { getById, update } = useLocalStorageCrud('package');
 
   // Real Data fetch
-  const pkgData = getById(packageId);
+  const pkgData: any = getById(packageId);
 
-  if (!pkgData) {
+  if (!pkgData || !pkgData.id) {
     return (
       <div style={{ padding: 'var(--space-6)' }}>
         <PageHeader title="Package Not Found" breadcrumbs={[{ label: 'Home' }, { label: 'Packages', onClick: () => navigate('package-list') }]} />
@@ -36,7 +36,8 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
     description: pkgData.description || 'An exclusive Umrah package.',
     features: pkgData.features || ['Mutawwif Guide', '24/7 Support'],
     inclusions: pkgData.inclusions || ['Flight Tickets', 'Hotel Stay', 'Visa Processing'],
-    thumbnail: pkgData.thumbnailUrl || 'https://picsum.photos/seed/479/600/400',
+    thumbnail: pkgData.thumbnailUrl || '/images/makkah.jpg',
+    gallery: pkgData.gallery || ['/images/makkah.jpg', '/images/makkah.jpg', '/images/makkah.jpg'],
     cancellationPolicy: pkgData.cancellationPolicy || 'Standard cancellation policy applies.',
     refundPolicy: pkgData.refundPolicy || 'Refunds processed within 14-21 days.',
     amendmentPolicy: pkgData.amendmentPolicy || 'Name changes allowed up to 30 days prior.',
@@ -58,7 +59,12 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
     madinahHotel: pkgData.madinahHotel || 'Pullman Zamzam Madinah',
     depositAmount: pkgData.depositAmount || 'RM 1500',
     agentCommission: pkgData.agentCommission || pkgData.commission || 'RM 500',
-    status: pkgData.status || 'Draft'
+    status: pkgData.status || 'Draft',
+    createdBy: pkgData.createdBy || 'System Admin',
+    lastUpdatedBy: pkgData.lastUpdatedBy || 'TA PIC',
+    readinessScore: pkgData.readinessScore || '100%',
+    basePrice: pkgData.basePrice || pkgData.price || 'RM 8,500',
+    version: pkgData.version || '1.0'
   };
 
   const handleStatusChange = (newStatus: string) => {
@@ -81,32 +87,64 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      {/* Header Section */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', overflow: 'hidden', backgroundColor: 'var(--surface-sunken)' }}>
-            <img src={pkg.thumbnail} alt={pkg.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <h1 className="text-page-title">{pkg.name}</h1>
-              <StatusTransitionMenu 
-                currentStatus={pkg.status}
-                allowedTransitions={['Draft', 'Pending Approval', 'Published', 'Archived']}
-                onTransition={handleStatusChange}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-              <span className="text-body text-muted">{pkg.code}</span>
-              <span className="text-caption text-muted">•</span>
-              <span className="text-body text-muted">{pkg.agency}</span>
-            </div>
-          </div>
+      {/* Back Button */}
+      <div style={{ marginBottom: '-16px' }}>
+        <button 
+          onClick={() => navigate('package-list')}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'none', border: 'none', color: 'var(--color-text-neutral)', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+          className="text-body"
+        >
+          <ChevronRight style={{ transform: 'rotate(180deg)' }} size={16} /> Back to Packages
+        </button>
+      </div>
+
+      {/* Hero Header Section */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '280px', 
+        borderRadius: 'var(--radius-lg)', 
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: 'var(--space-6)',
+        boxShadow: 'var(--glass-shadow)',
+        marginTop: 'var(--space-2)'
+      }}>
+        {/* Background Image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <img src={pkg.thumbnail} alt={pkg.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
         </div>
+        {/* Dark Gradient Overlay */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)' }} />
         
-        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <Button variant="ghost" onClick={() => navigate('package-list')}>Back to List</Button>
-          <Button onClick={() => navigate('package-create', { id: packageId })}>Edit Package</Button>
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+              <Badge variant="primary" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.3)' }}>{pkg.category}</Badge>
+              <Badge variant={pkg.status === 'Published' ? 'success' : pkg.status === 'Draft' ? 'neutral' : 'warning'}>{pkg.status}</Badge>
+            </div>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{pkg.name}</h1>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}><Package size={16} /> {pkg.code}</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: 'white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={`https://picsum.photos/seed/${pkg.agency.length * 10}/150/150`} alt={pkg.agency} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                {pkg.agency}
+                <BadgeCheck size={16} style={{ color: '#0ea5e9' }} />
+              </span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500', color: 'var(--color-success-light)' }}><DollarSign size={16} /> Starting from {pkg.basePrice}</span>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+            <Button onClick={() => navigate('package-create', { id: packageId })}>Edit Package</Button>
+          </div>
         </div>
       </div>
 
@@ -123,95 +161,146 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
       <div style={{ backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none', padding: 'var(--space-6)', minHeight: '400px' }}>
         
         {activeTab === 'overview' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 'var(--space-6)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-              <div>
-                <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Package Description</h3>
-                <p className="text-body" style={{ lineHeight: '1.6' }}>{pkg.description}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Key Features</h3>
-                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {pkg.features.map((f: string) => <Badge key={f} variant="primary">{f}</Badge>)}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)' }}>
+              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)' }}>
+                  <Package size={24} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="text-caption text-muted">Package Type</span>
+                  <span className="text-body-bold" style={{ fontSize: '16px' }}>{pkg.type}</span>
                 </div>
               </div>
-
-              <div>
-                <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Package Inclusions</h3>
-                <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  {pkg.inclusions.map((i: string) => <div key={i} className="text-body" style={{ padding: '4px 12px', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-pill)', border: 'none' }}>✓ {i}</div>)}
+              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--color-success-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-success-dark)' }}>
+                  <Calendar size={24} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="text-caption text-muted">Booking Status</span>
+                  <span className="text-body-bold" style={{ textTransform: 'capitalize', fontSize: '16px' }}>{pkg.availability.replace('_', ' ')}</span>
+                </div>
+              </div>
+              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gray-600)' }}>
+                  <Eye size={24} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span className="text-caption text-muted">Visibility</span>
+                  <span className="text-body-bold" style={{ textTransform: 'capitalize', fontSize: '16px' }}>{pkg.visibility}</span>
                 </div>
               </div>
             </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
-              <h3 className="text-subsection-title">Configuration</h3>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Category & Type</span>
-                <span className="text-body-bold">{pkg.category} • {pkg.type}</span>
-              </div>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Visibility</span>
-                <span className="text-body-bold" style={{ textTransform: 'capitalize' }}>{pkg.visibility}</span>
-              </div>
-              <div>
-                <span className="text-caption text-muted" style={{ display: 'block' }}>Booking Availability</span>
-                <span className="text-body-bold text-success" style={{ textTransform: 'capitalize' }}>{pkg.availability.replace('_', ' ')}</span>
-              </div>
-              {pkg.promoLabels.length > 0 && (
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 'var(--space-6)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
                 <div>
-                  <span className="text-caption text-muted" style={{ display: 'block' }}>Promo Labels</span>
-                  <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
-                    {pkg.promoLabels.map((label: string) => (
-                      <Badge key={label} variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>{label}</Badge>
+                  <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Package Description</h3>
+                  <p className="text-body" style={{ lineHeight: '1.7', color: 'var(--color-text-neutral)' }}>{pkg.description}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)' }}>Package Inclusions</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
+                    {pkg.inclusions.map((i: string) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+                        <div style={{ color: 'var(--color-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-success-light)', padding: '4px', borderRadius: '50%' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                        <span className="text-body" style={{ fontWeight: '500' }}>{i}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)' }}>
+                  <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Key Features</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                    {pkg.features.map((f: string) => (
+                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                        <div style={{ color: 'var(--color-primary)' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                        <span className="text-body">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {pkg.promoLabels.length > 0 && (
+                  <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-lg)' }}>
+                    <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-3)', color: 'var(--color-primary-dark)' }}>Promo Labels</h3>
+                    <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+                      {pkg.promoLabels.map((label: string) => (
+                        <Badge key={label} variant="primary" style={{ padding: '6px 12px', fontSize: '13px' }}>{label}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', padding: 'var(--space-5)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)' }}>
+                  <h3 className="text-subsection-title">Metadata & Audit</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-2)' }}>
+                    <span className="text-caption text-muted">Created By</span>
+                    <span className="text-body-bold">{pkg.createdBy || 'System'}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-2)' }}>
+                    <span className="text-caption text-muted">Last Updated</span>
+                    <span className="text-body-bold">{pkg.lastUpdatedBy || '-'}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-2)' }}>
+                    <span className="text-caption text-muted">Readiness Score</span>
+                    <Badge variant="success">{pkg.readinessScore || 'N/A'}</Badge>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="text-caption text-muted">Current Version</span>
+                    <span className="text-body-bold">v{pkg.version || '1.0'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === 'pricing' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <DollarSign className="text-primary" size={20} />
-              <h3 className="text-subsection-title">Room Pricing</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)' }}>
+                <DollarSign size={20} />
+              </div>
+              <h3 className="text-subsection-title">Room Pricing & Comm</h3>
             </div>
-            <div className="data-table-container">
-              <table className="data-table text-body">
-                <thead>
+            <div className="data-table-container" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
+              <table className="data-table text-body" style={{ margin: 0 }}>
+                <thead style={{ backgroundColor: 'var(--surface-sunken)' }}>
                   <tr>
-                    <th>Room Type</th>
-                    <th>Adult Price</th>
-                    <th>Child Price</th>
-                    <th>Child (w/o Bed)</th>
-                    <th>Infant Price</th>
+                    <th style={{ padding: 'var(--space-3)' }}>Room Type</th>
+                    <th style={{ padding: 'var(--space-3)' }}>Adult Price</th>
+                    <th style={{ padding: 'var(--space-3)' }}>Child Price</th>
+                    <th style={{ padding: 'var(--space-3)' }}>Child (w/o Bed)</th>
+                    <th style={{ padding: 'var(--space-3)' }}>Infant Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pkg.roomPrices.map((room: any, idx: number) => (
-                    <tr key={idx} style={room.isDefault ? { backgroundColor: 'var(--color-primary-light)' } : {}}>
-                      <td><span className="text-body-bold">{room.type} {room.isDefault ? '(Default)' : ''}</span></td>
-                      <td><span className="text-body">{room.adult || '-'}</span></td>
-                      <td><span className="text-body">{room.child || '-'}</span></td>
-                      <td><span className="text-body">{room.childNoBed || '-'}</span></td>
-                      <td><span className="text-body">{room.infant || '-'}</span></td>
+                    <tr key={idx} style={room.isDefault ? { backgroundColor: 'var(--color-primary-light)' } : { borderBottom: '1px solid var(--border-subtle)' }}>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body-bold" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>{room.type} {room.isDefault && <Badge variant="primary" style={{ padding: '2px 6px', fontSize: '10px' }}>Default</Badge>}</span></td>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.adult || '-'}</span></td>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.child || '-'}</span></td>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.childNoBed || '-'}</span></td>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.infant || '-'}</span></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
-              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
-                <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Payment</span>
-                <span className="text-body">Deposit Required: <strong>{pkg.depositAmount}</strong></span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--space-4)', marginTop: 'var(--space-2)' }}>
+              <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                <span className="text-caption text-muted">Required Deposit</span>
+                <span className="text-page-title" style={{ color: 'var(--color-primary)' }}>{pkg.depositAmount}</span>
               </div>
-              <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
-                <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Commission</span>
-                <span className="text-body">Agent Commission: <strong>{pkg.agentCommission}</strong></span>
+              <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--color-success-light)', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                <span className="text-caption" style={{ color: 'var(--color-success-dark)' }}>Agent Commission</span>
+                <span className="text-page-title" style={{ color: 'var(--color-success-dark)' }}>{pkg.agentCommission}</span>
               </div>
             </div>
           </div>
@@ -287,13 +376,37 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
         )}
 
         {activeTab === 'media' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <ImageIcon className="text-primary" size={20} />
-              <h3 className="text-subsection-title">Media</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)' }}>
+                <ImageIcon size={20} />
+              </div>
+              <h3 className="text-subsection-title">Media & Assets</h3>
             </div>
-            <div style={{ width: '300px', height: '200px', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-              <img src={pkg.thumbnail} alt="Package" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              <h4 className="text-body-bold">Thumbnail (Cover Image)</h4>
+              <div style={{ width: '100%', maxWidth: '600px', height: '300px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--glass-shadow)', border: '1px solid var(--border-subtle)' }}>
+                <img src={pkg.thumbnail} alt="Cover Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+              <h4 className="text-body-bold">Gallery Images</h4>
+              {pkg.gallery && pkg.gallery.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 'var(--space-4)' }}>
+                  {pkg.gallery.map((img: string, idx: number) => (
+                    <div key={idx} style={{ width: '100%', height: '200px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)', position: 'relative' }}>
+                      <img src={img} alt={`Gallery ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
+                  <ImageIcon size={32} className="text-muted" style={{ margin: '0 auto var(--space-3)' }} />
+                  <span className="text-body text-muted">No gallery images uploaded for this package.</span>
+                </div>
+              )}
             </div>
           </div>
         )}

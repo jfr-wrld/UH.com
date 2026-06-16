@@ -539,7 +539,8 @@ return (
         searchPlaceholder="Search agency name, PIC, ID, or License No..."
       />
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('ta-details', { agencyId: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

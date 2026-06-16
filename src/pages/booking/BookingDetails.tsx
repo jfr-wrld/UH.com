@@ -8,7 +8,7 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
-import { Users, CreditCard, Share2, AlertTriangle, FileText, Download, Eye, ChevronRight, XCircle } from 'lucide-react';
+import { Users, CreditCard, Share2, AlertTriangle, FileText, Download, Eye, ChevronRight, XCircle, Plane, BadgeCheck, Building2 } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
@@ -17,7 +17,7 @@ import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) => void, bookingId?: string }> = ({ navigate, bookingId = 'bk_1' }) => {
   const [status, setStatus] = useState('Confirmed');
   const [activeTab, setActiveTab] = useState('overview');
-  const { getById } = useLocalStorageCrud('booking');
+  const { getById, update } = useLocalStorageCrud('booking');
 
   const bkData = getById(bookingId) || {
     id: bookingId,
@@ -31,19 +31,47 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
     date: '-'
   };
 
-  // Mock Data
+  const [paymentStatus, setPaymentStatus] = useState(bkData.payment);
+  const [allocationStatus, setAllocationStatus] = useState('Not Allocated');
+
+  // Parse dynamic data
+  const customerName = bkData.customer.split(' (')[0] || 'Unknown';
+  const participantsMatch = bkData.customer.match(/of (\d+)/);
+  const participantsCount = participantsMatch ? parseInt(participantsMatch[1]) : 1;
+  const totalAmount = parseInt(bkData.price.replace(/\D/g, '')) || 0;
+  
+  // Recalculate paid amount based on state
+  const currentPaidAmount = paymentStatus === 'Paid' ? totalAmount : (paymentStatus === 'Partial' ? Math.floor(totalAmount * 0.3) : 0);
+
   const booking = {
     ...bkData,
     bookingId: bkData.code,
-    booker: bkData.customer,
+    booker: customerName,
     source: 'Admin Assisted',
     schedule: '15 Dec 2026 - 26 Dec 2026',
-    participants: 4,
-    paymentStatus: bkData.payment,
-    allocationStatus: 'Not Allocated',
-    totalAmount: parseInt(bkData.price.replace(/\D/g, '')) || 48000,
-    paidAmount: 10000,
-    balance: (parseInt(bkData.price.replace(/\D/g, '')) || 48000) - 10000
+    participants: participantsCount,
+    paymentStatus: paymentStatus,
+    allocationStatus: allocationStatus,
+    totalAmount: totalAmount,
+    paidAmount: currentPaidAmount,
+    balance: totalAmount - currentPaidAmount
+  };
+
+  const handleProcessPayment = () => {
+    setPaymentStatus('Paid');
+    update(bookingId, { ...bkData, payment: 'Paid' });
+    alert('Payment successfully processed. Receipt has been generated.');
+  };
+
+  const handleAllocate = () => {
+    setAllocationStatus('Allocated');
+    alert('Participants have been successfully allocated to the Group Trip.');
+  };
+
+  const handleCancel = () => {
+    setStatus('Cancelled');
+    update(bookingId, { ...bkData, status: 'Cancelled' });
+    alert('Cancellation request submitted successfully.');
   };
 
   const tabs = [
@@ -67,28 +95,64 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      {/* Header Section */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <h1 className="text-page-title">{booking.bookingId}</h1>
-              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
-              <Badge variant="warning">{booking.paymentStatus}</Badge>
+      {/* Back Button */}
+      <div style={{ marginBottom: '-16px' }}>
+        <button 
+          onClick={() => navigate('booking-list')}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'none', border: 'none', color: 'var(--color-text-neutral)', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+          className="text-body"
+        >
+          <ChevronRight style={{ transform: 'rotate(180deg)' }} size={16} /> Back to Bookings
+        </button>
+      </div>
+
+      {/* Hero Header Section */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '280px', 
+        borderRadius: 'var(--radius-lg)', 
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: 'var(--space-6)',
+        boxShadow: 'var(--glass-shadow)',
+        marginTop: 'var(--space-2)'
+      }}>
+        {/* Background Image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <img src={'/images/makkah.jpg'} alt="Booking Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.src = '/images/makkah.jpg'; }} />
+        </div>
+        {/* Dark Gradient Overlay */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)' }} />
+        
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+              <Badge variant="primary" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.3)' }}>{booking.status}</Badge>
+              <Badge variant={booking.paymentStatus === 'Paid' ? 'success' : booking.paymentStatus === 'Unpaid' ? 'danger' : 'warning'}>{booking.paymentStatus}</Badge>
             </div>
-            <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
-              <span className="text-body-bold">{booking.booker}</span>
-              <span>•</span>
-              <span className="text-body">{booking.agency}</span>
-              <span>•</span>
-              <span className="text-body">{booking.package}</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{booking.bookingId}</h1>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}><Users size={16} /> {booking.booker} ({booking.participants} Pax)</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>
+                <div style={{ width: 20, height: 20, borderRadius: '50%', backgroundColor: 'white', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <img src={`https://picsum.photos/seed/${booking.agency.length * 10}/150/150`} alt={booking.agency} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                {booking.agency}
+                <BadgeCheck size={16} style={{ color: '#0ea5e9' }} />
+              </span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500', color: 'var(--color-success-light)' }}>{booking.package}</span>
             </div>
           </div>
-        </div>
-        
-        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <Button variant="secondary" onClick={() => navigate('booking-list')}>Back to List</Button>
-          <Button>Edit Booking</Button>
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+            <Button>Edit Booking</Button>
+          </div>
         </div>
       </div>
 
@@ -141,7 +205,9 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <span className="text-body-bold text-danger">Remaining Balance</span>
                 <span className="text-body-bold text-danger">RM {booking.balance.toLocaleString()}</span>
               </div>
-              <Button style={{ marginTop: 'var(--space-4)' }}>Process Payment</Button>
+              <Button style={{ marginTop: 'var(--space-4)' }} onClick={handleProcessPayment} disabled={booking.balance <= 0}>
+                {booking.balance <= 0 ? 'Fully Paid' : 'Process Payment'}
+              </Button>
             </div>
           </div>
         )}
@@ -156,8 +222,8 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
             <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
               <Badge variant="primary" style={{ marginBottom: 'var(--space-2)' }}>Primary Booker</Badge>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)' }}>
-                <div><span className="text-caption text-muted" style={{ display: 'block' }}>Name</span><span className="text-body-bold">Ahmad Hassan</span></div>
-                <div><span className="text-caption text-muted" style={{ display: 'block' }}>Email</span><span className="text-body">ahmad.h@example.com</span></div>
+                <div><span className="text-caption text-muted" style={{ display: 'block' }}>Name</span><span className="text-body-bold">{booking.booker}</span></div>
+                <div><span className="text-caption text-muted" style={{ display: 'block' }}>Email</span><span className="text-body">{booking.booker.toLowerCase().replace(/\s+/g, '.')}@example.com</span></div>
                 <div><span className="text-caption text-muted" style={{ display: 'block' }}>Phone</span><span className="text-body">+60123456789</span></div>
               </div>
             </div>
@@ -175,7 +241,7 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span className="text-body-bold">Ahmad Hassan</span></td>
+                    <td><span className="text-body-bold">{booking.booker}</span></td>
                     <td>Adult</td>
                     <td>
                       <SensitiveDataReveal label="" realValue="A1234567" maskedValue="A•••••67" />
@@ -218,11 +284,11 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Ahmad Hassan</td>
+                    <td>{booking.booker}</td>
                     <td>Double Room</td>
-                    <td>RM 12,000</td>
+                    <td>RM {booking.totalAmount.toLocaleString()}</td>
                     <td>RM 0</td>
-                    <td><span className="text-body-bold">RM 12,000</span></td>
+                    <td><span className="text-body-bold">RM {booking.totalAmount.toLocaleString()}</span></td>
                   </tr>
                   <tr>
                     <td>Siti Aminah</td>
@@ -247,19 +313,19 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--color-primary-light)', borderRadius: 'var(--radius-md)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body text-muted">Subtotal</span>
-                  <span className="text-body">RM 24,000</span>
+                  <span className="text-body">RM {booking.totalAmount.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-default)', paddingTop: 'var(--space-2)', marginBottom: 'var(--space-4)' }}>
                   <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>Total Amount</span>
-                  <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>RM 24,000</span>
+                  <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>RM {booking.totalAmount.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                  <span className="text-body text-success">Paid (Deposit)</span>
-                  <span className="text-body text-success">RM 10,000</span>
+                  <span className="text-body text-success">Paid</span>
+                  <span className="text-body text-success">RM {booking.paidAmount.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span className="text-body-bold text-danger">Balance Due</span>
-                  <span className="text-body-bold text-danger">RM 14,000</span>
+                  <span className="text-body-bold text-danger">RM {booking.balance.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -278,12 +344,45 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <FormField label="Target Group Trip">
                 <Select options={[{value: 'gt1', label: 'Premium Umrah Safar (TRP-1001)'}]} value="gt1" onChange={() => {}} />
               </FormField>
-              <Button>Allocate Participants</Button>
+              <Button onClick={handleAllocate} disabled={allocationStatus === 'Allocated'}>
+                {allocationStatus === 'Allocated' ? 'Allocated' : 'Allocate Participants'}
+              </Button>
             </div>
             
-            <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-              <span className="text-body text-muted">No participants have been allocated yet.</span>
-            </div>
+            {allocationStatus === 'Allocated' ? (
+              <div style={{ marginTop: 'var(--space-4)' }}>
+                <div style={{ padding: 'var(--space-3)', backgroundColor: 'var(--color-success-light)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <Plane size={16} style={{ color: 'var(--color-success-dark)' }} />
+                  <span className="text-body" style={{ color: 'var(--color-success-dark)' }}><strong>Family Alignment Logic Passed:</strong> All {booking.participants} members of this family booking are correctly assigned to the same flight schedule (Emirates EK346).</span>
+                </div>
+                <div className="data-table-container">
+                  <table className="data-table text-body" style={{ margin: 0 }}>
+                    <thead style={{ backgroundColor: 'var(--surface-sunken)' }}>
+                      <tr>
+                        <th>Participant Name</th>
+                        <th>Type</th>
+                        <th>Group Trip</th>
+                        <th>Assigned Flight</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.from({ length: booking.participants }).map((_, idx) => (
+                        <tr key={idx}>
+                          <td><span className="text-body-bold">{idx === 0 ? booking.booker : idx === 1 ? 'Siti Aminah' : `Participant ${idx + 1}`}</span></td>
+                          <td>{idx < 2 ? 'Adult' : 'Child'}</td>
+                          <td>TRP-1001</td>
+                          <td><Badge variant="primary">EK346 (KUL-JED)</Badge></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+                <span className="text-body text-muted">No participants have been allocated yet. Click "Allocate Participants" to assign them.</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -307,7 +406,9 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <FormField label="Cancellation Reason"><Select options={[{value: 'personal', label: 'Personal Reason'}]} value="personal" onChange={() => {}} /></FormField>
               <FormField label="Remarks"><Input placeholder="Enter details..." /></FormField>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant="danger">Request Cancellation</Button>
+                <Button variant="danger" onClick={handleCancel} disabled={status === 'Cancelled'}>
+                  {status === 'Cancelled' ? 'Cancellation Processed' : 'Request Cancellation'}
+                </Button>
               </div>
             </div>
           </div>

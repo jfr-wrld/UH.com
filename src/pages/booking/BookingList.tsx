@@ -272,6 +272,14 @@ const initialBookingList = [
         return <Badge variant={variant}>{row.payment}</Badge>;
       }
     },
+    {
+      header: 'Allocation',
+      accessor: (row: typeof bookingList[0]) => {
+        // Mock allocation status based on status for now
+        const isAllocated = row.status === 'Confirmed' && row.payment === 'Paid';
+        return <Badge variant={isAllocated ? 'success' : 'neutral'}>{isAllocated ? 'Allocated' : 'Unallocated'}</Badge>;
+      }
+    },
     { header: 'Date', accessor: 'date' as const, sortable: true },
     {
       header: 'Actions',
@@ -408,7 +416,8 @@ return (
         </div>
       )}
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('booking-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

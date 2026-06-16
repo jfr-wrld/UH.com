@@ -852,7 +852,8 @@ return (
       />
 
       {activeTab === 'end-trip' && (
-        <DataTable 
+        <DataTable
+        onRowClick={(row: any) => navigate('testimonial-details', { id: row.id })} 
           data={filteredData}
           sort={{
             key: sortKey,
@@ -876,7 +877,8 @@ return (
       )}
 
       {activeTab === 'daily' && (
-        <DataTable 
+        <DataTable
+        onRowClick={(row: any) => navigate('testimonial-details', { id: row.id })} 
           data={dailyFeedbackData}
           columns={dailyColumns}
           isLoading={isLoading}
@@ -887,7 +889,8 @@ return (
       )}
 
       {activeTab === 'mutawwif' && (
-        <DataTable 
+        <DataTable
+        onRowClick={(row: any) => navigate('testimonial-details', { id: row.id })} 
           data={mutawwifReports}
           columns={mutawwifColumns}
           isLoading={isLoading}

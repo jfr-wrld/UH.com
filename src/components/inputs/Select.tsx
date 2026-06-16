@@ -3,7 +3,7 @@ import { classNames } from '../../lib/utils';
 import { ChevronDown, Check, X } from 'lucide-react';
 
 export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
-  options?: { value: string; label: string; icon?: React.ReactNode }[];
+  options?: { value: string; label: string; icon?: React.ReactNode; rightIcon?: React.ReactNode }[];
   error?: boolean;
   value?: string;
   onChange?: (e: any) => void;
@@ -88,6 +88,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               display: 'flex',
+              flexWrap: 'nowrap',
               alignItems: 'center',
               gap: 'var(--space-2)',
               minWidth: 0
@@ -95,8 +96,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           >
             {selectedOption ? (
               <>
-                {selectedOption.icon && <span style={{ display: 'flex', alignItems: 'center' }}>{selectedOption.icon}</span>}
-                {selectedOption.label}
+                {selectedOption.icon && <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{selectedOption.icon}</span>}
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedOption.label}</span>
+                {selectedOption.rightIcon && <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>{selectedOption.rightIcon}</span>}
               </>
             ) : placeholder}
           </div>
@@ -165,6 +167,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                   {opt.icon && <span style={{ display: 'flex', alignItems: 'center' }}>{opt.icon}</span>}
                   <span>{opt.label}</span>
+                  {opt.rightIcon && <span style={{ display: 'flex', alignItems: 'center' }}>{opt.rightIcon}</span>}
                 </div>
                 {opt.value === currentValue && <Check size={16} style={{ color: 'var(--color-primary)' }} />}
               </div>

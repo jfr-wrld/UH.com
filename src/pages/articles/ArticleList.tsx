@@ -306,7 +306,8 @@ return (
         searchPlaceholder="Search by title, excerpt, or author..."
       />
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('article-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

@@ -454,7 +454,8 @@ return (
         </div>
       )}
 
-      <DataTable 
+      <DataTable
+        onRowClick={(row: any) => navigate('hotel-details', { id: row.id })} 
         data={filteredData}
           sort={{
             key: sortKey,

@@ -6,7 +6,7 @@ import { Button } from '../../components/actions/Button';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
-import { Eye, ChevronRight } from 'lucide-react';
+import { Eye, ChevronRight, PlaneTakeoff, PlaneLanding, MapPin, Clock, Calendar } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
 
@@ -152,47 +152,84 @@ export const FlightDetails: React.FC<{ navigate: (route: string, data?: any) => 
 
         {activeTab === 'route' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>
-              <div>
-                <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Origin</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Airport</span>
-                    <span className="text-body">{flight.origin}</span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-6)' }}>
+              
+              {/* Origin Card */}
+              <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-5)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-3)' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)' }}>
+                    <PlaneTakeoff size={20} />
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Terminal</span>
-                    <span className="text-body">{flight.originTerminal}</span>
+                  <h3 className="text-subsection-title">Origin</h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <MapPin size={16} className="text-muted" style={{ marginTop: '2px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Airport</span>
+                      <span className="text-body-bold">{flight.origin}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Departure Time (Local)</span>
-                    <span className="text-body-bold">{flight.departureTime}</span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <MapPin size={16} className="text-muted" style={{ marginTop: '2px', visibility: 'hidden' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Terminal</span>
+                      <span className="text-body">{flight.originTerminal}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Timezone</span>
-                    <span className="text-body text-muted">{flight.departureTz}</span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <Clock size={16} className="text-muted" style={{ marginTop: '2px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Departure Time (Local)</span>
+                      <span className="text-body-bold" style={{ color: 'var(--color-primary)', fontSize: '18px' }}>{flight.departureTime}</span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <Clock size={16} className="text-muted" style={{ marginTop: '2px', visibility: 'hidden' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Timezone</span>
+                      <span className="text-body text-muted">{flight.departureTz}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div>
-                <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Destination</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Airport</span>
-                    <span className="text-body">{flight.destination}</span>
+              {/* Destination Card */}
+              <div style={{ padding: 'var(--space-5)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-5)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-3)' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)' }}>
+                    <PlaneLanding size={20} />
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Terminal</span>
-                    <span className="text-body">{flight.destinationTerminal}</span>
+                  <h3 className="text-subsection-title">Destination</h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <MapPin size={16} className="text-muted" style={{ marginTop: '2px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Airport</span>
+                      <span className="text-body-bold">{flight.destination}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Arrival Time (Local)</span>
-                    <span className="text-body-bold">{flight.arrivalTime}</span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <MapPin size={16} className="text-muted" style={{ marginTop: '2px', visibility: 'hidden' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Terminal</span>
+                      <span className="text-body">{flight.destinationTerminal}</span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-caption text-muted" style={{ display: 'block' }}>Timezone</span>
-                    <span className="text-body text-muted">{flight.arrivalTz}</span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <Clock size={16} className="text-muted" style={{ marginTop: '2px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Arrival Time (Local)</span>
+                      <span className="text-body-bold" style={{ color: 'var(--color-primary)', fontSize: '18px' }}>{flight.arrivalTime}</span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <Clock size={16} className="text-muted" style={{ marginTop: '2px', visibility: 'hidden' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="text-caption text-muted">Timezone</span>
+                      <span className="text-body text-muted">{flight.arrivalTz}</span>
+                    </div>
                   </div>
                 </div>
               </div>
