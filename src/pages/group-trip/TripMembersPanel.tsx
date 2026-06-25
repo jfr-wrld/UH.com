@@ -6,6 +6,7 @@ import { Plus, Users, ChevronRight } from 'lucide-react';
 import { AddJamaahModal } from './AddJamaahModal';
 import { AddFamilyGroupModal } from './AddFamilyGroupModal';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const TripMembersPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState('documents');
@@ -79,29 +80,29 @@ export const TripMembersPanel: React.FC = () => {
                 <td>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span className="text-body-bold" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      {m.name} {m.isPic && <Badge variant="primary" style={{ fontSize: '0.6rem', padding: '2px 4px' }}>PIC</Badge>}
+                      {m.name} {m.isPic && <Badge variant={getStatusBadgeVariant("PIC")} style={{ fontSize: '0.6rem', padding: '2px 4px' }}>PIC</Badge>}
                     </span>
                     <span className="text-caption text-muted">{m.group}</span>
                   </div>
                 </td>
                 {activeTab === 'documents' ? (
                   <>
-                    <td><Badge variant="success">Confirmed</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant('Confirmed')}>Confirmed</Badge></td>
                     <td>
-                      <Badge variant={m.passport === 'Confirmed' ? 'success' : m.passport === 'Missing' ? 'danger' : 'warning'}>{m.passport}</Badge>
+                      <Badge variant={getStatusBadgeVariant(m.passport)}>{m.passport}</Badge>
                       {m.passport !== 'Confirmed' && <Button variant="ghost" size="sm" style={{ marginTop: 'var(--space-1)' }}>Upload</Button>}
                     </td>
-                    <td><Badge variant="success">Confirmed</Badge></td>
-                    <td><Badge variant="success">Confirmed</Badge></td>
-                    <td><Badge variant="success">Confirmed</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant('Confirmed')}>Confirmed</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant('Confirmed')}>Confirmed</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant('Confirmed')}>Confirmed</Badge></td>
                     <td><span className="text-caption text-muted">No issues</span></td>
                   </>
                 ) : (
                   <>
-                    <td><Badge variant={m.visa === 'Confirmed' ? 'success' : 'warning'}>{m.visa}</Badge></td>
-                    <td><Badge variant={m.flight === 'Confirmed' ? 'success' : 'warning'}>{m.flight}</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant(m.visa)}>{m.visa}</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant(m.flight)}>{m.flight}</Badge></td>
                     <td><span className="text-body-bold">{m.room}</span></td>
-                    <td><Badge variant="neutral">Not Required</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant("Not Required")}>Not Required</Badge></td>
                     <td><span className="text-caption text-muted">-</span></td>
                   </>
                 )}

@@ -9,6 +9,7 @@ import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar
 import { Package, Map, Calendar, BedDouble, Plane, DollarSign, Image as ImageIcon, Users, Eye, ChevronRight, BadgeCheck } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: any, packageId?: string }> = ({ navigate, showToast, packageId = 'pkg_1' }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -123,8 +124,8 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
         <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
             <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-              <Badge variant="primary" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.3)' }}>{pkg.category}</Badge>
-              <Badge variant={pkg.status === 'Published' ? 'success' : pkg.status === 'Draft' ? 'neutral' : 'warning'}>{pkg.status}</Badge>
+              <Badge variant={getCategoryBadgeVariant(pkg.category)}>{pkg.category}</Badge>
+              <Badge variant={getStatusBadgeVariant(pkg.status)}>{pkg.status}</Badge>
             </div>
             <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{pkg.name}</h1>
             <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
@@ -248,7 +249,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-2)' }}>
                     <span className="text-caption text-muted">Readiness Score</span>
-                    <Badge variant="success">{pkg.readinessScore || 'N/A'}</Badge>
+                    <Badge variant={getStatusBadgeVariant(pkg.readinessScore || 'N/A')}>{pkg.readinessScore || 'N/A'}</Badge>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="text-caption text-muted">Current Version</span>
@@ -282,7 +283,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <tbody>
                   {pkg.roomPrices.map((room: any, idx: number) => (
                     <tr key={idx} style={room.isDefault ? { backgroundColor: 'var(--color-primary-light)' } : { borderBottom: '1px solid var(--border-subtle)' }}>
-                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body-bold" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>{room.type} {room.isDefault && <Badge variant="primary" style={{ padding: '2px 6px', fontSize: '10px' }}>Default</Badge>}</span></td>
+                      <td style={{ padding: 'var(--space-3)' }}><span className="text-body-bold" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>{room.type} {room.isDefault && <Badge variant={getStatusBadgeVariant("Default")} style={{ padding: '2px 6px', fontSize: '10px' }}>Default</Badge>}</span></td>
                       <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.adult || '-'}</span></td>
                       <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.child || '-'}</span></td>
                       <td style={{ padding: 'var(--space-3)' }}><span className="text-body">{room.childNoBed || '-'}</span></td>
@@ -322,7 +323,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                     </span>
                     <span className="text-caption text-muted">Visibility: <span style={{ textTransform: 'capitalize' }}>{sched.visibility}</span> • Capacity: {sched.capacity || 45} Pax</span>
                   </div>
-                  <Badge variant={sched.flightStatus === 'confirmed' ? 'success' : 'warning'}>Flight: {sched.flightStatus || 'pending'}</Badge>
+                  <Badge variant={getStatusBadgeVariant(sched.flightStatus)}>Flight: {sched.flightStatus || 'pending'}</Badge>
                 </div>
               ))}
             </div>
@@ -468,7 +469,7 @@ export const PackageDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                     <span className="text-body-bold">Version 1.0</span>
-                    <Badge variant="success">Current Published</Badge>
+                    <Badge variant={getStatusBadgeVariant("Current Published")}>Current Published</Badge>
                   </div>
                   <span className="text-caption text-muted">Published by Admin</span>
                 </div>

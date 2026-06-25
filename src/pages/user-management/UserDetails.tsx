@@ -6,15 +6,26 @@ import { Button } from '../../components/actions/Button';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { ReviewHistoryPanel } from '../../components/domain/ReviewHistoryPanel';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { Key, ShieldOff, LogOut, CheckCircle2, ShieldAlert, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => void, userId?: string }> = ({ navigate, userId = 'usr_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [userStatus, setUserStatus] = useState('Active');
+  const [modalState, setModalState] = useState<{isOpen: boolean, action: string, targetStatus?: string}>({isOpen: false, action: ''});
   const { getById } = useLocalStorageCrud('users');
+  
+  const handleConfirmAction = (reason: string) => {
+    if (modalState.action === 'status' && modalState.targetStatus) {
+      setUserStatus(modalState.targetStatus);
+    }
+    setModalState({isOpen: false, action: ''});
+  };
+
 
   // Mock User Data
   const user = getById(userId) || {
@@ -56,10 +67,10 @@ export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => vo
               <span className="text-body text-muted">{user.email}</span>
               <StatusTransitionMenu 
                 currentStatus={userStatus}
-                allowedTransitions={userStatus === 'Active' ? ['Suspended', 'Inactive'] : ['Active']}
-                onTransition={(newStatus) => setUserStatus(newStatus)}
+                allowedTransitions={['active', 'suspended', 'inactive', 'locked']}
+                onTransition={(newStatus) => setModalState({isOpen: true, action: 'status', targetStatus: newStatus})}
               />
-              <Badge variant="neutral">{user.type}</Badge>
+              <Badge variant={getCategoryBadgeVariant(user.type)}>{user.type}</Badge>
             </div>
           </div>
         </div>
@@ -169,8 +180,8 @@ export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => vo
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-2)' }}>Security Actions</h3>
                 <Button variant="secondary" leftIcon={<Key size={16} />} onClick={() => alert('Password reset email sent.')}>Send Password Reset Email</Button>
-                <Button variant="secondary" leftIcon={<LogOut size={16} />} onClick={() => alert('Sessions revoked.')}>Revoke Active Sessions</Button>
-                <Button variant="danger" leftIcon={<ShieldOff size={16} />} onClick={() => alert('Account deactivated.')}>Deactivate Account</Button>
+                <Button variant="secondary" leftIcon={<LogOut size={16} />} onClick={() => setModalState({isOpen: true, action: 'revoke'})}>Revoke Active Sessions</Button>
+                <Button variant="danger" leftIcon={<ShieldOff size={16} />} onClick={() => setModalState({isOpen: true, action: 'deactivate'})}>Deactivate Account</Button>
               </div>
             </div>
           </div>
@@ -199,6 +210,15 @@ export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => vo
         )}
 
       </div>
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, action: ''})}
+        onConfirm={handleConfirmAction}
+        title={modalState.action === 'status' ? `Change Status to ${modalState.targetStatus}` : 'Security Action'}
+        message="Please provide a reason for this sensitive action."
+        actionLabel="Confirm"
+        entityName={user.name}
+      />
     </div>
   );
 };

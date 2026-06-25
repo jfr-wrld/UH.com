@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Tabs } from '../../components/navigation/Tabs';
 import { Badge } from '../../components/data-display/Badge';
+import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { Button } from '../../components/actions/Button';
 import { Timeline } from '../../components/data-display/Timeline';
 import { DataTable } from '../../components/data-display/DataTable';
@@ -14,9 +16,18 @@ import { Edit2, Eye, EyeOff, FileText, CheckCircle, ChevronRight } from 'lucide-
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: any) => void, agencyId?: string }> = ({ navigate, agencyId }) => {
   const [activeTab, setActiveTab] = useState('profile');
+  const [modalState, setModalState] = useState<{isOpen: boolean, targetStatus: string}>({isOpen: false, targetStatus: ''});
+  
+  const handleConfirmStatusChange = (reason: string) => {
+    console.log(`Status changed to ${modalState.targetStatus} with reason: ${reason}`);
+    // api call goes here
+    setModalState({isOpen: false, targetStatus: ''});
+  };
+
   const { getById } = useLocalStorageCrud('travel-agencies');
   
   const [remarks, setRemarks] = useState<Remark[]>([
@@ -129,7 +140,7 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
           { header: 'Name', accessor: 'name' },
           { header: 'Role', accessor: 'role' },
           { header: 'Email', accessor: 'email' },
-          { header: 'Status', accessor: (row) => <Badge variant="success">{row.status}</Badge> }
+          { header: 'Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> }
         ]}
       />
     </div>
@@ -142,7 +153,7 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
         columns={[
           { header: 'Jamaah Name', accessor: 'name' },
           { header: 'Group Trip', accessor: 'trip' },
-          { header: 'Payment Status', accessor: (row) => <Badge variant={row.status === 'Paid' ? 'success' : 'warning'}>{row.status}</Badge> }
+          { header: 'Payment Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> }
         ]}
       />
     </div>
@@ -156,7 +167,7 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
           { header: 'Package ID', accessor: 'id' },
           { header: 'Package Name', accessor: 'name' },
           { header: 'Season', accessor: 'season' },
-          { header: 'Status', accessor: (row) => <Badge variant={row.status === 'Active' ? 'success' : 'neutral'}>{row.status}</Badge> },
+          { header: 'Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> },
           { header: 'Capacity', accessor: 'capacity' }
         ]}
       />
@@ -172,7 +183,7 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
           { header: 'Trip Name', accessor: 'name' },
           { header: 'Departure', accessor: 'departure' },
           { header: 'Mutawwif', accessor: 'mutawwif' },
-          { header: 'Status', accessor: (row) => <Badge variant={row.status === 'Confirmed' ? 'primary' : 'warning'}>{row.status}</Badge> }
+          { header: 'Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> }
         ]}
       />
     </div>
@@ -235,7 +246,20 @@ export const TravelAgencyDetails: React.FC<{ navigate: (route: string, data?: an
         ]}
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-            <Badge variant="success">{agency.status}</Badge>
+            <StatusTransitionMenu 
+              currentStatus={agency.status} 
+              onTransition={(newStatus) => setModalState({isOpen: true, targetStatus: newStatus})} 
+              allowedTransitions={['active', 'suspended', 'inactive', 'pending_review', 'rejected']} 
+            />
+            <AuditActionModal
+              isOpen={modalState.isOpen}
+              onClose={() => setModalState({isOpen: false, targetStatus: ''})}
+              onConfirm={handleConfirmStatusChange}
+              title={`Change Status to ${modalState.targetStatus}`}
+              message="Please provide a reason for this status change."
+              actionLabel="Update Status"
+              entityName={agency.name}
+            />
             <Button leftIcon={<Edit2 size={16} />} onClick={() => navigate('ta-edit', { agencyId: agency.id })}>
               Edit Agency
             </Button>

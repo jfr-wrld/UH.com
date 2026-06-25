@@ -9,11 +9,12 @@ import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMe
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => void, hotelId?: string }> = ({ navigate, hotelId = 'ht_1' }) => {
   const [status, setStatus] = useState('Active');
   const [activeTab, setActiveTab] = useState('overview');
-  const { getById } = useLocalStorageCrud('hotel');
+  const { getById } = useLocalStorageCrud<any>('hotel');
 
   // Mock Data
   const htData = getById(hotelId) || {
@@ -41,6 +42,7 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
     thumbnail: 'https://picsum.photos/seed/273/600/400',
     createdBy: 'System Admin',
     roomTypesCount: 3,
+    galleryCount: 12,
     latitude: 21.422487,
     longitude: 39.826206,
     shuttleNotes: 'Shuttle runs every 30 minutes from lobby to Haram.'
@@ -68,34 +70,60 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      {/* Header Section */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', overflow: 'hidden', backgroundColor: 'var(--surface-sunken)' }}>
-            <img src={hotel.thumbnail} alt={hotel.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <h1 className="text-page-title">{hotel.name}</h1>
-              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
+      {/* Back Button */}
+      <div style={{ marginBottom: '-16px' }}>
+        <button 
+          onClick={() => navigate('hotel-list')}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'none', border: 'none', color: 'var(--color-text-neutral)', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+          className="text-body"
+        >
+          <ChevronRight style={{ transform: 'rotate(180deg)' }} size={16} /> Back to Hotels
+        </button>
+      </div>
+
+      {/* Hero Header Section */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '280px', 
+        borderRadius: 'var(--radius-lg)', 
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: 'var(--space-6)',
+        boxShadow: 'var(--glass-shadow)',
+        marginTop: 'var(--space-2)'
+      }}>
+        {/* Background Image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          <img src={hotel.thumbnail} alt={hotel.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        {/* Dark Gradient Overlay */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, borderRadius: 'var(--radius-lg)', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)' }} />
+        
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
                 <Star size={16} fill="var(--color-warning)" color="var(--color-warning)" />
                 <span className="text-body-bold">{hotel.rating} Star</span>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
-              <span className="text-body">{hotel.city}, {hotel.country}</span>
-              <span>•</span>
-              <span className="text-body">{hotel.visibility}</span>
-              <span>•</span>
-              <span className="text-body">{hotel.distance} to {hotel.landmark}</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{hotel.name}</h1>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{hotel.city}, {hotel.country}</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{hotel.visibility}</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{hotel.distance}m to {hotel.landmark}</span>
             </div>
           </div>
-        </div>
-        
-        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <Button variant="secondary" onClick={() => navigate('hotel-list')}>Back to List</Button>
-          <Button>Edit Hotel</Button>
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+            <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Inactive', 'Archived']} />
+            <Button>Edit Hotel</Button>
+          </div>
         </div>
       </div>
 
@@ -158,6 +186,10 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
                   <span className="text-caption text-muted" style={{ display: 'block' }}>Total Room Types</span>
                   <span className="text-body">{hotel.roomTypesCount}</span>
                 </div>
+                <div>
+                  <span className="text-caption text-muted" style={{ display: 'block' }}>Total Gallery Images</span>
+                  <span className="text-body">{hotel.galleryCount}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -189,7 +221,7 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
               <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', border: 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body-bold">{hotel.landmark}</span>
-                  <Badge variant="primary">{hotel.distanceMode}</Badge>
+                  <Badge variant={getStatusBadgeVariant(hotel.distanceMode)}>{hotel.distanceMode}</Badge>
                 </div>
                 <span className="text-body text-muted">{hotel.distance}</span>
                 {hotel.shuttleNotes && (
@@ -248,11 +280,11 @@ export const HotelDetails: React.FC<{ navigate: (route: string, data?: any) => v
               <h3 className="text-subsection-title">Amenities & Facilities</h3>
             </div>
             <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-              <Badge variant="neutral">Free Wi-Fi</Badge>
-              <Badge variant="neutral">Elevator</Badge>
-              <Badge variant="neutral">Restaurant</Badge>
-              <Badge variant="neutral">Haram View</Badge>
-              <Badge variant="neutral">Wheelchair Accessible</Badge>
+              <Badge variant={getStatusBadgeVariant("Free Wi-Fi")}>Free Wi-Fi</Badge>
+              <Badge variant={getStatusBadgeVariant("Elevator")}>Elevator</Badge>
+              <Badge variant={getStatusBadgeVariant("Restaurant")}>Restaurant</Badge>
+              <Badge variant={getStatusBadgeVariant("Haram View")}>Haram View</Badge>
+              <Badge variant={getStatusBadgeVariant("Wheelchair Accessible")}>Wheelchair Accessible</Badge>
             </div>
           </div>
         )}

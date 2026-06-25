@@ -8,15 +8,18 @@ import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud, CheckCircle2, Ticket, Clock, Map } from 'lucide-react';
+import { Plus, Plane, Eye, Edit, ChevronRight, Archive, Trash2, Copy, UploadCloud, CheckCircle2, Ticket, Clock } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
+import { Package } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
+import { CountryFlag } from '../../components/data-display/CountryFlag';
+import { AirlineLogo } from '../../components/data-display/AirlineLogo';
 
 export const FlightList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
-  const [activeTab, setActiveTab] = useState('flights');
-  const [selectedAirlines, setSelectedAirlines] = useState<string[]>([]);
   const [selectedFlights, setSelectedFlights] = useState<string[]>([]);
+  const [selectedAirlines, setSelectedAirlines] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -470,9 +473,7 @@ const initialAirlineList = [
       header: 'Airline', 
       accessor: (row: typeof airlineList[0]) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--color-primary-dark)' }}>
-            {row.logo}
-          </div>
+          <AirlineLogo iata={row.iata} name={row.name} size={32} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span className="text-body-bold">{row.name}</span>
             <span className="text-caption text-muted">{row.iata} / {row.icao}</span>
@@ -480,11 +481,19 @@ const initialAirlineList = [
         </div>
       )
     },
-    { header: 'Country', accessor: 'country' as const },
+    { 
+      header: 'Country', 
+      accessor: (row: typeof airlineList[0]) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <CountryFlag country={row.country} />
+          <span>{row.country}</span>
+        </div>
+      )
+    },
     { header: 'Total Flights', accessor: 'flights' as const },
     { 
       header: 'Available for Package', 
-      accessor: (row: typeof airlineList[0]) => row.available ? <Badge variant="success">Yes</Badge> : <Badge variant="neutral">No</Badge>
+      accessor: (row: typeof airlineList[0]) => row.available ? <Badge variant={getStatusBadgeVariant("Yes")}>Yes</Badge> : <Badge variant={getStatusBadgeVariant("No")}>No</Badge>
     },
     { 
       header: 'Status', 
@@ -496,7 +505,7 @@ const initialAirlineList = [
           case 'Inactive': variant = 'neutral'; break;
           case 'Archived': variant = 'neutral'; break;
         }
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {
@@ -521,14 +530,9 @@ const initialAirlineList = [
     { 
       header: 'Flight', 
       accessor: (row: typeof flightList[0]) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'var(--color-primary-dark)' }}>
-            {row.logo}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span className="text-body-bold">{row.number}</span>
-            <span className="text-caption text-muted">{row.airline}</span>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <span className="text-body-bold">{row.number}</span>
+          <span className="text-caption text-muted">{row.airline}</span>
         </div>
       )
     },
@@ -557,7 +561,7 @@ const initialAirlineList = [
     },
     { 
       header: 'Available for Package', 
-      accessor: (row: typeof flightList[0]) => row.available ? <Badge variant="success">Yes</Badge> : <Badge variant="neutral">No</Badge>
+      accessor: (row: typeof flightList[0]) => row.available ? <Badge variant={getStatusBadgeVariant("Yes")}>Yes</Badge> : <Badge variant={getStatusBadgeVariant("No")}>No</Badge>
     },
     { 
       header: 'Status', 
@@ -569,7 +573,7 @@ const initialAirlineList = [
           case 'Inactive': variant = 'neutral'; break;
           case 'Archived': variant = 'neutral'; break;
         }
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {
@@ -701,6 +705,19 @@ const initialAirlineList = [
       ]
     }
   ];
+  const mergedAirlineList = React.useMemo(() => {
+    return airlineList.map(airline => {
+      const flights = flightList.filter(f => f.logo === airline.logo || f.airline.startsWith(airline.name.split(' ')[0]));
+      const searchString = flights.map(f => `${f.number} ${f.route} ${f.type} ${f.departure} ${f.arrival}`).join(' ').toLowerCase();
+      
+      return {
+        ...airline,
+        flights,
+        searchString
+      };
+    });
+  }, [airlineList, flightList]);
+
   const {
     searchQuery,
     setSearchQuery,
@@ -718,7 +735,8 @@ const initialAirlineList = [
     sortKey,
     sortOrder,
     onSort
-  } = useDataFilter(activeTab === 'flights' ? flightList : airlineList, {
+  } = useDataFilter(mergedAirlineList, {
+    searchKeys: ['name', 'iata', 'icao', 'country', 'searchString'],
     defaultSort: { key: 'status', order: 'asc' },
     defaultPerPage: 10,
     syncToUrl: true
@@ -734,8 +752,8 @@ return (
             <Button variant="secondary" leftIcon={<Plane size={16} />} onClick={() => navigate('airline-add')}>
               Add Airline
             </Button>
-            <Button leftIcon={<Plus size={16} />} onClick={() => activeTab === 'flights' ? navigate('flight-add') : navigate('airline-add')}>
-              {activeTab === 'flights' ? 'Add Flight Route' : 'Add Airline'}
+            <Button leftIcon={<Plus size={16} />} onClick={() => navigate('flight-add')}>
+              Add Flight Route
             </Button>
           </div>
         }
@@ -762,100 +780,67 @@ return (
           accentColor="var(--color-success)" 
         />
         <MetricCard 
-          title="Total Available Seats" 
-          value={flightList.reduce((acc, f) => acc + (f.availableSeats || 0), 0).toString()} 
+          title="Available for Package" 
+          value={flightList.filter(f => f.available).length.toString()} 
           trend="up" 
           trendValue="+12%" 
-          icon={<Ticket />} 
+          icon={<Package />} 
           iconBg="var(--color-info-light)" 
           accentColor="var(--color-info)" 
         />
       </div>
 
-      <Tabs 
-        tabs={[
-          { id: 'flights', label: 'Flight Catalog' },
-          { id: 'airlines', label: 'Airline Master List' }
-        ]} 
-        activeTab={activeTab} 
-        onChange={setActiveTab} 
-      />
-
-      {activeTab === 'flights' ? (
-        <>
-          <FilterBar 
-            groups={flightFilters}
-            onFilterChange={handleFilterChange}
+      <FilterBar 
+        groups={airlineFilters}
+        onFilterChange={handleFilterChange}
         activeFilters={activeFilters}
-            onSearch={setSearchQuery}
+        onSearch={setSearchQuery}
         searchValue={searchQuery}
         onClearFilters={clearFilters}
         hasActiveFilters={hasActiveFilters}
-            searchPlaceholder="Search flight number, route, or airline..."
-          />
-          <DataTable
-            onRowClick={(row: any) => navigate('flight-details', { id: row.id })} 
-            data={filteredData}
-          sort={{
-            key: sortKey,
-            order: sortOrder,
-            onSort
-          }}
-          pagination={{
-            currentPage,
-            totalPages,
-            rowsPerPage,
-            totalItems,
-            onPageChange,
-            onRowsPerPageChange
-          }}
-            columns={flightColumns}
-            keyExtractor={(r) => r.id}
-            isLoading={isLoading}
-            selectedKeys={selectedFlights}
-            onSelectionChange={setSelectedFlights}
-            emptyStateTitle="No flights found"
-            emptyStateDescription="Try adjusting your filters or add a new flight."
-          />
-        </>
-      ) : (
-        <>
-          <FilterBar 
-            groups={airlineFilters}
-            onFilterChange={handleFilterChange}
-            activeFilters={activeFilters}
-            onSearch={setSearchQuery}
-            searchValue={searchQuery}
-            onClearFilters={clearFilters}
-            hasActiveFilters={hasActiveFilters}
-            searchPlaceholder="Search airline name or IATA code..."
-          />
-          <DataTable
-            onRowClick={(row: any) => navigate('airline-details', { id: row.id })} 
-            data={filteredData}
-            sort={{
-              key: sortKey,
-              order: sortOrder,
-              onSort
-            }}
-            pagination={{
-              currentPage,
-              totalPages,
-              rowsPerPage,
-              totalItems,
-              onPageChange,
-              onRowsPerPageChange
-            }}
-            columns={airlineColumns}
-            keyExtractor={(r) => r.id}
-            isLoading={isLoading}
-            selectedKeys={selectedAirlines}
-            onSelectionChange={setSelectedAirlines}
-            emptyStateTitle="No airlines found"
-            emptyStateDescription="Try adjusting your filters or add a new airline."
-          />
-        </>
-      )}
+        searchPlaceholder="Search airline name, IATA code, or flight number..."
+      />
+      <DataTable
+        onRowClick={(row: any) => navigate('airline-details', { id: row.id })} 
+        data={filteredData}
+        sort={{
+          key: sortKey,
+          order: sortOrder,
+          onSort
+        }}
+        pagination={{
+          currentPage,
+          totalPages,
+          rowsPerPage,
+          totalItems,
+          onPageChange,
+          onRowsPerPageChange
+        }}
+        expandable={true}
+        renderExpandedRow={(row: any) => {
+          if (row.flights.length === 0) {
+            return <div className="text-muted text-body" style={{ padding: 'var(--space-4)', textAlign: 'center' }}>No flights currently assigned to this airline.</div>;
+          }
+
+          return (
+            <div style={{ backgroundColor: 'var(--surface-base)', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
+              <DataTable 
+                data={row.flights}
+                columns={flightColumns.filter(c => c.header !== 'Action')}
+                keyExtractor={(r) => r.id}
+                onRowClick={(flightRow: any) => navigate('flight-details', { id: flightRow.id })}
+              />
+            </div>
+          );
+        }}
+        columns={airlineColumns.map(col => col.header === 'Total Flights' ? { ...col, accessor: (r: any) => r.flights.length } : col)}
+        keyExtractor={(r) => r.id}
+        isLoading={isLoading}
+        selectedKeys={selectedAirlines}
+        onSelectionChange={setSelectedAirlines}
+        emptyStateTitle="No airlines found"
+        emptyStateDescription="Try adjusting your filters or add a new airline."
+      />
     </div>
   );
 };

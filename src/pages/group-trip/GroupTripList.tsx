@@ -12,6 +12,7 @@ import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCe
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const GroupTripList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedTrips, setSelectedTrips] = useState<string[]>([]);
@@ -28,42 +29,50 @@ const initialTripList = [
     "code": "TRP-1001",
     "name": "Umrah Group Flight Batch 1",
     "package": "Standard Umrah Ramadhan",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Don Daniyal",
     "dates": "11 Nov - 21 Nov 2026",
     "seats": 45,
     "booked": 22,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_2",
     "code": "TRP-1002",
     "name": "Umrah Group Flight Batch 2",
     "package": "VIP Hajj Package",
+    "type": "Hajj",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Kazim Elias",
     "dates": "12 Nov - 22 Nov 2026",
     "seats": 45,
     "booked": 24,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_3",
     "code": "TRP-1003",
     "name": "Umrah Group Flight Batch 3",
     "package": "Economy Umrah Safar",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Abdul Somad",
     "dates": "13 Nov - 23 Nov 2026",
     "seats": 45,
     "booked": 26,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_4",
     "code": "TRP-1004",
     "name": "Umrah Group Flight Batch 4",
     "package": "Premium Umrah Dec 2026",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Azhar Idrus",
     "dates": "14 Nov - 24 Nov 2026",
@@ -76,6 +85,8 @@ const initialTripList = [
     "code": "TRP-1005",
     "name": "Umrah Group Flight Batch 5",
     "package": "Standard Umrah Ramadhan",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Don Daniyal",
     "dates": "15 Nov - 25 Nov 2026",
@@ -88,30 +99,36 @@ const initialTripList = [
     "code": "TRP-1006",
     "name": "Umrah Group Flight Batch 6",
     "package": "VIP Hajj Package",
+    "type": "Hajj",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Kazim Elias",
     "dates": "16 Nov - 26 Nov 2026",
     "seats": 45,
     "booked": 32,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_7",
     "code": "TRP-1007",
     "name": "Umrah Group Flight Batch 7",
     "package": "Economy Umrah Safar",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Abdul Somad",
     "dates": "17 Nov - 27 Nov 2026",
     "seats": 45,
     "booked": 34,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_8",
     "code": "TRP-1008",
     "name": "Umrah Group Flight Batch 8",
     "package": "Premium Umrah Dec 2026",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Azhar Idrus",
     "dates": "18 Nov - 28 Nov 2026",
@@ -124,18 +141,22 @@ const initialTripList = [
     "code": "TRP-1009",
     "name": "Umrah Group Flight Batch 9",
     "package": "Standard Umrah Ramadhan",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Don Daniyal",
     "dates": "19 Nov - 29 Nov 2026",
     "seats": 45,
     "booked": 38,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_10",
     "code": "TRP-1010",
     "name": "Umrah Group Flight Batch 10",
     "package": "VIP Hajj Package",
+    "type": "Hajj",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Kazim Elias",
     "dates": "20 Nov - 30 Nov 2026",
@@ -148,18 +169,22 @@ const initialTripList = [
     "code": "TRP-1011",
     "name": "Umrah Group Flight Batch 11",
     "package": "Economy Umrah Safar",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Abdul Somad",
     "dates": "21 Nov - 31 Nov 2026",
     "seats": 45,
     "booked": 42,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_12",
     "code": "TRP-1012",
     "name": "Umrah Group Flight Batch 12",
     "package": "Premium Umrah Dec 2026",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Azhar Idrus",
     "dates": "22 Nov - 32 Nov 2026",
@@ -172,30 +197,36 @@ const initialTripList = [
     "code": "TRP-1013",
     "name": "Umrah Group Flight Batch 13",
     "package": "Standard Umrah Ramadhan",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Don Daniyal",
     "dates": "23 Nov - 33 Nov 2026",
     "seats": 45,
     "booked": 21,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_14",
     "code": "TRP-1014",
     "name": "Umrah Group Flight Batch 14",
     "package": "VIP Hajj Package",
+    "type": "Hajj",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Kazim Elias",
     "dates": "24 Nov - 34 Nov 2026",
     "seats": 45,
     "booked": 23,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_15",
     "code": "TRP-1015",
     "name": "Umrah Group Flight Batch 15",
     "package": "Economy Umrah Safar",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Abdul Somad",
     "dates": "25 Nov - 35 Nov 2026",
@@ -208,6 +239,8 @@ const initialTripList = [
     "code": "TRP-1016",
     "name": "Umrah Group Flight Batch 16",
     "package": "Premium Umrah Dec 2026",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Azhar Idrus",
     "dates": "26 Nov - 36 Nov 2026",
@@ -220,28 +253,32 @@ const initialTripList = [
     "code": "TRP-1017",
     "name": "Umrah Group Flight Batch 17",
     "package": "Standard Umrah Ramadhan",
+    "type": "Umrah",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Global Travel Agency",
     "mutawwif": "Ustaz Don Daniyal",
     "dates": "27 Nov - 37 Nov 2026",
     "seats": 45,
     "booked": 29,
-    "status": "Upcoming"
+    "status": "Active"
   },
   {
     "id": "trp_18",
     "code": "TRP-1018",
     "name": "Umrah Group Flight Batch 18",
     "package": "VIP Hajj Package",
+    "type": "Hajj",
+    "packageImage": "https://picsum.photos/seed/pkg1/150/150",
     "agency": "Zamzam Travels",
     "mutawwif": "Ustaz Kazim Elias",
     "dates": "28 Nov - 38 Nov 2026",
     "seats": 45,
     "booked": 31,
-    "status": "Upcoming"
+    "status": "Active"
   }
 ];
 
-  const { data: tripList, remove } = useLocalStorageCrud('group-trip', initialTripList);
+  const { data: tripList, remove } = useLocalStorageCrud('group-trip-v2', initialTripList);
 
   const {
     searchQuery,
@@ -275,7 +312,18 @@ const initialTripList = [
         </div>
       )
     },
-    { header: 'Package', accessor: 'package' as const, sortable: true },
+    { 
+      header: 'Package', 
+      accessor: (row: any) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <img src={row.packageImage} alt={row.package} style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-sm)', objectFit: 'cover' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 'var(--space-1)' }}>
+            <span className="text-body-bold">{row.package}</span>
+            <Badge variant={getCategoryBadgeVariant(row.type)}>{row.type}</Badge>
+          </div>
+        </div>
+      )
+    },
     { 
       header: 'Travel Agency', 
       accessor: (row: typeof tripList[0]) => {
@@ -300,20 +348,16 @@ const initialTripList = [
       )
     },
     { 
-      header: 'Seats (Booked/Total)', 
+      header: 'Member Count', 
       accessor: (row: typeof tripList[0]) => (
         <span>{row.booked} / {row.seats}</span>
       )
     },
     { 
       header: 'Status', 
-      accessor: (row: typeof tripList[0]) => {
-        let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
-        if (row.status === 'Completed') variant = 'success';
-        if (row.status === 'Upcoming') variant = 'warning';
-        if (row.status === 'Draft') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
-      }
+      accessor: (row: typeof tripList[0]) => (
+        <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>
+      )
     },
     {
       header: 'Actions',
@@ -447,8 +491,8 @@ return (
           accentColor="var(--color-primary)" 
         />
         <MetricCard 
-          title="Upcoming Trips" 
-          value={tripList.filter(t => t.status === 'Upcoming').length.toString()} 
+          title="Active Trips" 
+          value={tripList.filter(t => t.status === 'Active').length.toString()} 
           trend="up" 
           trendValue="+1" 
           icon={<Navigation />} 

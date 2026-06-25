@@ -10,199 +10,60 @@ import { Plus, Download, TrendingUp, AlertTriangle, CheckCircle, Clock, Percent,
 import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedPayments, setSelectedPayments] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [paymentList, setPaymentList] = useState<any[]>([]);
+
+  const fetchPayments = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch('http://localhost:3001/api/billing/payments');
+      if (res.ok) {
+        const data = await res.json();
+        setPaymentList(data.map((p: any) => ({
+          id: p.id,
+          invoiceId: p.invoice.invoiceNumber,
+          agency: p.invoice.travelAgencyId || 'Direct Customer',
+          packageName: 'Standard Safar Package', // Hardcoded as we don't have package data yet
+          amount: p.amount,
+          method: p.paymentMethod,
+          status: p.status,
+          date: new Date(p.createdAt).toLocaleDateString()
+        })));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-return () => clearTimeout(timer);
+    fetchPayments();
   }, []);
 
-  // Mock Data
-  const paymentList = [
-  {
-    "id": "pay_1",
-    "invoiceId": "INV-2026-001",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 6500,
-    "method": "Credit Card",
-    "status": "Success",
-    "date": "11 Nov 2026"
-  },
-  {
-    "id": "pay_2",
-    "invoiceId": "INV-2026-002",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 8000,
-    "method": "FPX",
-    "status": "Success",
-    "date": "12 Nov 2026"
-  },
-  {
-    "id": "pay_3",
-    "invoiceId": "INV-2026-003",
-    "agency": "Global Travel Agency",
-    "packageName": "VIP Gold Umrah",
-    "amount": 9500,
-    "method": "Bank Transfer",
-    "status": "Success",
-    "date": "13 Nov 2026"
-  },
-  {
-    "id": "pay_4",
-    "invoiceId": "INV-2026-004",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 11000,
-    "method": "Credit Card",
-    "status": "Failed",
-    "date": "14 Nov 2026"
-  },
-  {
-    "id": "pay_5",
-    "invoiceId": "INV-2026-005",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 12500,
-    "method": "FPX",
-    "status": "Refunded",
-    "date": "15 Nov 2026"
-  },
-  {
-    "id": "pay_6",
-    "invoiceId": "INV-2026-006",
-    "agency": "Zamzam Travels",
-    "packageName": "VIP Gold Umrah",
-    "amount": 14000,
-    "method": "Bank Transfer",
-    "status": "Success",
-    "date": "16 Nov 2026"
-  },
-  {
-    "id": "pay_7",
-    "invoiceId": "INV-2026-007",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 15500,
-    "method": "Credit Card",
-    "status": "Success",
-    "date": "17 Nov 2026"
-  },
-  {
-    "id": "pay_8",
-    "invoiceId": "INV-2026-008",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 17000,
-    "method": "FPX",
-    "status": "Failed",
-    "date": "18 Nov 2026"
-  },
-  {
-    "id": "pay_9",
-    "invoiceId": "INV-2026-009",
-    "agency": "Global Travel Agency",
-    "packageName": "VIP Gold Umrah",
-    "amount": 18500,
-    "method": "Bank Transfer",
-    "status": "Success",
-    "date": "19 Nov 2026"
-  },
-  {
-    "id": "pay_10",
-    "invoiceId": "INV-2026-010",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 20000,
-    "method": "Credit Card",
-    "status": "Refunded",
-    "date": "20 Nov 2026"
-  },
-  {
-    "id": "pay_11",
-    "invoiceId": "INV-2026-011",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 21500,
-    "method": "FPX",
-    "status": "Success",
-    "date": "21 Nov 2026"
-  },
-  {
-    "id": "pay_12",
-    "invoiceId": "INV-2026-012",
-    "agency": "Zamzam Travels",
-    "packageName": "VIP Gold Umrah",
-    "amount": 23000,
-    "method": "Bank Transfer",
-    "status": "Failed",
-    "date": "22 Nov 2026"
-  },
-  {
-    "id": "pay_13",
-    "invoiceId": "INV-2026-013",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 24500,
-    "method": "Credit Card",
-    "status": "Success",
-    "date": "23 Nov 2026"
-  },
-  {
-    "id": "pay_14",
-    "invoiceId": "INV-2026-014",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 26000,
-    "method": "FPX",
-    "status": "Success",
-    "date": "24 Nov 2026"
-  },
-  {
-    "id": "pay_15",
-    "invoiceId": "INV-2026-015",
-    "agency": "Global Travel Agency",
-    "packageName": "VIP Gold Umrah",
-    "amount": 27500,
-    "method": "Bank Transfer",
-    "status": "Refunded",
-    "date": "25 Nov 2026"
-  },
-  {
-    "id": "pay_16",
-    "invoiceId": "INV-2026-016",
-    "agency": "Zamzam Travels",
-    "packageName": "Standard Safar Package",
-    "amount": 29000,
-    "method": "Credit Card",
-    "status": "Failed",
-    "date": "26 Nov 2026"
-  },
-  {
-    "id": "pay_17",
-    "invoiceId": "INV-2026-017",
-    "agency": "Global Travel Agency",
-    "packageName": "Standard Safar Package",
-    "amount": 30500,
-    "method": "FPX",
-    "status": "Success",
-    "date": "27 Nov 2026"
-  },
-  {
-    "id": "pay_18",
-    "invoiceId": "INV-2026-018",
-    "agency": "Zamzam Travels",
-    "packageName": "VIP Gold Umrah",
-    "amount": 32000,
-    "method": "Bank Transfer",
-    "status": "Success",
-    "date": "28 Nov 2026"
-  }
-];
+  const handleVerify = async (paymentId: string) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/billing/payments/${paymentId}/verify`, {
+        method: 'POST'
+      });
+      if (res.ok) {
+        fetchPayments();
+        // Optional: show Toast here
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Failed to verify');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error');
+    }
+  };
+
 
   const columns = [
     { header: 'Payment ID', accessor: 'id' as const, sortable: true },
@@ -225,7 +86,7 @@ return () => clearTimeout(timer);
     { 
       header: 'Amount', 
       accessor: (row: typeof paymentList[0]) => (
-        <span>RM {row.amount.toLocaleString()}</span>
+        <span style={{ fontVariantNumeric: 'tabular-nums' }}>RM {row.amount.toLocaleString()}</span>
       ),
       sortable: true
     },
@@ -234,10 +95,10 @@ return () => clearTimeout(timer);
       header: 'Status', 
       accessor: (row: typeof paymentList[0]) => {
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
-        if (row.status === 'Success') variant = 'success';
-        if (row.status === 'Refunded') variant = 'warning';
-        if (row.status === 'Failed') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        if (row.status === 'VERIFIED') variant = 'success';
+        if (row.status === 'PENDING') variant = 'warning';
+        if (row.status === 'FAILED') variant = 'danger';
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Date', accessor: 'date' as const, sortable: true },
@@ -248,7 +109,8 @@ return () => clearTimeout(timer);
           triggerLabel=""
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => console.log('View', row.id) },
-            { id: 'invoice', label: 'View Invoice', icon: <Eye size={16} />, onClick: () => navigate('invoice-details', { id: row.invoiceId }) }
+            { id: 'invoice', label: 'View Invoice', icon: <Eye size={16} />, onClick: () => navigate('invoice-details', { id: row.invoiceId }) },
+            ...(row.status === 'PENDING' ? [{ id: 'verify', label: 'Verify Payment', icon: <CheckCircle size={16} />, onClick: () => { if(window.confirm('Verify this payment? This action is audit-sensitive and requires Finance permission.')) handleVerify(row.id) } }] : [])
           ]}
         />
       ),

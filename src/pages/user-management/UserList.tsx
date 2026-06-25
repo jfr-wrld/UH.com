@@ -7,13 +7,14 @@ import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { ConfirmationDialog } from '../../components/feedback/ConfirmationDialog';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { FormField } from '../../components/inputs/FormField';
 import { Plus, Eye, Edit, Mail, Key, ChevronRight, Lock, Unlock, ShieldOff, Power, PowerOff, Trash2, Users, CheckCircle2, UserPlus } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const UserList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -23,8 +24,18 @@ export const UserList: React.FC<{ navigate: (route: string, data?: any) => void 
     const timer = setTimeout(() => setIsLoading(false), 800);
 return () => clearTimeout(timer);
   }, []);
-  const [deactivateDialog, setDeactivateDialog] = useState<{ isOpen: boolean; userId: string; name: string; isDeactivating: boolean }>({ isOpen: false, userId: '', name: '', isDeactivating: true });
-  const [actionReason, setActionReason] = useState('');
+  const [modalState, setModalState] = useState<{isOpen: boolean, action: string, row: any}>({isOpen: false, action: '', row: null});
+  
+  const handleConfirmAction = (reason: string) => {
+    if (modalState.action === 'deactivate' && modalState.row) {
+      console.log('Deactivated', modalState.row.id, 'Reason:', reason);
+    } else if (modalState.action === 'revoke' && modalState.row) {
+      console.log('Revoked sessions for', modalState.row.id, 'Reason:', reason);
+    } else if (modalState.action === 'lock' && modalState.row) {
+      console.log('Toggled lock for', modalState.row.id, 'Reason:', reason);
+    }
+    setModalState({isOpen: false, action: '', row: null});
+  };
 
 const initialUsers = [
   {
@@ -360,7 +371,7 @@ const initialUsers = [
         if (row.status === 'Active') variant = 'success';
         if (row.status === 'Invited') variant = 'warning';
         if (row.status === 'Inactive') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { 
@@ -370,7 +381,7 @@ const initialUsers = [
         if (row.invitationStatus === 'Accepted') variant = 'success';
         if (row.invitationStatus === 'Pending') variant = 'warning';
         if (row.invitationStatus === 'Expired') variant = 'danger';
-        return <Badge variant={variant}>{row.invitationStatus}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.invitationStatus)}>{row.invitationStatus}</Badge>;
       }
     },
     { header: 'Last Login', accessor: 'lastLogin' as const },
@@ -385,9 +396,9 @@ const initialUsers = [
             { id: 'edit', label: 'Edit Access', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
             { id: 'resend', label: 'Resend Invitation', icon: <Mail size={16} />, onClick: () => console.log('Resend', row.id), disabled: row.status === 'Active' },
             { id: 'reset_pwd', label: 'Reset Password', icon: <Key size={16} />, onClick: () => console.log('Reset Password', row.id), disabled: row.status !== 'Active' },
-            { id: 'lock', label: row.status === 'Locked' ? 'Unlock Account' : 'Lock Account', icon: row.status === 'Locked' ? <Unlock size={16} /> : <Lock size={16} />, onClick: () => console.log('Lock Toggle', row.id) },
-            { id: 'revoke', label: 'Revoke Sessions', icon: <ShieldOff size={16} />, onClick: () => console.log('Revoke Sessions', row.id), disabled: row.status !== 'Active' },
-            { id: 'deactivate', label: row.status === 'Inactive' ? 'Reactivate' : 'Deactivate', icon: row.status === 'Inactive' ? <Power size={16} /> : <PowerOff size={16} />, danger: row.status !== 'Inactive', onClick: () => row.status !== 'Inactive' ? setDeactivateDialog({ isOpen: true, userId: row.id, name: row.name, isDeactivating: true }) : console.log('Reactivate', row.id) },
+            { id: 'lock', label: row.status === 'Locked' ? 'Unlock Account' : 'Lock Account', icon: row.status === 'Locked' ? <Unlock size={16} /> : <Lock size={16} />, onClick: () => setModalState({isOpen: true, action: 'lock', row}) },
+            { id: 'revoke', label: 'Revoke Sessions', icon: <ShieldOff size={16} />, onClick: () => setModalState({isOpen: true, action: 'revoke', row}), disabled: row.status !== 'Active' },
+            { id: 'deactivate', label: row.status === 'Inactive' ? 'Reactivate' : 'Deactivate', icon: row.status === 'Inactive' ? <Power size={16} /> : <PowerOff size={16} />, danger: row.status !== 'Inactive', onClick: () => setModalState({isOpen: true, action: 'deactivate', row}) },
             { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } },
           ]}
         />
@@ -562,30 +573,16 @@ return (
         emptyStateDescription="Try adjusting your search or filters."
       />
 
-      <ConfirmationDialog
-        isOpen={deactivateDialog.isOpen}
-        title={deactivateDialog.isDeactivating ? `Deactivate User` : `Suspend User`}
-        message={`Are you sure you want to deactivate ${deactivateDialog.name}? They will lose access to all portals immediately.`}
-        confirmLabel="Deactivate"
-        cancelLabel="Cancel"
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, action: '', row: null})}
+        onConfirm={handleConfirmAction}
+        title={modalState.action === 'deactivate' ? 'Deactivate User' : modalState.action === 'revoke' ? 'Revoke Sessions' : 'Lock Account'}
+        message={modalState.action === 'deactivate' ? 'Are you sure you want to deactivate this user? They will lose access immediately.' : `Are you sure you want to ${modalState.action} this user?`}
+        actionLabel={modalState.action === 'deactivate' ? 'Deactivate' : 'Confirm'}
         isDestructive={true}
-        onClose={() => { setDeactivateDialog(prev => ({ ...prev, isOpen: false })); setActionReason(''); }}
-        onConfirm={() => {
-          console.log('Deactivated', deactivateDialog.userId, 'Reason:', actionReason);
-          setDeactivateDialog(prev => ({ ...prev, isOpen: false }));
-          setActionReason('');
-        }}
-      >
-        <FormField label="Reason for Deactivation" required>
-          <textarea 
-            className="text-body"
-            style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: 'none', minHeight: '80px', resize: 'vertical' }}
-            placeholder="Please enter the reason for audit logs..."
-            value={actionReason}
-            onChange={(e) => setActionReason(e.target.value)}
-          />
-        </FormField>
-      </ConfirmationDialog>
+        entityName={modalState.row?.name}
+      />
     </div>
   );
 };

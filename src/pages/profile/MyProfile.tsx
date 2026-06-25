@@ -6,6 +6,7 @@ import { Button } from '../../components/actions/Button';
 import { Tabs } from '../../components/navigation/Tabs';
 import { Badge } from '../../components/data-display/Badge';
 import { UserCircle, Mail, Phone, MapPin, Building, Shield, Key, Bell, Camera, Lock, CheckCircle2, AlertTriangle, Smartphone, ChevronRight } from 'lucide-react';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const MyProfile: React.FC<{ navigate: (route: string, data?: any) => void; showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast }) => {
   const [activeTab, setActiveTab] = useState('personal');
@@ -77,7 +78,7 @@ export const MyProfile: React.FC<{ navigate: (route: string, data?: any) => void
           <h2 className="text-h3" style={{ marginBottom: 'var(--space-1)' }}>Admin User</h2>
           <p className="text-body text-muted" style={{ marginBottom: 'var(--space-3)' }}>Super Administrator</p>
           
-          <Badge variant="primary" style={{ marginBottom: 'var(--space-6)' }}>Active Account</Badge>
+          <Badge variant={getStatusBadgeVariant("Active Account")} style={{ marginBottom: 'var(--space-6)' }}>Active Account</Badge>
           
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-4)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
@@ -197,7 +198,7 @@ export const MyProfile: React.FC<{ navigate: (route: string, data?: any) => void
               <p className="text-body text-muted">Add additional security to your account using two-factor authentication.</p>
             </div>
           </div>
-          <Badge variant="neutral">Not Configured</Badge>
+          <Badge variant={getStatusBadgeVariant("Not Configured")}>Not Configured</Badge>
         </div>
 
         <div style={{ backgroundColor: 'var(--surface-sunken)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)', display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
@@ -239,8 +240,8 @@ export const MyProfile: React.FC<{ navigate: (route: string, data?: any) => void
                 <span className="text-body text-muted">{item.desc}</span>
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                <Badge variant="primary">Email</Badge>
-                <Badge variant="neutral">Push</Badge>
+                <Badge variant={getStatusBadgeVariant("Email")}>Email</Badge>
+                <Badge variant={getStatusBadgeVariant("Push")}>Push</Badge>
               </div>
             </div>
           ))}

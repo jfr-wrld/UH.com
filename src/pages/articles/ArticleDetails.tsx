@@ -5,6 +5,7 @@ import { Button } from '../../components/actions/Button';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { Edit2, Eye, Calendar, User, Tag, FileText, Clock, TrendingUp } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ArticleDetails: React.FC<{ navigate: (route: string, data?: any) => void, articleId?: string }> = ({ navigate, articleId = 'art_1' }) => {
   const [status, setStatus] = useState('Draft');
@@ -106,7 +107,7 @@ export const ArticleDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <span className="text-caption text-muted" style={{ display: 'block', marginBottom: '4px' }}>Status</span>
                 <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
                   <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
-                  <Badge variant="neutral">Public</Badge>
+                  <Badge variant={getStatusBadgeVariant("Public")}>Public</Badge>
                 </div>
               </div>
 

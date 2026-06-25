@@ -11,6 +11,7 @@ import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const AllowanceList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedAllowances, setSelectedAllowances] = useState<string[]>([]);
@@ -215,7 +216,7 @@ const initialAllowanceList = [
         if (row.status === 'Paid') variant = 'success';
         if (row.status === 'Processing') variant = 'warning';
         if (row.status === 'Pending') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {

@@ -8,16 +8,19 @@ import { TripMembersPanel } from './TripMembersPanel';
 import { Users, Map, Calendar, BedDouble, Plane, FileText, Bus, Eye, ChevronRight } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) => void, tripId?: string }> = ({ navigate, tripId = 'trp_1' }) => {
-  const [status, setStatus] = useState('Upcoming');
+  const [status, setStatus] = useState('Active');
   const [activeTab, setActiveTab] = useState('overview');
-  const { getById } = useLocalStorageCrud('group-trip');
+  const [auditAction, setAuditAction] = useState<{ isOpen: boolean, targetStatus: string }>({ isOpen: false, targetStatus: '' });
+  const { getById } = useLocalStorageCrud('group-trip-v2');
 
   // Mock Data
-  const trip = getById(tripId) || {
+  const trip: any = getById(tripId) || {
     id: tripId,
     code: '-',
     name: 'Unknown Trip',
@@ -59,29 +62,74 @@ export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      {/* Header Section */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <h1 className="text-page-title">{trip.name}</h1>
-              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
+      {/* Back Button */}
+      <div style={{ marginBottom: '-16px' }}>
+        <button 
+          onClick={() => navigate('group-trip-list')}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'none', border: 'none', color: 'var(--color-text-neutral)', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+          className="text-body"
+        >
+          <ChevronRight style={{ transform: 'rotate(180deg)' }} size={16} /> Back to Trips
+        </button>
+      </div>
+
+      {/* Hero Header Section */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '280px', 
+        borderRadius: 'var(--radius-lg)', 
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: 'var(--space-6)',
+        boxShadow: 'var(--glass-shadow)',
+        marginTop: 'var(--space-2)'
+      }}>
+        {/* Background Image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          <img src={`https://picsum.photos/seed/${trip.id}/800/400`} alt={trip.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        {/* Dark Gradient Overlay */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, borderRadius: 'var(--radius-lg)', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)' }} />
+        
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+              <Badge variant={getCategoryBadgeVariant(trip.type)}>{trip.type}</Badge>
             </div>
-            <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
-              <span className="text-body-bold">{trip.code}</span>
-              <span>•</span>
-              <span className="text-body">{trip.agency}</span>
-              <span>•</span>
-              <span className="text-body">{trip.type}</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{trip.name}</h1>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}><Users size={16} /> {trip.code}</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{trip.agency}</span>
             </div>
           </div>
-        </div>
-        
-        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <Button variant="secondary" onClick={() => navigate('group-trip-list')}>Back to List</Button>
-          <Button>Edit Trip Details</Button>
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+            <StatusTransitionMenu 
+              currentStatus={status} 
+              onTransition={(newStatus) => setAuditAction({ isOpen: true, targetStatus: newStatus })} 
+              allowedTransitions={['Draft', 'Pending Approval', 'Active', 'Departed', 'Completed', 'Cancelled', 'Archived']} 
+            />
+            <Button onClick={() => navigate('group-trip-create')}>Edit Trip Details</Button>
+          </div>
         </div>
       </div>
+
+      <AuditActionModal
+        isOpen={auditAction.isOpen}
+        onClose={() => setAuditAction({ isOpen: false, targetStatus: '' })}
+        onConfirm={(reason) => {
+          setStatus(auditAction.targetStatus);
+          setAuditAction({ isOpen: false, targetStatus: '' });
+        }}
+        title={`Change Status to ${auditAction.targetStatus}`}
+        actionLabel="Update Status"
+        entityName={`Trip: ${trip.name}`}
+        requireReason={true}
+      />
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
@@ -156,7 +204,7 @@ export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) 
               <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Saudi Airlines (SV)</span>
               <span className="text-body" style={{ display: 'block' }}>Departure: KUL ➔ JED (SV 821)</span>
               <span className="text-body" style={{ display: 'block' }}>Return: MED ➔ KUL (SV 822)</span>
-              <Badge variant="success" style={{ marginTop: 'var(--space-3)' }}>Confirmed</Badge>
+              <Badge variant={getStatusBadgeVariant('Confirmed')} style={{ marginTop: 'var(--space-3)' }}>Confirmed</Badge>
             </div>
             <p className="text-caption text-muted">This snapshot is preserved from the original package and flight catalog. Individual e-tickets are managed in the Members &gt; Services tab.</p>
           </div>
@@ -177,7 +225,7 @@ export const GroupTripDetails: React.FC<{ navigate: (route: string, data?: any) 
                 <span className="text-caption text-muted" style={{ display: 'block' }}>Madinah Hotel</span>
                 <span className="text-body-bold">Pullman Zamzam Madinah (Full Board)</span>
               </div>
-              <Badge variant="success" style={{ width: 'fit-content', marginTop: 'var(--space-2)' }}>Confirmed</Badge>
+              <Badge variant={getStatusBadgeVariant('Confirmed')} style={{ width: 'fit-content', marginTop: 'var(--space-2)' }}>Confirmed</Badge>
             </div>
             <p className="text-caption text-muted">This snapshot defines the contracted hotels. Specific room allocations for Jamaah are managed in the Members &gt; Services tab.</p>
           </div>

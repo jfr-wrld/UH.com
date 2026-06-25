@@ -9,6 +9,7 @@ import { Star, ShieldAlert, Eye, ChevronRight, MessageSquare, ThumbsUp } from 'l
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const TestimonialList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('end-trip');
@@ -650,7 +651,7 @@ return (
     {
       header: 'Recommend',
       accessor: (row: any) => (
-        <Badge variant={row.recommend === 'Yes' ? 'success' : 'danger'}>{row.recommend}</Badge>
+        <Badge variant={getStatusBadgeVariant(row.recommend)}>{row.recommend}</Badge>
       )
     },
     {
@@ -671,7 +672,7 @@ return (
         let variant: 'success' | 'warning' | 'neutral' = 'neutral';
         if (row.status === 'Approved Public') variant = 'success';
         if (row.status === 'Pending Review') variant = 'warning';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {
@@ -753,7 +754,7 @@ return (
     {
       header: 'Report Type',
       accessor: (row: any) => {
-        return <Badge variant={row.incident ? 'danger' : 'neutral'}>{row.type}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.type)}>{row.type}</Badge>;
       }
     },
     {

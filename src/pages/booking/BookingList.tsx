@@ -12,6 +12,7 @@ import { MetricCard } from '../../components/data-display/MetricCard';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const BookingList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedBookings, setSelectedBookings] = useState<string[]>([]);
@@ -259,7 +260,7 @@ const initialBookingList = [
         if (row.status === 'Confirmed') variant = 'success';
         if (row.status === 'Pending Payment') variant = 'warning';
         if (row.status === 'Cancelled') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {

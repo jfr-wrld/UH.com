@@ -12,6 +12,7 @@ import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCe
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const JamaahList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedJamaah, setSelectedJamaah] = useState<string[]>([]);
@@ -275,7 +276,7 @@ const initialJamaahList = [
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
         if (row.status === 'Active') variant = 'success';
         if (row.status === 'Inactive') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Last Updated', accessor: 'lastUpdated' as const, sortable: true },

@@ -9,6 +9,8 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { FileText, AlertCircle, RefreshCw, CheckCircle, Download, Plus, Building2, Eye, UserPlus, XCircle, Bell, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { ExportControl } from '../../components/domain/ExportControl';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const TravelAgencyApplications: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -243,7 +245,7 @@ return () => clearTimeout(timer);
         if (row.status === 'Approved') variant = 'success';
         if (row.status === 'Pending') variant = 'warning';
         if (row.status === 'Revision') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {

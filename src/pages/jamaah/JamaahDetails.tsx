@@ -10,6 +10,7 @@ import { CheckCircle2, UserPlus, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => void, jamaahId?: string }> = ({ navigate, jamaahId = 'jam_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -64,7 +65,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
             <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
               <span className="text-body text-muted">{jamaah.email}</span>
               <span className="text-body text-muted">{jamaah.phone}</span>
-              <Badge variant="success">{jamaah.status}</Badge>
+              <Badge variant={getStatusBadgeVariant(jamaah.status)}>{jamaah.status}</Badge>
             </div>
           </div>
         </div>
@@ -132,7 +133,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
                 <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                     <span className="text-body-bold">Requires early visa processing</span>
-                    <Badge variant="warning">High Priority</Badge>
+                    <Badge variant={getStatusBadgeVariant("High Priority")}>High Priority</Badge>
                   </div>
                   <p className="text-body text-muted">Jamaah requested early visa processing due to previous travel history issues. Assigned to Operations Team.</p>
                   <span className="text-caption text-muted" style={{ display: 'block', marginTop: 'var(--space-2)' }}>Added by Operations Admin on 01 Nov 2026</span>
@@ -187,7 +188,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
               <div style={{ marginTop: 'var(--space-2)' }}>
                 <span className="text-caption text-muted" style={{ display: 'block' }}>Medical Notes / Special Needs</span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginTop: 'var(--space-1)' }}>
-                  <Badge variant="warning" style={{ width: 'fit-content' }}>Wheelchair Assistance</Badge>
+                  <Badge variant={getStatusBadgeVariant("Wheelchair Assistance")} style={{ width: 'fit-content' }}>Wheelchair Assistance</Badge>
                   <span className="text-body text-muted">Requires wheelchair assistance at airport.</span>
                 </div>
               </div>
@@ -229,7 +230,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
               <div style={{ padding: 'var(--space-4)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
                 <span className="text-body-bold" style={{ display: 'block' }}>Aisha Fatima (Wife)</span>
                 <span className="text-body text-muted">+62 812 9876 5432</span>
-                <Badge variant="info" style={{ marginTop: 'var(--space-2)' }}>Primary Contact</Badge>
+                <Badge variant={getStatusBadgeVariant("Primary Contact")} style={{ marginTop: 'var(--space-2)' }}>Primary Contact</Badge>
               </div>
             </div>
             
@@ -244,7 +245,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
                   <span className="text-body-bold" style={{ display: 'block' }}>Siti Fatima</span>
                   <span className="text-caption text-muted">Relationship: Wife • Purpose: Rooming, Mahram • jm_2</span>
                 </div>
-                <Badge variant="success">Ready for Departure</Badge>
+                <Badge variant={getStatusBadgeVariant("Ready for Departure")}>Ready for Departure</Badge>
                 <Button variant="ghost" size="sm">View</Button>
               </div>
             </div>

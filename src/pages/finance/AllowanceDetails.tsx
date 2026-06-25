@@ -7,6 +7,7 @@ import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { CheckCircle, XCircle, CreditCard, UploadCloud, FileText } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const AllowanceDetails: React.FC<{ navigate: (route: string, data?: any) => void, allowanceId?: string }> = ({ navigate, allowanceId = 'alw_1' }) => {
   const { getById } = useLocalStorageCrud('allowance');
@@ -61,7 +62,7 @@ export const AllowanceDetails: React.FC<{ navigate: (route: string, data?: any) 
                 <h2 className="text-h3" style={{ marginBottom: 'var(--space-2)' }}>{allowance.title}</h2>
                 <span className="text-body text-muted">Requested by {allowance.requester}</span>
               </div>
-              <Badge variant="warning">{allowance.status}</Badge>
+              <Badge variant={getStatusBadgeVariant(allowance.status)}>{allowance.status}</Badge>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-6)' }}>

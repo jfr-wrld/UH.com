@@ -8,6 +8,7 @@ import { IconButton } from '../../components/actions/IconButton';
 import { Plus, Edit2, Trash2, Shield, ShieldCheck, UserCog } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +40,7 @@ export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void 
     },
     { 
       header: 'Portal', 
-      accessor: (row: typeof roles[0]) => <Badge variant="neutral">{row.portal}</Badge> 
+      accessor: (row: typeof roles[0]) => <Badge variant={getStatusBadgeVariant(row.portal)}>{row.portal}</Badge> 
     },
     { 
       header: 'Active Users', 
@@ -47,7 +48,7 @@ export const RoleList: React.FC<{ navigate: (route: string, data?: any) => void 
     },
     { 
       header: 'Status', 
-      accessor: (row: typeof roles[0]) => <Badge variant={row.status === 'Active' ? 'success' : 'neutral'}>{row.status}</Badge> 
+      accessor: (row: typeof roles[0]) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> 
     },
     {
       header: 'Action',

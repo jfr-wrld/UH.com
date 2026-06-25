@@ -35,6 +35,8 @@ export interface DataTableProps<T> {
     order: 'asc' | 'desc';
     onSort?: (key: string) => void;
   };
+  expandable?: boolean;
+  renderExpandedRow?: (row: T) => React.ReactNode;
 }
 
 const getAutoSortKey = (header: string, sampleRow: any): string => {
@@ -126,8 +128,22 @@ export function DataTable<T>({
   selectedKeys,
   onSelectionChange,
   pagination,
-  sort
+  sort,
+  expandable,
+  renderExpandedRow
 }: DataTableProps<T>) {
+  
+  const [expandedKeys, setExpandedKeys] = React.useState<Set<string | number>>(new Set());
+
+  const toggleExpand = (key: string | number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedKeys(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
   
   if (isLoading) {
     return (
@@ -193,6 +209,9 @@ export function DataTable<T>({
       <table className="data-table text-body">
         <thead>
           <tr>
+            {expandable && (
+              <th style={{ width: '40px', textAlign: 'center' }}></th>
+            )}
             {hasSelection && (
               <th style={{ width: '40px', textAlign: 'center' }}>
                 <input 
@@ -245,35 +264,60 @@ export function DataTable<T>({
             const rowIsSelected = hasSelection && isSelected(rowKey);
 
             return (
-              <tr 
-                key={rowKey}
-                onClick={() => onRowClick && onRowClick(row)}
-                style={{ 
-                  cursor: onRowClick ? 'pointer' : 'default',
-                  backgroundColor: rowIsSelected ? 'var(--surface-selected)' : undefined
-                }}
-              >
-                {hasSelection && (
-                  <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
-                    <input 
-                      type="checkbox" 
-                      checked={rowIsSelected}
-                      onChange={(e) => handleSelectRow(rowKey, e.target.checked)}
-                      aria-label="Select row"
-                    />
-                  </td>
+              <React.Fragment key={rowKey}>
+                <tr 
+                  onClick={() => onRowClick && onRowClick(row)}
+                  style={{ 
+                    cursor: onRowClick ? 'pointer' : 'default',
+                    backgroundColor: rowIsSelected ? 'var(--surface-selected)' : undefined
+                  }}
+                >
+                  {expandable && (
+                    <td style={{ textAlign: 'center', width: '40px' }}>
+                      <button 
+                        onClick={(e) => toggleExpand(rowKey, e)}
+                        style={{ 
+                          background: 'transparent', border: 'none', cursor: 'pointer',
+                          transform: expandedKeys.has(rowKey) ? 'rotate(90deg)' : 'none',
+                          transition: 'transform 0.2s',
+                          color: 'var(--color-text-muted)'
+                        }}
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </td>
+                  )}
+                  {hasSelection && (
+                    <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                      <input 
+                        type="checkbox" 
+                        checked={rowIsSelected}
+                        onChange={(e) => handleSelectRow(rowKey, e.target.checked)}
+                        aria-label="Select row"
+                      />
+                    </td>
+                  )}
+                  {columns.map((col, index) => (
+                    <td 
+                      key={index}
+                      style={{ textAlign: col.align || 'left' }}
+                    >
+                      {typeof col.accessor === 'function' 
+                        ? col.accessor(row) 
+                        : String(row[col.accessor as keyof T])}
+                    </td>
+                  ))}
+                </tr>
+                {expandable && expandedKeys.has(rowKey) && renderExpandedRow && (
+                  <tr className="expanded-row-container" style={{ backgroundColor: 'var(--surface-muted)' }}>
+                    <td colSpan={columns.length + (hasSelection ? 1 : 0) + 1} style={{ padding: 0 }}>
+                      <div style={{ padding: 'var(--space-4) var(--space-6)', borderTop: '1px solid var(--border-subtle)' }}>
+                        {renderExpandedRow(row)}
+                      </div>
+                    </td>
+                  </tr>
                 )}
-                {columns.map((col, index) => (
-                  <td 
-                    key={index}
-                    style={{ textAlign: col.align || 'left' }}
-                  >
-                    {typeof col.accessor === 'function' 
-                      ? col.accessor(row) 
-                      : String(row[col.accessor])}
-                  </td>
-                ))}
-              </tr>
+              </React.Fragment>
             );
           })}
         </tbody>

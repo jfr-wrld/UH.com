@@ -12,6 +12,7 @@ import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { MetricCard } from '../../components/data-display/MetricCard';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('mutawwif');
@@ -430,7 +431,7 @@ export const PayoutPreparation: React.FC<{ navigate: (route: string, data?: any)
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
         if (row.status === 'Ready') variant = 'success';
         if (row.status === 'On Hold') variant = 'warning';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     }
   ];

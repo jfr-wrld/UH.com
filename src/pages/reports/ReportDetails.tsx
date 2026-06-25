@@ -14,6 +14,7 @@ import { RemarkPanel } from '../../components/domain/RemarkPanel';
 import type { Remark } from '../../components/domain/RemarkPanel';
 import { UserPlus, Activity, CheckCircle, MessageSquare, Paperclip, Download, Eye, ChevronRight } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ReportDetails: React.FC<{ navigate: (route: string, data?: any) => void, reportId?: string }> = ({ navigate, reportId = 'rpt_2' }) => {
   const [status, setStatus] = useState('Under Review');
@@ -103,7 +104,7 @@ export const ReportDetails: React.FC<{ navigate: (route: string, data?: any) => 
                 <div>
                   <h2 className="text-h2" style={{ marginBottom: 'var(--space-2)' }}>{report.subject}</h2>
                   <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-                    <Badge variant="danger">{report.priority}</Badge>
+                    <Badge variant={getStatusBadgeVariant(report.priority)}>{report.priority}</Badge>
                     <span className="text-body text-muted">•</span>
                     <span className="text-body text-muted">{report.category}</span>
                     <span className="text-body text-muted">•</span>

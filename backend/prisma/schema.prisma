@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model PlatformSetting {
+  id               String   @id @default(uuid())
+  settingGroup     String
+  settingKey       String   @unique
+  settingValue     String   // Store JSON string
+  dataType         String
+  isEditableByTa   Boolean  @default(false)
+  description      String?
+  updatedBy        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model FeatureFlag {
+  id          String   @id @default(uuid())
+  moduleName  String   @unique
+  isEnabled   Boolean  @default(true)
+  description String?
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  actorId      String
+  action       String
+  targetModule String
+  targetId     String?
+  oldValue     String?
+  newValue     String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+}
+
+model ReferralCampaign {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  agencyId     String?
+  rewardType   String
+  rewardValue  Float
+  status       String   @default("DRAFT")
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  codes        ReferralCode[]
+}
+
+model ReferralCode {
+  id           String   @id @default(uuid())
+  ownerId      String
+  ownerRole    String
+  code         String   @unique
+  campaignId   String
+  campaign     ReferralCampaign @relation(fields: [campaignId], references: [id])
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  attributions ReferralAttribution[]
+}
+
+model ReferralAttribution {
+  id               String   @id @default(uuid())
+  referralCodeId   String
+  code             ReferralCode @relation(fields: [referralCodeId], references: [id])
+  invitedUserId    String
+  relatedBookingId String?
+  conversionStatus String   @default("REGISTERED")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  reward           ReferralReward?
+}
+
+model ReferralReward {
+  id                     String   @id @default(uuid())
+  attributionId          String   @unique
+  attribution            ReferralAttribution @relation(fields: [attributionId], references: [id])
+  rewardAmountCalculated Float
+  status                 String   @default("PENDING_REVIEW")
+  reasonCode             String?
+  approvedBy             String?
+  approvedAt             DateTime?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  financeHandoff         FinanceHandoffQueue?
+}
+
+model FinanceHandoffQueue {
+  id                 String   @id @default(uuid())
+  referralRewardId   String   @unique
+  reward             ReferralReward @relation(fields: [referralRewardId], references: [id])
+  payoutStatus       String   @default("QUEUED")
+  financeStaffId     String?
+  paidAt             DateTime?
+  paymentReference   String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// ==========================================
+// Billing & Finance Models
+// ==========================================
+
+model Invoice {
+  id             String          @id @default(uuid())
+  invoiceNumber  String          @unique
+  travelAgencyId String?
+  jamaahId       String?
+  bookingId      String?
+  subtotal       Float
+  taxAmount      Float
+  discountAmount Float
+  totalAmount    Float
+  amountPaid     Float           @default(0)
+  status         String          @default("DRAFT") // DRAFT, SENT, PARTIAL, PAID, OVERDUE, VOID
+  dueDate        DateTime
+  issuedDate     DateTime        @default(now())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  payments       PaymentRecord[]
+}
+
+model PaymentRecord {
+  id                String               @id @default(uuid())
+  invoiceId         String
+  paymentMethod     String               // BANK_TRANSFER, ONLINE_GATEWAY, CASH
+  amount            Float
+  referenceNumber   String
+  proofOfPaymentUrl String?
+  status            String               @default("PENDING") // PENDING, VERIFIED, FAILED, REFUNDED
+  verifiedBy        String?
+  verifiedAt        DateTime?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  invoice           Invoice              @relation(fields: [invoiceId], references: [id])
+  commissions       PlatformCommission[]
+}
+
+model PlatformCommission {
+  id               String        @id @default(uuid())
+  paymentId        String
+  baseAmount       Float
+  commissionRate   Float
+  commissionAmount Float
+  status           String        @default("PENDING") // PENDING, EARNED, REVERSED, SETTLED
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  payment          PaymentRecord @relation(fields: [paymentId], references: [id])
+}

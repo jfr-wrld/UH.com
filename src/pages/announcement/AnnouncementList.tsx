@@ -12,6 +12,7 @@ import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { Plus, Megaphone, Send, Clock, AlertTriangle, Eye, Edit, Copy, Archive } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const AnnouncementList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -298,7 +299,7 @@ return () => clearTimeout(timer);
         if (row.status === 'Scheduled') variant = 'info';
         if (row.status === 'Partially Sent') variant = 'warning';
         if (row.status === 'Failed') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {

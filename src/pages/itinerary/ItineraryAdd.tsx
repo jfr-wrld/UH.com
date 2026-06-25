@@ -298,7 +298,10 @@ export const ItineraryAdd: React.FC<{ navigate: (route: string, data?: any) => v
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <Button variant="ghost" onClick={() => navigate('itinerary-list')}>Cancel</Button>
           {currentStep === steps.length - 1 ? (
-            <Button onClick={() => { if(showToast) showToast('Success', 'Action completed successfully', 'success');  navigate('itinerary-list'); }}>Publish Template</Button>
+            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+              <Button variant="secondary" onClick={() => { if(showToast) showToast('Success', 'Draft saved successfully', 'success'); navigate('itinerary-list'); }}>Save as Draft</Button>
+              <Button onClick={() => { if(showToast) showToast('Success', 'Template published successfully', 'success'); navigate('itinerary-list'); }}>Publish (Active)</Button>
+            </div>
           ) : (
             <Button onClick={handleNext}>Next Step</Button>
           )}

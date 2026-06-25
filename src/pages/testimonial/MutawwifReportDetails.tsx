@@ -3,6 +3,7 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { Badge } from '../../components/data-display/Badge';
 import { Button } from '../../components/actions/Button';
 import { ShieldAlert, Star, AlertTriangle, EyeOff, Archive } from 'lucide-react';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const MutawwifReportDetails: React.FC<{ navigate: (route: string, data?: any) => void, reportId?: string }> = ({ navigate, reportId = 'mr_2' }) => {
   
@@ -76,8 +77,8 @@ export const MutawwifReportDetails: React.FC<{ navigate: (route: string, data?: 
                 <span className="text-body text-muted">{report.trip} • {report.agency} • {report.date}</span>
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                <Badge variant="neutral">{report.visibility}</Badge>
-                <Badge variant={report.incident ? 'danger' : 'neutral'}>{report.type}</Badge>
+                <Badge variant={getStatusBadgeVariant(report.visibility)}>{report.visibility}</Badge>
+                <Badge variant={getStatusBadgeVariant(report.type)}>{report.type}</Badge>
               </div>
             </div>
 

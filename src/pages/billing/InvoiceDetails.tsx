@@ -10,6 +10,7 @@ import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { FileText, CreditCard, DollarSign, RefreshCcw, Download, Link, Plus, Eye, ChevronRight } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) => void, invoiceId?: string }> = ({ navigate, invoiceId = 'inv_1' }) => {
   const [status, setStatus] = useState('Pending');
@@ -61,7 +62,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
               <h1 className="text-page-title">{invoice.invoiceNumber}</h1>
-              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
+              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Sent', 'Partially Paid', 'Paid', 'Overdue', 'Void', 'Refunded']} />
             </div>
             <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
               <span className="text-body-bold">{invoice.customer}</span>
@@ -76,7 +77,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <Button variant="secondary" leftIcon={<Link size={16} />}>Copy Payment Link</Button>
           <Button variant="secondary" leftIcon={<Download size={16} />}>Download PDF</Button>
-          <Button>Record Payment</Button>
+          <Button onClick={() => window.confirm('Record manual payment? This action is audit-sensitive.')}>Record Payment</Button>
         </div>
       </div>
 
@@ -124,8 +125,8 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
                     <tr key={idx}>
                       <td className="text-body-bold">{item.desc}</td>
                       <td style={{ textAlign: 'right' }}>{item.qty}</td>
-                      <td style={{ textAlign: 'right' }}>RM {item.unitPrice.toLocaleString()}</td>
-                      <td style={{ textAlign: 'right' }} className="text-body-bold">RM {item.total.toLocaleString()}</td>
+                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>RM {item.unitPrice.toLocaleString()}</td>
+                      <td style={{ textAlign: 'right' }} className="text-body-bold" style={{ fontVariantNumeric: 'tabular-nums' }}>RM {item.total.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -136,25 +137,25 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
               <div style={{ width: '300px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-2) 0' }}>
                   <span className="text-body text-muted">Subtotal</span>
-                  <span className="text-body">RM {invoice.subtotal.toLocaleString()}</span>
+                  <span className="text-body" style={{ fontVariantNumeric: 'tabular-nums' }}>RM {invoice.subtotal.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-2) 0', borderBottom: '1px solid var(--border-default)' }}>
                   <span className="text-body text-muted">Tax</span>
-                  <span className="text-body">RM {invoice.tax.toLocaleString()}</span>
+                  <span className="text-body" style={{ fontVariantNumeric: 'tabular-nums' }}>RM {invoice.tax.toLocaleString()}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-3) 0' }}>
                   <span className="text-body-bold" style={{ fontSize: '18px' }}>Total</span>
-                  <span className="text-body-bold" style={{ fontSize: '18px' }}>RM {invoice.total.toLocaleString()}</span>
+                  <span className="text-body-bold" style={{ fontSize: '18px', fontVariantNumeric: 'tabular-nums' }}>RM {invoice.total.toLocaleString()}</span>
                 </div>
                 
                 <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', marginTop: 'var(--space-4)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 'var(--space-2)' }}>
                     <span className="text-body text-success">Paid Amount</span>
-                    <span className="text-body-bold text-success">RM {invoice.paid.toLocaleString()}</span>
+                    <span className="text-body-bold text-success" style={{ fontVariantNumeric: 'tabular-nums' }}>RM {invoice.paid.toLocaleString()}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
                     <span className="text-body-bold text-danger">Balance Due</span>
-                    <span className="text-body-bold text-danger">RM {invoice.balance.toLocaleString()}</span>
+                    <span className="text-body-bold text-danger" style={{ fontVariantNumeric: 'tabular-nums' }}>RM {invoice.balance.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -191,7 +192,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
                     <td><span className="text-body-bold">TRX-998822</span><br/><span className="text-caption text-muted">Maybank Transfer</span></td>
                     <td>Manual Bank Transfer</td>
                     <td><span className="text-body-bold">RM 10,000</span></td>
-                    <td><Badge variant="success">Verified</Badge></td>
+                    <td><Badge variant={getStatusBadgeVariant("Verified")}>Verified</Badge></td>
                     <td style={{ textAlign: 'right' }}><Button variant="ghost" size="sm" leftIcon={<FileText size={14} />}>RCP-001</Button></td>
                   </tr>
                 </tbody>
@@ -260,7 +261,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
             
             <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', textAlign: 'center', border: '1px dashed var(--border-default)' }}>
               <p className="text-body-bold" style={{ marginBottom: 'var(--space-2)' }}>No active refund requests.</p>
-              <Button variant="secondary" size="sm">Create Refund Request</Button>
+              <Button variant="secondary" size="sm" onClick={() => window.confirm('Create a refund request? This requires Finance approval.')}>Create Refund Request</Button>
             </div>
           </div>
         )}

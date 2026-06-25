@@ -7,11 +7,29 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Button } from '../../components/actions/Button';
 import { Badge } from '../../components/data-display/Badge';
+import { DataTable } from '../../components/data-display/DataTable';
 import { AlertBanner } from '../../components/feedback/AlertBanner';
-import { Save, Shield, Bell, CreditCard, Globe, Users, ChevronRight } from 'lucide-react';
+import { Save, Shield, Bell, CreditCard, Globe, Users, ChevronRight, ToggleLeft, History } from 'lucide-react';
+import { useFeatureFlags } from '../../contexts/FeatureFlagContext';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const SettingsPage: React.FC<{ navigate, showToast: (route: string) => void  }> = ({ navigate, showToast  }) => {
   const [activeTab, setActiveTab] = useState('general');
+  const { flags, refreshFlags } = useFeatureFlags();
+
+  const toggleFlag = async (moduleName: string) => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/settings/features/${moduleName}/toggle`, {
+        method: 'POST'
+      });
+      if (res.ok) {
+        await refreshFlags();
+        showToast('Feature Flag Updated', `${moduleName} has been updated.`, 'success');
+      }
+    } catch (err) {
+      showToast('Update Failed', 'Could not reach backend.', 'error');
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
@@ -25,7 +43,9 @@ export const SettingsPage: React.FC<{ navigate, showToast: (route: string) => vo
           { id: 'general', label: 'General' },
           { id: 'notifications', label: 'Notifications' },
           { id: 'payment', label: 'Payment' },
-          { id: 'security', label: 'Security & Roles' },
+          { id: 'security', label: 'Security & Policy' },
+          { id: 'features', label: 'Feature Flags' },
+          { id: 'audit', label: 'Audit Logs' },
           { id: 'integrations', label: 'Integrations' },
         ]}
         activeTab={activeTab}
@@ -106,21 +126,21 @@ export const SettingsPage: React.FC<{ navigate, showToast: (route: string) => vo
                   <span className="text-body-bold" style={{ display: 'block' }}>In-App Notifications</span>
                   <span className="text-caption text-muted">Always enabled as default channel</span>
                 </div>
-                <Badge variant="success">Active</Badge>
+                <Badge variant={getStatusBadgeVariant("Active")}>Active</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div>
                   <span className="text-body-bold" style={{ display: 'block' }}>Email Delivery</span>
                   <span className="text-caption text-muted">Via SMTP / Transactional Email Provider</span>
                 </div>
-                <Badge variant="success">Active</Badge>
+                <Badge variant={getStatusBadgeVariant("Active")}>Active</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div>
                   <span className="text-body-bold" style={{ display: 'block' }}>WhatsApp Delivery</span>
                   <span className="text-caption text-muted">Via WhatsApp Business API Provider</span>
                 </div>
-                <Badge variant="warning">Limited</Badge>
+                <Badge variant={getStatusBadgeVariant("Limited")}>Limited</Badge>
               </div>
             </div>
           </div>
@@ -225,6 +245,93 @@ export const SettingsPage: React.FC<{ navigate, showToast: (route: string) => vo
         </div>
       )}
 
+      {activeTab === 'features' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+          <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+              <ToggleLeft size={20} className="text-muted" />
+              <h2 className="text-section-title">Feature Flags</h2>
+            </div>
+            <p className="text-body text-muted" style={{ marginBottom: 'var(--space-6)' }}>Enable or disable core modules across the entire platform.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', maxWidth: '800px' }}>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+                <div>
+                  <span className="text-body-bold" style={{ display: 'block' }}>Referral Rewards Module</span>
+                  <span className="text-caption text-muted">Allow agencies and platform to run referral campaigns.</span>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <Badge variant={flags.REFERRAL_MODULE ? "success" : "neutral"}>
+                    {flags.REFERRAL_MODULE ? "Enabled" : "Disabled"}
+                  </Badge>
+                  <Button variant="outline" size="sm" onClick={() => toggleFlag('REFERRAL_MODULE')}>
+                    {flags.REFERRAL_MODULE ? "Disable" : "Enable"}
+                  </Button>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+                <div>
+                  <span className="text-body-bold" style={{ display: 'block' }}>E-Wallet Integration</span>
+                  <span className="text-caption text-muted">Allow Mutawwif to hold wallet balances.</span>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <Badge variant={flags.E_WALLET ? "success" : "neutral"}>
+                    {flags.E_WALLET ? "Enabled" : "Disabled"}
+                  </Badge>
+                  <Button variant="outline" size="sm" onClick={() => toggleFlag('E_WALLET')}>
+                    {flags.E_WALLET ? "Disable" : "Enable"}
+                  </Button>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+                <div>
+                  <span className="text-body-bold" style={{ display: 'block' }}>Auto-Visa Application</span>
+                  <span className="text-caption text-muted">Direct API integration with Saudi MOFA.</span>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <Badge variant={flags.AUTO_VISA ? "success" : "neutral"}>
+                    {flags.AUTO_VISA ? "Enabled" : "Disabled"}
+                  </Badge>
+                  <Button variant="outline" size="sm" onClick={() => toggleFlag('AUTO_VISA')}>
+                    {flags.AUTO_VISA ? "Disable" : "Enable"}
+                  </Button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'audit' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+          <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
+              <History size={20} className="text-muted" />
+              <h2 className="text-section-title">Audit Logs (Settings & Policy)</h2>
+            </div>
+            
+            <DataTable 
+              columns={[
+                { header: 'Date', accessor: 'date' as const },
+                { header: 'User', accessor: 'user' as const },
+                { header: 'Action', accessor: 'action' as const },
+                { header: 'Target Setting', accessor: 'target' as const },
+                { header: 'Old Value', accessor: 'old' as const },
+                { header: 'New Value', accessor: 'new' as const }
+              ]}
+              data={[
+                { id: '1', date: '10 Jun 2026, 14:00', user: 'Admin (Faiz)', action: 'Updated', target: 'MFA Required', old: 'False', new: 'True' },
+                { id: '2', date: '09 Jun 2026, 09:30', user: 'Admin (Siti)', action: 'Updated', target: 'Platform Commission', old: '4.5%', new: '5.0%' },
+                { id: '3', date: '08 Jun 2026, 16:45', user: 'System', action: 'Enabled', target: 'Referral Rewards Module', old: 'Disabled', new: 'Enabled' }
+              ]}
+            />
+          </div>
+        </div>
+      )}
+
       {activeTab === 'integrations' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
           <div style={{ padding: 'var(--space-6)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)',  boxShadow: 'var(--glass-shadow)', borderRadius: 'var(--radius-card)', border: 'none' }}>
@@ -235,28 +342,28 @@ export const SettingsPage: React.FC<{ navigate, showToast: (route: string) => vo
                   <span className="text-body-bold" style={{ display: 'block' }}>Visa Processing API</span>
                   <span className="text-caption text-muted">Saudi Arabia e-Visa integration</span>
                 </div>
-                <Badge variant="success">Connected</Badge>
+                <Badge variant={getStatusBadgeVariant("Connected")}>Connected</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div>
                   <span className="text-body-bold" style={{ display: 'block' }}>Payment Gateway</span>
                   <span className="text-caption text-muted">Online payment processing</span>
                 </div>
-                <Badge variant="success">Connected</Badge>
+                <Badge variant={getStatusBadgeVariant("Connected")}>Connected</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div>
                   <span className="text-body-bold" style={{ display: 'block' }}>WhatsApp Business API</span>
                   <span className="text-caption text-muted">Message delivery provider</span>
                 </div>
-                <Badge variant="warning">Rate Limited</Badge>
+                <Badge variant={getStatusBadgeVariant("Rate Limited")}>Rate Limited</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div>
                   <span className="text-body-bold" style={{ display: 'block' }}>Flight Data Provider</span>
                   <span className="text-caption text-muted">Real-time flight status</span>
                 </div>
-                <Badge variant="neutral">Not Configured</Badge>
+                <Badge variant={getStatusBadgeVariant("Not Configured")}>Not Configured</Badge>
               </div>
             </div>
           </div>

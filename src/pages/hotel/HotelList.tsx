@@ -6,10 +6,11 @@ import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Star, MapPin, Image as ImageIcon, Eye, Edit, Trash2, ChevronRight, Building2, CheckCircle2, BedDouble } from 'lucide-react';
+import { Plus, Star, MapPin, Image as ImageIcon, Eye, Edit, Trash2, ChevronRight, Building2, CheckCircle2, Package } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const HotelList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedHotels, setSelectedHotels] = useState<string[]>([]);
@@ -21,201 +22,44 @@ return () => clearTimeout(timer);
   }, []);
 
 const initialHotelList = [
-  {
-    "id": "ht_1",
-    "name": "Fairmont Clock Tower (Tower 1)",
-    "city": "Madinah",
-    "rating": 4,
-    "distance": 140,
-    "rooms": 60,
-    "status": "Active",
-    "lastUpdated": "2026-06-11"
-  },
-  {
-    "id": "ht_2",
-    "name": "Pullman Zamzam (Tower 1)",
-    "city": "Makkah",
-    "rating": 5,
-    "distance": 180,
-    "rooms": 70,
-    "status": "Active",
-    "lastUpdated": "2026-06-12"
-  },
-  {
-    "id": "ht_3",
-    "name": "Hilton Suites Makkah (Tower 1)",
-    "city": "Madinah",
-    "rating": 3,
-    "distance": 220,
-    "rooms": 80,
-    "status": "Active",
-    "lastUpdated": "2026-06-13"
-  },
-  {
-    "id": "ht_4",
-    "name": "Movenpick Anwar Al Madinah (Tower 1)",
-    "city": "Makkah",
-    "rating": 4,
-    "distance": 260,
-    "rooms": 90,
-    "status": "Active",
-    "lastUpdated": "2026-06-14"
-  },
-  {
-    "id": "ht_5",
-    "name": "Oberoi Madinah (Tower 2)",
-    "city": "Madinah",
-    "rating": 5,
-    "distance": 300,
-    "rooms": 100,
-    "status": "Inactive",
-    "lastUpdated": "2026-06-15"
-  },
-  {
-    "id": "ht_6",
-    "name": "Dar Al Iman InterContinental (Tower 2)",
-    "city": "Makkah",
-    "rating": 3,
-    "distance": 340,
-    "rooms": 110,
-    "status": "Active",
-    "lastUpdated": "2026-06-16"
-  },
-  {
-    "id": "ht_7",
-    "name": "Elaf Kinda Hotel (Tower 2)",
-    "city": "Madinah",
-    "rating": 4,
-    "distance": 380,
-    "rooms": 120,
-    "status": "Active",
-    "lastUpdated": "2026-06-17"
-  },
-  {
-    "id": "ht_8",
-    "name": "Olayan Ajyad (Tower 2)",
-    "city": "Makkah",
-    "rating": 5,
-    "distance": 420,
-    "rooms": 130,
-    "status": "Active",
-    "lastUpdated": "2026-06-18"
-  },
-  {
-    "id": "ht_9",
-    "name": "Anjum Makkah (Tower 2)",
-    "city": "Madinah",
-    "rating": 3,
-    "distance": 460,
-    "rooms": 140,
-    "status": "Active",
-    "lastUpdated": "2026-06-19"
-  },
-  {
-    "id": "ht_10",
-    "name": "Swissotel Makkah (Tower 3)",
-    "city": "Makkah",
-    "rating": 4,
-    "distance": 500,
-    "rooms": 150,
-    "status": "Inactive",
-    "lastUpdated": "2026-06-20"
-  },
-  {
-    "id": "ht_11",
-    "name": "Fairmont Clock Tower (Tower 3)",
-    "city": "Madinah",
-    "rating": 5,
-    "distance": 540,
-    "rooms": 160,
-    "status": "Active",
-    "lastUpdated": "2026-06-21"
-  },
-  {
-    "id": "ht_12",
-    "name": "Pullman Zamzam (Tower 3)",
-    "city": "Makkah",
-    "rating": 3,
-    "distance": 580,
-    "rooms": 170,
-    "status": "Active",
-    "lastUpdated": "2026-06-22"
-  },
-  {
-    "id": "ht_13",
-    "name": "Hilton Suites Makkah (Tower 3)",
-    "city": "Madinah",
-    "rating": 4,
-    "distance": 620,
-    "rooms": 180,
-    "status": "Active",
-    "lastUpdated": "2026-06-23"
-  },
-  {
-    "id": "ht_14",
-    "name": "Movenpick Anwar Al Madinah (Tower 3)",
-    "city": "Makkah",
-    "rating": 5,
-    "distance": 660,
-    "rooms": 190,
-    "status": "Active",
-    "lastUpdated": "2026-06-24"
-  },
-  {
-    "id": "ht_15",
-    "name": "Oberoi Madinah (Tower 4)",
-    "city": "Madinah",
-    "rating": 3,
-    "distance": 700,
-    "rooms": 200,
-    "status": "Inactive",
-    "lastUpdated": "2026-06-25"
-  },
-  {
-    "id": "ht_16",
-    "name": "Dar Al Iman InterContinental (Tower 4)",
-    "city": "Makkah",
-    "rating": 4,
-    "distance": 740,
-    "rooms": 210,
-    "status": "Active",
-    "lastUpdated": "2026-06-26"
-  },
-  {
-    "id": "ht_17",
-    "name": "Elaf Kinda Hotel (Tower 4)",
-    "city": "Madinah",
-    "rating": 5,
-    "distance": 780,
-    "rooms": 220,
-    "status": "Active",
-    "lastUpdated": "2026-06-27"
-  },
-  {
-    "id": "ht_18",
-    "name": "Olayan Ajyad (Tower 4)",
-    "city": "Makkah",
-    "rating": 3,
-    "distance": 820,
-    "rooms": 230,
-    "status": "Active",
-    "lastUpdated": "2026-06-28"
-  }
+  { "id": "ht_1", "name": "Fairmont Clock Tower (Tower 1)", "city": "Madinah", "rating": 4, "distance": 140, "location": "Abraj Al Bait Complex", "galleryCount": 12, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-11" },
+  { "id": "ht_2", "name": "Pullman Zamzam (Tower 1)", "city": "Makkah", "rating": 5, "distance": 180, "location": "Abraj Al Bait Complex", "galleryCount": 15, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-12" },
+  { "id": "ht_3", "name": "Hilton Suites Makkah (Tower 1)", "city": "Madinah", "rating": 3, "distance": 220, "location": "Ibrahim Al Khalil Street", "galleryCount": 8, "availableForPackage": false, "status": "Active", "lastUpdated": "2026-06-13" },
+  { "id": "ht_4", "name": "Movenpick Anwar Al Madinah (Tower 1)", "city": "Makkah", "rating": 4, "distance": 260, "location": "Central Area", "galleryCount": 20, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-14" },
+  { "id": "ht_5", "name": "Oberoi Madinah (Tower 2)", "city": "Madinah", "rating": 5, "distance": 300, "location": "Central Area", "galleryCount": 10, "availableForPackage": false, "status": "Inactive", "lastUpdated": "2026-06-15" },
+  { "id": "ht_6", "name": "Dar Al Iman InterContinental (Tower 2)", "city": "Makkah", "rating": 3, "distance": 340, "location": "Central Area", "galleryCount": 6, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-16" },
+  { "id": "ht_7", "name": "Elaf Kinda Hotel (Tower 2)", "city": "Madinah", "rating": 4, "distance": 380, "location": "Al Mesfala", "galleryCount": 14, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-17" },
+  { "id": "ht_8", "name": "Olayan Ajyad (Tower 2)", "city": "Makkah", "rating": 5, "distance": 420, "location": "Ajyad Street", "galleryCount": 18, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-18" },
+  { "id": "ht_9", "name": "Anjum Makkah (Tower 2)", "city": "Madinah", "rating": 3, "distance": 460, "location": "Umm Al Qura Road", "galleryCount": 7, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-19" },
+  { "id": "ht_10", "name": "Swissotel Makkah (Tower 3)", "city": "Makkah", "rating": 4, "distance": 500, "location": "Abraj Al Bait Complex", "galleryCount": 5, "availableForPackage": false, "status": "Inactive", "lastUpdated": "2026-06-20" },
+  { "id": "ht_11", "name": "Fairmont Clock Tower (Tower 3)", "city": "Madinah", "rating": 5, "distance": 540, "location": "Abraj Al Bait Complex", "galleryCount": 25, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-21" },
+  { "id": "ht_12", "name": "Pullman Zamzam (Tower 3)", "city": "Makkah", "rating": 3, "distance": 580, "location": "Abraj Al Bait Complex", "galleryCount": 9, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-22" },
+  { "id": "ht_13", "name": "Hilton Suites Makkah (Tower 3)", "city": "Madinah", "rating": 4, "distance": 620, "location": "Ibrahim Al Khalil Street", "galleryCount": 11, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-23" },
+  { "id": "ht_14", "name": "Movenpick Anwar Al Madinah (Tower 3)", "city": "Makkah", "rating": 5, "distance": 660, "location": "Central Area", "galleryCount": 16, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-24" },
+  { "id": "ht_15", "name": "Oberoi Madinah (Tower 4)", "city": "Madinah", "rating": 3, "distance": 700, "location": "Central Area", "galleryCount": 4, "availableForPackage": false, "status": "Inactive", "lastUpdated": "2026-06-25" },
+  { "id": "ht_16", "name": "Dar Al Iman InterContinental (Tower 4)", "city": "Makkah", "rating": 4, "distance": 740, "location": "Central Area", "galleryCount": 13, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-26" },
+  { "id": "ht_17", "name": "Elaf Kinda Hotel (Tower 4)", "city": "Madinah", "rating": 5, "distance": 780, "location": "Al Mesfala", "galleryCount": 22, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-27" },
+  { "id": "ht_18", "name": "Olayan Ajyad (Tower 4)", "city": "Makkah", "rating": 3, "distance": 820, "location": "Ajyad Street", "galleryCount": 8, "availableForPackage": true, "status": "Active", "lastUpdated": "2026-06-28" }
 ];
 
   const { data: hotelList, remove } = useLocalStorageCrud('hotel', initialHotelList);
   const columns = [
-    { header: 'Hotel ID', accessor: 'id' as const, sortable: true },
     { 
       header: 'Hotel Name', 
       accessor: (row: typeof hotelList[0]) => (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span className="text-body-bold">{row.name}</span>
-          <span className="text-caption text-muted">Rooms: {row.rooms}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--surface-sunken)' }}>
+            <img src={`https://picsum.photos/seed/${row.id}/100/100`} alt={row.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="text-body-bold">{row.name}</span>
+            <span className="text-caption text-muted">{row.id}</span>
+          </div>
         </div>
       )
     },
     { header: 'City', accessor: 'city' as const, sortable: true },
+    { header: 'Location', accessor: (row: typeof hotelList[0]) => <span className="text-body text-muted">{row.location}</span>, sortable: true },
     { 
       header: 'Star Rating', 
       accessor: (row: typeof hotelList[0]) => (
@@ -228,7 +72,7 @@ const initialHotelList = [
       sortable: true
     },
     { 
-      header: 'Distance to Haram', 
+      header: 'Distance to Landmark', 
       accessor: (row: typeof hotelList[0]) => (
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <MapPin size={12} className="text-muted" />
@@ -237,13 +81,30 @@ const initialHotelList = [
       ),
       sortable: true
     },
+    {
+      header: 'Gallery',
+      accessor: (row: typeof hotelList[0]) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <ImageIcon size={14} className="text-muted" />
+          <span>{row.galleryCount}</span>
+        </div>
+      ),
+      sortable: true
+    },
+    {
+      header: 'Available',
+      accessor: (row: typeof hotelList[0]) => (
+        row.availableForPackage ? <Badge variant={getStatusBadgeVariant("Yes")}>Yes</Badge> : <Badge variant={getStatusBadgeVariant("No")}>No</Badge>
+      )
+    },
     { 
       header: 'Status', 
       accessor: (row: typeof hotelList[0]) => {
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
         if (row.status === 'Active') variant = 'success';
-        if (row.status === 'Inactive') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        if (row.status === 'Inactive') variant = 'warning';
+        if (row.status === 'Archived') variant = 'neutral';
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Last Updated', accessor: 'lastUpdated' as const, sortable: true },
@@ -423,11 +284,11 @@ return (
           accentColor="var(--color-success)" 
         />
         <MetricCard 
-          title="Total Room Capacity" 
-          value={hotelList.reduce((acc, h) => acc + h.rooms, 0).toString()} 
+          title="Available for Package" 
+          value={hotelList.filter(h => h.availableForPackage).length.toString()} 
           trend="neutral" 
           trendValue="0" 
-          icon={<BedDouble />} 
+          icon={<Package />} 
           iconBg="var(--color-info-light)" 
           accentColor="var(--color-info)" 
         />

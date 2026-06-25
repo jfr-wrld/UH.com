@@ -10,6 +10,7 @@ import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCe
 import { TrendingUp, Users, Building, Package, Download, Eye, Percent, CheckCircle, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 // PRD Section 12: Commission Summary
 
@@ -267,7 +268,7 @@ const initialCommissionList = [
         if (row.payoutStatus === 'Paid') variant = 'success';
         if (row.payoutStatus === 'Processing') variant = 'warning';
         if (row.payoutStatus === 'Pending') variant = 'neutral';
-        return <Badge variant={variant}>{row.payoutStatus}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.payoutStatus)}>{row.payoutStatus}</Badge>;
       }
     },
     { header: 'Date', accessor: 'date' as const, sortable: true },

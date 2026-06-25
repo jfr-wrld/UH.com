@@ -11,7 +11,10 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { Button } from '../../components/actions/Button';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
+import { CountryFlag } from '../../components/data-display/CountryFlag';
 
 
 const initialAgencies = [
@@ -308,6 +311,19 @@ const initialAgencies = [
 export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const { data: agencies, isLoading, remove, removeMany } = useLocalStorageCrud('travel-agencies', initialAgencies);
+  
+  const [modalState, setModalState] = useState<{isOpen: boolean, action: string, row: any}>({isOpen: false, action: '', row: null});
+
+  const handleConfirmAction = (reason: string) => {
+    if (modalState.action === 'delete' && modalState.row) {
+      remove(modalState.row.id);
+    } else if (modalState.action === 'suspend' && modalState.row) {
+      // In a real app, API call to update status
+      console.log(`Status changed for ${modalState.row.name} with reason: ${reason}`);
+    }
+    setModalState({isOpen: false, action: '', row: null});
+  };
+
 
   const columns = [
     { 
@@ -369,21 +385,17 @@ export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) 
       header: 'Location', 
       accessor: (row: any) => {
         const locationStr = row.location || (row.state && row.country ? `${row.state}, ${row.country === 'Malaysia' ? 'MY' : row.country === 'Indonesia' ? 'ID' : row.country === 'Saudi Arabia' ? 'SA' : row.country}` : 'Unknown');
-        let flag = '📍';
-        if (locationStr.endsWith('ID')) flag = '🇮🇩';
-        if (locationStr.endsWith('MY')) flag = '🇲🇾';
-        if (locationStr.endsWith('SA')) flag = '🇸🇦';
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <span style={{ fontSize: '16px' }}>{flag}</span>
+            <CountryFlag country={row.country || (locationStr.endsWith('ID') ? 'Indonesia' : locationStr.endsWith('MY') ? 'Malaysia' : locationStr.endsWith('SA') ? 'Saudi Arabia' : '')} />
             <span>{locationStr}</span>
           </div>
         );
       }
     },
-    { header: 'Total Jamaah', accessor: (row: any) => row.jamaah || 0, align: 'right' as const },
-    { header: 'Packages', accessor: (row: any) => row.activePackages || 0, align: 'right' as const },
-    { header: 'Trips', accessor: (row: any) => row.activeTrips || 0, align: 'right' as const },
+    { header: 'Total Jamaah', accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.jamaah || 0}</div>, align: 'right' as const },
+    { header: 'Packages', accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.activePackages || 0}</div>, align: 'right' as const },
+    { header: 'Trips', accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.activeTrips || 0}</div>, align: 'right' as const },
     { 
       header: 'License Expiry', 
       accessor: (row: any) => {
@@ -410,8 +422,8 @@ export const TravelAgencyList: React.FC<{ navigate: (route: string, data?: any) 
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('ta-details', { agencyId: row.id }) },
             { id: 'edit', label: 'Edit Agency', icon: <Edit size={16} />, onClick: () => navigate('ta-edit', { agencyId: row.id }) },
-            { id: 'suspend', label: row.status === 'Suspended' ? 'Reactivate' : 'Suspend', icon: row.status === 'Suspended' ? <RefreshCw size={16} /> : <Ban size={16} />, onClick: () => console.log('Suspend') },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
+            { id: 'suspend', label: row.status === 'Suspended' ? 'Reactivate' : 'Suspend', icon: row.status === 'Suspended' ? <RefreshCw size={16} /> : <Ban size={16} />, onClick: () => setModalState({isOpen: true, action: 'suspend', row}) },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, onClick: () => setModalState({isOpen: true, action: 'delete', row}) }
           ]}
         />
       ),
@@ -539,6 +551,17 @@ return (
         searchPlaceholder="Search agency name, PIC, ID, or License No..."
       />
 
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, action: '', row: null})}
+        onConfirm={handleConfirmAction}
+        title={modalState.action === 'delete' ? 'Delete Travel Agency' : 'Change Agency Status'}
+        message={modalState.action === 'delete' ? 'Are you sure you want to delete this agency? This action cannot be undone.' : `Are you sure you want to ${modalState.row?.status === 'Suspended' ? 'reactivate' : 'suspend'} this agency?`}
+        actionLabel={modalState.action === 'delete' ? 'Delete' : 'Confirm'}
+        isDestructive={modalState.action === 'delete' || modalState.row?.status !== 'Suspended'}
+        entityName={modalState.row?.name}
+      />
+      
       <DataTable
         onRowClick={(row: any) => navigate('ta-details', { agencyId: row.id })} 
         data={filteredData}

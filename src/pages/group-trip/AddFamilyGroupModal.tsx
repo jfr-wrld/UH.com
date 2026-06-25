@@ -5,6 +5,7 @@ import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { Users, X, Search, UserPlus } from 'lucide-react';
 import { Badge } from '../../components/data-display/Badge';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const AddFamilyGroupModal: React.FC<{ isOpen: boolean, onClose: () => void }> = ({ isOpen, onClose }) => {
   const [memberMode, setMemberMode] = useState<'list' | 'search' | 'invite'>('list');
@@ -74,7 +75,7 @@ export const AddFamilyGroupModal: React.FC<{ isOpen: boolean, onClose: () => voi
                   <span className="text-caption text-muted">zahid@example.com</span>
                 </div>
               </div>
-              <Badge variant="success">Active</Badge>
+              <Badge variant={getStatusBadgeVariant('Active')}>Active</Badge>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'var(--space-4)' }}>
               <Button onClick={() => setMemberMode('list')}>Add Selected to Family</Button>

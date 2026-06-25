@@ -55,7 +55,7 @@ export const InvoiceCreate: React.FC<{ navigate: (route: string, data?: any) => 
               <FormField label="Phone Number"><Input defaultValue="+60123456789" /></FormField>
               <FormField label="Travel Agency context" required><Select options={[{value: 'zamzam', label: 'Zamzam Travels'}]} value="zamzam" onChange={() => {}} /></FormField>
               <div style={{ gridColumn: 'span 2' }}>
-                <FormField label="Billing Address"><textarea className="text-body" style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: 'none', minHeight: '80px', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} defaultValue="123 Jalan Ampang, Kuala Lumpur, 50450, Malaysia" /></FormField>
+                <FormField label="Billing Address"><textarea className="text-body" style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', minHeight: '80px', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} defaultValue="123 Jalan Ampang, Kuala Lumpur, 50450, Malaysia" /></FormField>
               </div>
             </div>
           </div>
@@ -79,8 +79,8 @@ export const InvoiceCreate: React.FC<{ navigate: (route: string, data?: any) => 
                     <td><Input defaultValue="Premium Umrah Safar (Adult)" /></td>
                     <td><Select options={[{value: 'pkg', label: 'Package'}]} value="pkg" onChange={() => {}} /></td>
                     <td><Input type="number" defaultValue="4" style={{ textAlign: 'right' }} /></td>
-                    <td><Input type="number" defaultValue="12000" style={{ textAlign: 'right' }} /></td>
-                    <td style={{ textAlign: 'right' }}><span className="text-body-bold">48,000</span></td>
+                    <td><Input type="number" defaultValue="12000" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }} /></td>
+                    <td style={{ textAlign: 'right' }}><span className="text-body-bold" style={{ fontVariantNumeric: 'tabular-nums' }}>48,000</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -93,7 +93,7 @@ export const InvoiceCreate: React.FC<{ navigate: (route: string, data?: any) => 
             <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Terms & Notes</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--space-4)' }}>
               <FormField label="Customer Notes">
-                <textarea className="text-body" style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', border: 'none', minHeight: '80px', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} placeholder="Notes visible on the invoice..." />
+                <textarea className="text-body" style={{ width: '100%', padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', minHeight: '80px', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} placeholder="Notes visible on the invoice..." />
               </FormField>
             </div>
           </div>
@@ -124,20 +124,20 @@ export const InvoiceCreate: React.FC<{ navigate: (route: string, data?: any) => 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body text-muted">Subtotal</span>
-                <span className="text-body">RM 48,000</span>
+                <span className="text-body" style={{ fontVariantNumeric: 'tabular-nums' }}>RM 48,000</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body text-muted">Discount</span>
-                <span className="text-body">- RM 0</span>
+                <span className="text-body" style={{ fontVariantNumeric: 'tabular-nums' }}>- RM 0</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body text-muted">Tax (0%)</span>
-                <span className="text-body">RM 0</span>
+                <span className="text-body" style={{ fontVariantNumeric: 'tabular-nums' }}>RM 0</span>
               </div>
               <hr style={{ border: 'none', borderTop: '1px solid var(--border-default)', margin: 'var(--space-2) 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-body-bold" style={{ color: 'var(--color-primary-dark)' }}>Total</span>
-                <span className="text-h3" style={{ color: 'var(--color-primary-dark)' }}>RM 48,000</span>
+                <span className="text-h3" style={{ color: 'var(--color-primary-dark)', fontVariantNumeric: 'tabular-nums' }}>RM 48,000</span>
               </div>
             </div>
 

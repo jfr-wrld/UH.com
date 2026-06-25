@@ -9,9 +9,11 @@ import { useDataFilter } from '../../hooks/useDataFilter';
 import { Eye, ChevronRight, PlaneTakeoff, PlaneLanding, MapPin, Clock, Calendar } from 'lucide-react';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
+import { AirlineLogo } from '../../components/data-display/AirlineLogo';
 
 export const FlightDetails: React.FC<{ navigate: (route: string, data?: any) => void, flightId?: string }> = ({ navigate, flightId = 'fl_1' }) => {
-  const [status, setStatus] = useState('Scheduled');
+  const [status, setStatus] = useState('Active');
   const [activeTab, setActiveTab] = useState('overview');
   const { getById } = useLocalStorageCrud('flight');
 
@@ -72,26 +74,58 @@ export const FlightDetails: React.FC<{ navigate: (route: string, data?: any) => 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', paddingBottom: 'var(--space-8)' }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: 'var(--color-primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary-dark)', fontSize: '32px', fontWeight: 'bold' }}>
-            {flight.logo}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-            <h1 className="text-page-title">{flight.number}</h1>
+      {/* Back Button */}
+      <div style={{ marginBottom: '-16px' }}>
+        <button 
+          onClick={() => navigate('flight-list')}
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'none', border: 'none', color: 'var(--color-text-neutral)', cursor: 'pointer', padding: 0, fontWeight: 500 }}
+          className="text-body"
+        >
+          <ChevronRight style={{ transform: 'rotate(180deg)' }} size={16} /> Back to Flights
+        </button>
+      </div>
+
+      {/* Hero Header Section */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        height: '280px', 
+        borderRadius: 'var(--radius-lg)', 
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        padding: 'var(--space-6)',
+        boxShadow: 'var(--glass-shadow)',
+        marginTop: 'var(--space-2)'
+      }}>
+        {/* Background Image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+          <img src={`https://picsum.photos/seed/${flight.id}/800/400`} alt={flight.number} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+        {/* Dark Gradient Overlay */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, borderRadius: 'var(--radius-lg)', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%)' }} />
+        
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+              {flight.available && <Badge variant={getStatusBadgeVariant("Available for Package")}>Available for Package</Badge>}
+            </div>
             <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-              <span className="text-body text-muted">{flight.airline}</span>
-              <span className="text-body text-muted">{flight.route}</span>
-              <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
-              {flight.available && <Badge variant="info">Available for Package</Badge>}
+              <AirlineLogo iata={flight.logo} name={flight.airline} size={60} />
+              <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{flight.number}</h1>
+            </div>
+            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{flight.airline}</span>
+              <span style={{ opacity: 0.5 }}>|</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '500' }}>{flight.route}</span>
             </div>
           </div>
-        </div>
-        
-        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          <Button variant="secondary" onClick={() => navigate('flight-list')}>Back to List</Button>
-          <Button>Edit Flight</Button>
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+            <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Inactive', 'Archived']} />
+            <Button>Edit Flight</Button>
+          </div>
         </div>
       </div>
 

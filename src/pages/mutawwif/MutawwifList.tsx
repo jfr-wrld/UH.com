@@ -6,14 +6,25 @@ import { Badge } from '../../components/data-display/Badge';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { Eye, Edit, Trash2, Filter, Plus, FileSpreadsheet, MapPin, Star, Users, UserCheck, ShieldCheck } from 'lucide-react';
 import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const MutawwifList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedMutawwif, setSelectedMutawwif] = useState<string[]>([]);
+  const [modalState, setModalState] = useState<{isOpen: boolean, action: string, row: any}>({isOpen: false, action: '', row: null});
+  
+  const handleConfirmAction = (reason: string) => {
+    if (modalState.action === 'delete' && modalState.row) {
+      remove(modalState.row.id);
+    }
+    setModalState({isOpen: false, action: '', row: null});
+  };
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -300,12 +311,12 @@ const initialMutawwifList = [
       accessor: (row: typeof mutawwifList[0]) => (
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Star size={14} fill="var(--color-warning)" stroke="var(--color-warning)" />
-          {row.rating.toFixed(1)}
+          <span style={{ fontVariantNumeric: 'tabular-nums' }}>{row.rating.toFixed(1)}</span>
         </span>
       ),
       sortable: true
     },
-    { header: 'Trips', accessor: 'tripsCount' as const, sortable: true },
+    { header: 'Trips', accessor: (row: typeof mutawwifList[0]) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.tripsCount}</div>, sortable: true },
     { 
       header: 'Status', 
       accessor: (row: typeof mutawwifList[0]) => {
@@ -313,7 +324,7 @@ const initialMutawwifList = [
         if (row.status === 'Active') variant = 'success';
         if (row.status === 'On Leave') variant = 'warning';
         if (row.status === 'Inactive') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Last Updated', accessor: 'lastUpdated' as const, sortable: true },
@@ -325,7 +336,7 @@ const initialMutawwifList = [
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('mutawwif-details', { id: row.id }) },
             { id: 'edit', label: 'Edit', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => { if(window.confirm('Are you sure?')) remove(row.id) } }
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => setModalState({isOpen: true, action: 'delete', row}) }
           ]}
         />
       ),
@@ -508,6 +519,17 @@ const initialMutawwifList = [
         </div>
       )}
 
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, action: '', row: null})}
+        onConfirm={handleConfirmAction}
+        title="Delete Mutawwif"
+        message="Are you sure you want to delete this Mutawwif? This action cannot be undone and will detach them from any active trips."
+        actionLabel="Delete"
+        isDestructive={true}
+        entityName={modalState.row?.name}
+      />
+      
       <DataTable
         onRowClick={(row: any) => navigate('mutawwif-details', { id: row.id })} 
         data={filteredData}

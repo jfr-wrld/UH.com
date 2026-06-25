@@ -6,6 +6,7 @@ import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { ApprovalDecisionBar } from '../../components/domain/ApprovalDecisionBar';
 import { Select } from '../../components/inputs/Select';
 import { Star, CheckCircle, EyeOff, Archive, AlertTriangle, Image as ImageIcon } from 'lucide-react';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const TestimonialDetails: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: any, testimonialId?: string }> = ({ navigate, showToast, testimonialId = 't_1' }) => {
   const [status, setStatus] = useState('Pending Review');
@@ -75,9 +76,9 @@ export const TestimonialDetails: React.FC<{ navigate: (route: string, data?: any
                 <span className="text-body text-muted">{testimonial.trip} • {testimonial.date}</span>
               </div>
               <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                <Badge variant={status === 'Approved' ? 'success' : status === 'Pending Review' ? 'warning' : 'danger'}>{status}</Badge>
+                <Badge variant={getStatusBadgeVariant(status)}>{status}</Badge>
                 {status === 'Approved' && (
-                  <Badge variant={visibility === 'Public' ? 'primary' : 'neutral'}>{visibility}</Badge>
+                  <Badge variant={getStatusBadgeVariant(visibility)}>{visibility}</Badge>
                 )}
               </div>
             </div>
@@ -158,7 +159,7 @@ export const TestimonialDetails: React.FC<{ navigate: (route: string, data?: any
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-caption text-muted">Recommendation</span>
-                <Badge variant="success">Recommends Trip</Badge>
+                <Badge variant={getStatusBadgeVariant("Recommends Trip")}>Recommends Trip</Badge>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="text-caption text-muted">User Consent</span>

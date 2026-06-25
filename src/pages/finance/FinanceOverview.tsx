@@ -9,23 +9,54 @@ import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Skeleton } from '../../components/data-display/Skeleton';
 import { TrendingUp, CheckCircle, Clock, AlertTriangle, Percent, RotateCcw, Wallet, ArrowUpRight, Download, Eye, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const FinanceOverview: React.FC<{ navigate: (route: string, data?: any) => void; showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const [overviewMetrics, setOverviewMetrics] = useState({
+    totalRevenue: 0,
+    overdueAmount: 0,
+    pendingVerifications: 0,
+    earnedCommission: 0
+  });
+  const [recentPayments, setRecentPayments] = useState<any[]>([]);
 
-  // Recent payments mock data (PRD Section 9)
-  const recentPayments = [
-    { id: 'PAY-20261101', invoiceId: 'INV-2026-0145', agency: 'Zamzam Travels', customer: 'Ahmad Hassan', amount: 12500, method: 'Bank Transfer', status: 'Verified', commission: 625, paidAt: '10 Nov 2026' },
-    { id: 'PAY-20261102', invoiceId: 'INV-2026-0146', agency: 'Al-Barakah Travel', customer: 'Siti Aminah', amount: 8900, method: 'FPX', status: 'Pending', commission: 445, paidAt: '10 Nov 2026' },
-    { id: 'PAY-20261103', invoiceId: 'INV-2026-0147', agency: 'Safir Travel', customer: 'Zahid Kamal', amount: 24000, method: 'Bank Transfer', status: 'Verified', commission: 1200, paidAt: '09 Nov 2026' },
-    { id: 'PAY-20261104', invoiceId: 'INV-2026-0148', agency: 'Makkah Tours', customer: 'Nur Aisyah', amount: 6200, method: 'E-wallet', status: 'Processing', commission: 310, paidAt: '09 Nov 2026' },
-    { id: 'PAY-20261105', invoiceId: 'INV-2026-0149', agency: 'Global Travel', customer: 'Irfan Mohd', amount: 15800, method: 'Cash', status: 'Rejected', commission: 0, paidAt: '08 Nov 2026' },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [overviewRes, paymentsRes] = await Promise.all([
+          fetch('http://localhost:3001/api/billing/overview'),
+          fetch('http://localhost:3001/api/billing/payments')
+        ]);
+        
+        if (overviewRes.ok) {
+          setOverviewMetrics(await overviewRes.json());
+        }
+        if (paymentsRes.ok) {
+          const payments = await paymentsRes.json();
+          // Map to match table expectations
+          setRecentPayments(payments.slice(0, 5).map((p: any) => ({
+            id: p.id,
+            invoiceId: p.invoice.invoiceNumber,
+            agency: p.invoice.travelAgencyId || 'Direct Customer',
+            customer: p.invoice.jamaahId || '-',
+            amount: p.amount,
+            method: p.paymentMethod,
+            status: p.status,
+            commission: p.amount * 0.05, // Approximation for UI display
+            paidAt: new Date(p.createdAt).toLocaleDateString()
+          })));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const paymentColumns = [
     {
@@ -60,8 +91,8 @@ export const FinanceOverview: React.FC<{ navigate: (route: string, data?: any) =
     {
       header: 'Status',
       accessor: (row: typeof recentPayments[0]) => {
-        const v: Record<string, 'success' | 'warning' | 'danger' | 'neutral' | 'primary'> = { Verified: 'success', Pending: 'warning', Processing: 'primary', Rejected: 'danger', Refunded: 'neutral' };
-        return <Badge variant={v[row.status] || 'neutral'}>{row.status}</Badge>;
+        const v: Record<string, 'success' | 'warning' | 'danger' | 'neutral' | 'primary'> = { VERIFIED: 'success', PENDING: 'warning', PROCESSING: 'primary', FAILED: 'danger', REFUNDED: 'neutral', Verified: 'success', Pending: 'warning' };
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {
@@ -129,16 +160,10 @@ export const FinanceOverview: React.FC<{ navigate: (route: string, data?: any) =
 
       {/* PRD Section 8: Summary Cards — 8 cards as defined in IA */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
-        <MetricCard title="Total Revenue" value="RM 2.45M" icon={<TrendingUp size={18} className="text-success" />} iconBg="var(--color-success-light)" trend="up" trendValue="+12.5% vs last month" />
-        <MetricCard title="Collected" value="RM 1.82M" icon={<CheckCircle size={18} className="text-primary" />} iconBg="var(--color-primary-light)" trend="up" trendValue="74.3% collection rate" />
-        <MetricCard title="Outstanding" value="RM 480K" icon={<Clock size={18} className="text-warning" />} iconBg="var(--color-warning-light)" trend="down" trendValue="38 open invoices" />
-        <MetricCard title="Overdue" value="RM 128K" icon={<AlertTriangle size={18} className="text-danger" />} iconBg="var(--color-danger-light)" trend="down" trendValue="12 overdue invoices" />
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
-        <MetricCard title="Platform Commission" value="RM 185K" icon={<Percent size={18} style={{ color: 'var(--color-primary-dark)' }} />} iconBg="var(--color-primary-light)" trend="up" trendValue="RM 42K earned this month" />
-        <MetricCard title="Pending Refunds" value="7" icon={<RotateCcw size={18} className="text-warning" />} iconBg="var(--color-warning-light)" trend="neutral" trendValue="RM 18.5K total amount" />
-        <MetricCard title="Pending Allowances" value="5" icon={<Wallet size={18} className="text-warning" />} iconBg="var(--color-warning-light)" trend="neutral" trendValue="RM 12.8K requested" />
-        <MetricCard title="Payout Ready" value="14" icon={<ArrowUpRight size={18} className="text-success" />} iconBg="var(--color-success-light)" trend="up" trendValue="RM 67K ready for processing" />
+        <MetricCard title="Total Revenue" value={`RM ${overviewMetrics.totalRevenue.toLocaleString()}`} icon={<TrendingUp size={18} className="text-success" />} iconBg="var(--color-success-light)" trend="up" trendValue="Total Paid Invoices" />
+        <MetricCard title="Overdue" value={`RM ${overviewMetrics.overdueAmount.toLocaleString()}`} icon={<AlertTriangle size={18} className="text-danger" />} iconBg="var(--color-danger-light)" trend="down" trendValue="Unpaid Past Due" />
+        <MetricCard title="Pending Verifications" value={overviewMetrics.pendingVerifications.toString()} icon={<Clock size={18} className="text-warning" />} iconBg="var(--color-warning-light)" trend="neutral" trendValue="Payments awaiting review" />
+        <MetricCard title="Platform Commission" value={`RM ${overviewMetrics.earnedCommission.toLocaleString()}`} icon={<Percent size={18} style={{ color: 'var(--color-primary-dark)' }} />} iconBg="var(--color-primary-light)" trend="up" trendValue="Earned from payments" />
       </div>
 
       {/* Recent Payments Table - PRD Section 9 */}

@@ -10,6 +10,7 @@ import { Plus, Package, FileText, CheckCircle, Archive, Download, Link as LinkIc
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const PackageList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
@@ -407,13 +408,9 @@ const initialPackageList = [
     {
       header: 'Status & Date',
       accessor: (row: typeof packageList[0]) => {
-        let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
-        if (row.status === 'Published') variant = 'success';
-        if (row.status === 'Pending Approval') variant = 'warning';
-        if (row.status === 'Draft') variant = 'neutral';
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-            <Badge variant={variant} style={{ width: 'fit-content' }}>{row.status}</Badge>
+            <Badge variant={getStatusBadgeVariant(row.status)} style={{ width: 'fit-content' }}>{row.status}</Badge>
             <span className="text-caption text-muted">{row.dateCreated}</span>
           </div>
         );

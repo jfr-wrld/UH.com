@@ -6,13 +6,24 @@ import { MetricCard } from '../../components/data-display/MetricCard';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { Plus, Filter, FileSpreadsheet, Eye, Edit, Trash2, Copy, Send, ChevronRight, FileText, CheckCircle2, Clock } from 'lucide-react';
 import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ItineraryList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedItinerary, setSelectedItinerary] = useState<string[]>([]);
+  const [modalState, setModalState] = useState<{isOpen: boolean, action: string, row: any}>({isOpen: false, action: '', row: null});
+
+  const handleConfirmAction = (reason: string) => {
+    if (modalState.row) {
+      console.log(`${modalState.action} itinerary ${modalState.row.id} with reason: ${reason}`);
+    }
+    setModalState({isOpen: false, action: '', row: null});
+  };
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +46,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-11",
     "version": "v1.1"
   },
@@ -51,6 +65,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-12",
     "version": "v1.2"
   },
@@ -65,6 +82,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-13",
     "version": "v1.0"
   },
@@ -81,6 +101,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-14",
     "version": "v1.1"
   },
@@ -97,6 +120,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Draft",
+    "type": "Umrah",
+    "usedIn": 0,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-15",
     "version": "v1.2"
   },
@@ -111,6 +137,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-16",
     "version": "v1.0"
   },
@@ -127,6 +156,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-17",
     "version": "v1.1"
   },
@@ -143,6 +175,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-18",
     "version": "v1.2"
   },
@@ -157,6 +192,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-19",
     "version": "v1.0"
   },
@@ -173,6 +211,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Draft",
+    "type": "Umrah",
+    "usedIn": 0,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-20",
     "version": "v1.1"
   },
@@ -189,6 +230,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-21",
     "version": "v1.2"
   },
@@ -203,6 +247,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-22",
     "version": "v1.0"
   },
@@ -219,6 +266,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-23",
     "version": "v1.1"
   },
@@ -235,6 +285,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-24",
     "version": "v1.2"
   },
@@ -249,6 +302,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Draft",
+    "type": "Umrah",
+    "usedIn": 0,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-25",
     "version": "v1.0"
   },
@@ -265,6 +321,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-26",
     "version": "v1.1"
   },
@@ -281,6 +340,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 24,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-27",
     "version": "v1.2"
   },
@@ -295,6 +357,9 @@ return () => clearTimeout(timer);
     ],
     "activities": 12,
     "status": "Active",
+    "type": "Umrah",
+    "usedIn": 3,
+    "created": "2026-06-01",
     "lastUpdated": "2026-06-28",
     "version": "v1.0"
   }
@@ -325,24 +390,37 @@ return () => clearTimeout(timer);
         );
       }
     },
-    { header: 'Duration (Days)', accessor: 'days' as const, sortable: true },
     { 
-      header: 'Destinations', 
-      accessor: (row: typeof itineraryList[0]) => (
-        <span>{row.destinations.join(', ')}</span>
-      )
+      header: 'Type', 
+      accessor: (row: any) => <Badge variant={getCategoryBadgeVariant(row.type)}>{row.type}</Badge> 
     },
-    { header: 'Activities', accessor: 'activities' as const, sortable: true },
+    { 
+      header: 'Duration (Days)', 
+      accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.days}</div>, 
+      sortable: true 
+    },
+    { 
+      header: 'Total Activities', 
+      accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.activities}</div>, 
+      sortable: true 
+    },
     { 
       header: 'Status', 
       accessor: (row: typeof itineraryList[0]) => {
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
         if (row.status === 'Active') variant = 'success';
         if (row.status === 'Draft') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        if (row.status === 'Inactive') variant = 'warning';
+        if (row.status === 'Archived') variant = 'neutral';
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
-    { header: 'Last Updated', accessor: 'lastUpdated' as const, sortable: true },
+    { 
+      header: 'Used In', 
+      accessor: (row: any) => <div style={{ fontVariantNumeric: 'tabular-nums' }}>{row.usedIn} Packages/Trips</div>, 
+      sortable: true 
+    },
+    { header: 'Date Created', accessor: (row: any) => row.created, sortable: true },
     {
       header: 'Actions',
       accessor: (row: typeof itineraryList[0]) => (
@@ -350,8 +428,12 @@ return () => clearTimeout(timer);
           triggerLabel=""
           items={[
             { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => navigate('itinerary-details', { id: row.id }) },
+            { id: 'preview', label: 'Preview', icon: <Eye size={16} />, onClick: () => console.log('Preview', row.id) },
             { id: 'edit', label: 'Edit', icon: <Edit size={16} />, onClick: () => console.log('Edit', row.id) },
-            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => console.log('Delete', row.id) }
+            { id: 'duplicate', label: 'Duplicate', icon: <Copy size={16} />, onClick: () => console.log('Duplicate', row.id) },
+            { id: 'publish', label: 'Publish', icon: <CheckCircle2 size={16} />, onClick: () => console.log('Publish', row.id), disabled: row.status === 'Active' },
+            { id: 'archive', label: 'Archive', icon: <FileText size={16} />, onClick: () => setModalState({isOpen: true, action: 'archive', row}) },
+            { id: 'delete', label: 'Delete', icon: <Trash2 size={16} />, danger: true, onClick: () => setModalState({isOpen: true, action: 'delete', row}), disabled: (row as any).usedIn > 0 || row.status !== 'Draft' }
           ]}
         />
       ),
@@ -543,6 +625,16 @@ return (
         </div>
       )}
 
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, action: '', row: null})}
+        onConfirm={handleConfirmAction}
+        title={modalState.action === 'delete' ? 'Delete Itinerary' : 'Archive Itinerary'}
+        message={modalState.action === 'delete' ? 'Are you sure you want to permanently delete this draft itinerary?' : 'Are you sure you want to archive this itinerary? It will no longer be available for new packages.'}
+        actionLabel={modalState.action === 'delete' ? 'Delete' : 'Archive'}
+        isDestructive={modalState.action === 'delete'}
+        entityName={modalState.row?.name}
+      />
       <DataTable
         onRowClick={(row: any) => navigate('itinerary-details', { id: row.id })} 
         data={filteredData}

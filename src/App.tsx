@@ -63,6 +63,10 @@ import { ArticleDetails } from './pages/articles/ArticleDetails';
 import { AnnouncementList } from './pages/announcement/AnnouncementList';
 import { AnnouncementCreate } from './pages/announcement/AnnouncementCreate';
 import { AnnouncementDetails } from './pages/announcement/AnnouncementDetails';
+import { ReferralDashboard } from './pages/referrals/ReferralDashboard';
+import { ReferralProgramsList } from './pages/referrals/ReferralProgramsList';
+import { ReferralAttributionList } from './pages/referrals/ReferralAttributionList';
+import { ReferralFinanceHandoff } from './pages/referrals/ReferralFinanceHandoff';
 import { SettingsPage } from './pages/settings/SettingsPage';
 import { MyProfile } from './pages/profile/MyProfile';
 import { LoginPage } from './pages/auth/LoginPage';
@@ -106,6 +110,7 @@ import { StatusTransitionMenu } from './components/domain/StatusTransitionMenu';
 import { ExportControl } from './components/domain/ExportControl';
 import { ImportControl } from './components/domain/ImportControl';
 import { Home, Building, Users, UserCheck, Package, Ticket, Plane, Bed, Map, CalendarDays, Wallet, FileEdit, Megaphone, MessageSquare, BarChart3, Settings, Search, Trash2, Edit2, AlertTriangle, Plus, Calendar, DollarSign, CreditCard, BarChart2, History, LayoutDashboard, ChevronRight, Eye, RefreshCcw, Archive, Edit, Copy } from 'lucide-react';
+import { useFeatureFlags } from './contexts/FeatureFlagContext';
 
 export function ComponentShowcase() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,6 +155,7 @@ export function ComponentShowcase() {
   const [searchValue, setSearchValue] = useState('');
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set(['1', '2']));
   const [isLoadingTable, setIsLoadingTable] = useState(false);
+  const { flags } = useFeatureFlags();
 
   const showToast = (title: string, description: string = '', variant: 'success' | 'error' | 'warning' | 'info' = 'info') => {
     setToasts(prev => [
@@ -364,10 +370,39 @@ export function ComponentShowcase() {
         }
       ]
     },
+    { 
+      id: 'referrals', 
+      label: 'Referrals & Rewards', 
+      category: 'Marketing',
+      icon: <Ticket size={20} />,
+      children: [
+        { id: 'ref-dashboard', label: 'Dashboard', onClick: () => navigate('ref-dashboard'), isActive: currentRoute === 'ref-dashboard' },
+        { id: 'ref-programs', label: 'Programs & Campaigns', onClick: () => navigate('ref-programs'), isActive: currentRoute === 'ref-programs' },
+        { id: 'ref-attributions', label: 'Attributions & Review', onClick: () => navigate('ref-attributions'), isActive: currentRoute === 'ref-attributions' },
+        { id: 'ref-finance', label: 'Finance Handoff', onClick: () => navigate('ref-finance'), isActive: currentRoute === 'ref-finance' },
+      ]
+    },
     { id: 'settings', label: 'Settings', category: 'System', icon: <Settings size={20} />, onClick: () => navigate('settings'), isActive: currentRoute === 'settings' },
-  ]);
+  ]).filter(item => {
+    if (item.id === 'referrals') {
+      return flags.REFERRAL_MODULE !== false; // Show by default or if true
+    }
+    return true;
+  });
 
   const renderRoute = () => {
+    if (currentRoute.startsWith('ref-') && flags.REFERRAL_MODULE === false) {
+      return (
+        <div className="p-8 h-full flex items-center justify-center">
+          <EmptyState
+            icon={<AlertTriangle size={48} className="text-yellow-500" />}
+            title="Module Disabled"
+            description="The Referral & Rewards module is currently disabled by the Platform Administrator."
+          />
+        </div>
+      );
+    }
+
     switch (currentRoute) {
       case 'dashboard':
         return <AdminDashboard navigate={navigate}  showToast={showToast} />;
@@ -496,6 +531,14 @@ export function ComponentShowcase() {
         return <AnnouncementCreate navigate={navigate}  showToast={showToast} />;
       case 'announcement-details':
         return <AnnouncementDetails navigate={navigate} id={routeState?.id}  showToast={showToast} />;
+      case 'ref-dashboard':
+        return <ReferralDashboard navigate={navigate} />;
+      case 'ref-programs':
+        return <ReferralProgramsList navigate={navigate} />;
+      case 'ref-attributions':
+        return <ReferralAttributionList navigate={navigate} />;
+      case 'ref-finance':
+        return <ReferralFinanceHandoff navigate={navigate} />;
       case 'settings':
         return <SettingsPage navigate={navigate}  showToast={showToast} />;
       case 'my-profile':

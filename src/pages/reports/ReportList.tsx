@@ -11,6 +11,7 @@ import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
 import { Plus, Download, FolderOpen, Activity, AlertTriangle, UserMinus, Paperclip, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ReportList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('all');

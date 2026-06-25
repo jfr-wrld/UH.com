@@ -13,6 +13,7 @@ import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMe
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) => void, bookingId?: string }> = ({ navigate, bookingId = 'bk_1' }) => {
   const [status, setStatus] = useState('Confirmed');
@@ -131,8 +132,8 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
         <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', width: '100%' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', color: 'white' }}>
             <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-              <Badge variant="primary" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.3)' }}>{booking.status}</Badge>
-              <Badge variant={booking.paymentStatus === 'Paid' ? 'success' : booking.paymentStatus === 'Unpaid' ? 'danger' : 'warning'}>{booking.paymentStatus}</Badge>
+              <Badge variant={getStatusBadgeVariant(booking.status)} style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.3)' }}>{booking.status}</Badge>
+              <Badge variant={getStatusBadgeVariant(booking.paymentStatus)}>{booking.paymentStatus}</Badge>
             </div>
             <h1 style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.5)', lineHeight: 1.1 }}>{booking.bookingId}</h1>
             <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center', opacity: 0.9, marginTop: 'var(--space-1)' }}>
@@ -176,7 +177,7 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
                 <div>
                   <h3 className="text-subsection-title" style={{ marginBottom: 'var(--space-4)' }}>Allocation Status</h3>
                   <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
-                    <Badge variant="neutral" style={{ marginBottom: 'var(--space-2)' }}>{booking.allocationStatus}</Badge>
+                    <Badge variant={getStatusBadgeVariant(booking.allocationStatus)} style={{ marginBottom: 'var(--space-2)' }}>{booking.allocationStatus}</Badge>
                     <p className="text-caption text-muted">This booking has not yet been assigned to an operational Group Trip. Navigate to the Allocation tab to assign participants.</p>
                   </div>
                 </div>
@@ -220,7 +221,7 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
             </div>
             
             <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
-              <Badge variant="primary" style={{ marginBottom: 'var(--space-2)' }}>Primary Booker</Badge>
+              <Badge variant={getStatusBadgeVariant("Primary Booker")} style={{ marginBottom: 'var(--space-2)' }}>Primary Booker</Badge>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)' }}>
                 <div><span className="text-caption text-muted" style={{ display: 'block' }}>Name</span><span className="text-body-bold">{booking.booker}</span></div>
                 <div><span className="text-caption text-muted" style={{ display: 'block' }}>Email</span><span className="text-body">{booking.booker.toLowerCase().replace(/\s+/g, '.')}@example.com</span></div>
@@ -371,7 +372,7 @@ export const BookingDetails: React.FC<{ navigate: (route: string, data?: any) =>
                           <td><span className="text-body-bold">{idx === 0 ? booking.booker : idx === 1 ? 'Siti Aminah' : `Participant ${idx + 1}`}</span></td>
                           <td>{idx < 2 ? 'Adult' : 'Child'}</td>
                           <td>TRP-1001</td>
-                          <td><Badge variant="primary">EK346 (KUL-JED)</Badge></td>
+                          <td><Badge variant={getStatusBadgeVariant("EK346 (KUL-JED)")}>EK346 (KUL-JED)</Badge></td>
                         </tr>
                       ))}
                     </tbody>

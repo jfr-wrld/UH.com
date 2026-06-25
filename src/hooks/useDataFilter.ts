@@ -4,13 +4,14 @@ export interface UseDataFilterOptions {
   defaultSort?: { key: string; order: 'asc' | 'desc' };
   defaultPerPage?: number;
   syncToUrl?: boolean;
+  searchKeys?: string[];
 }
 
 export function useDataFilter<T>(
   initialData: T[] = [],
   options: UseDataFilterOptions = {}
 ) {
-  const { defaultSort, defaultPerPage = 10, syncToUrl = false } = options;
+  const { defaultSort, defaultPerPage = 10, syncToUrl = false, searchKeys } = options;
 
   // Helper to parse query parameters from current hash
   const parseQueryParams = () => {
@@ -228,10 +229,15 @@ export function useDataFilter<T>(
     if (debouncedSearchQuery && debouncedSearchQuery.length >= 2) {
       const query = debouncedSearchQuery.toLowerCase();
       result = result.filter(row => {
-        const rowString = Object.values(row as any)
-          .map(val => String(val).toLowerCase())
-          .join(' ');
-        return rowString.includes(query);
+        if (searchKeys && searchKeys.length > 0) {
+          const rowString = searchKeys.map(key => String((row as any)[key] || '')).join(' ').toLowerCase();
+          return rowString.includes(query);
+        } else {
+          const rowString = Object.values(row as any)
+            .map(val => String(val).toLowerCase())
+            .join(' ');
+          return rowString.includes(query);
+        }
       });
     }
 

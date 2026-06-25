@@ -14,6 +14,7 @@ import { SeasonPeriodModal } from './SeasonPeriodModal';
 import { ConfirmationDialog } from '../../components/feedback/ConfirmationDialog';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const SeasonList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState('types');
@@ -462,7 +463,7 @@ return (
                   {expandedTypes.includes(type.id) ? <ChevronDown size={20} className="text-muted" /> : <ChevronRight size={20} className="text-muted" />}
                   <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: type.color }}></div>
                   <span className="text-subsection-title">{type.name}</span>
-                  <Badge variant={type.status === 'Active' ? 'success' : 'neutral'}>{type.status}</Badge>
+                  <Badge variant={getStatusBadgeVariant(type.status)}>{type.status}</Badge>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -507,7 +508,7 @@ return (
                         { header: 'Start Date', accessor: (row) => <span className="text-body">{row.startDate}</span> },
                         { header: 'End Date', accessor: (row) => <span className="text-body">{row.endDate}</span> },
                         { header: 'Duration', accessor: (row) => <span className="text-body">{row.duration} Days</span> },
-                        { header: 'Status', accessor: (row) => <Badge variant={row.status === 'Active' ? 'success' : 'neutral'}>{row.status}</Badge> },
+                        { header: 'Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> },
                         { header: 'Last Updated', accessor: (row) => <span className="text-body">{row.lastUpdated}</span> },
                         { header: 'Action', align: 'right', accessor: (row) => (
                           <DropdownMenu
@@ -553,8 +554,8 @@ return (
               { header: 'Agency', accessor: (row) => <span className="text-body">{row.agency}</span> },
               { header: 'Related Record', accessor: (row) => <span className="text-body">{row.record}</span> },
               { header: 'Departure', accessor: (row) => <span className="text-body">{row.date}</span> },
-              { header: 'Snapshot', accessor: (row) => <Badge variant="primary">{row.snapshot}</Badge> },
-              { header: 'Status', accessor: (row) => <Badge variant="neutral">{row.status}</Badge> },
+              { header: 'Snapshot', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.snapshot)}>{row.snapshot}</Badge> },
+              { header: 'Status', accessor: (row) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> },
               { header: 'Last Updated', accessor: (row) => <span className="text-body">{row.lastUpdated}</span> },
               { header: 'Action', align: 'right', accessor: (row) => <Button variant="ghost" size="sm">View Record</Button> }
             ]}

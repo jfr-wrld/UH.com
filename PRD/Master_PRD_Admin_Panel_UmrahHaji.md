@@ -445,6 +445,7 @@ Detailed status behavior per module is defined in each Module PRD.
 7. Mobile web should use stacked cards or responsive tables.
 8. Empty states should include CTA only if the user has permission.
 9. Error messages must clearly explain the issue and the next action.
+10. **Feature Flag Fallback**: If a module or feature is disabled globally via Platform Settings (Feature Flags), all related navigation links must be hidden. Direct access to its URL must render a standardized "Module Disabled" empty state.
 
 ---
 
@@ -670,7 +671,9 @@ The following items are out of scope for Phase 1 MVP unless explicitly moved int
 
 ## 20. Related Module PRDs
 
-All Module PRDs should follow the standard Module PRD structure:
+All Module PRDs are progressively migrating to the unified structure defined in `Module_PRD_Template.md`. Any new module must strictly follow this template.
+
+For legacy modules, the typical structure includes:
 
 ```text
 1. Document Information
@@ -721,61 +724,7 @@ PRD 12 — Testimonial Management
 PRD 13 — Report Management
 PRD 14 — Articles Management
 PRD 15 — Review & Remarks
-PRD 16 — Settings, Roles & Permissions
+PRD 16 — Settings, Roles & Permissions (Deprecated, replaced by PRD 17)
+PRD 17 — Platform Settings & Policy Configuration
+PRD 18 — Referral Reward Management
 ```
-
-### Step 16 — PRD & Design Freeze
-Kunci dulu scope Admin Panel v1. Pastikan PRD, design.md, navigation, permission, status flow, dan module relationship sudah final untuk MVP.
-
-### Step 17 — Technical Architecture Planning
-Buat struktur teknis:
-- frontend routes
-- layout shell
-- role-based access
-- shared components
-- API contract
-- entity/data model
-- upload/storage rules
-- audit log strategy
-
-### Step 18 — Backend/API Contract
-Definisikan endpoint per module, request/response, status enum, permission guard, pagination, filter, upload, dan error format.
-
-### Step 19 — Database Schema / ERD Finalization
-Finalkan tabel utama:
-User, Role, Permission, Travel Agency, Jamaah, Mutawwif, Package, Booking, Group Trip, Hotel, Flight, Itinerary, Billing, Announcement, Report, Testimonial, Article, Audit Log.
-
-### Step 20 — Frontend Foundation Build
-Bangun base app:
-- auth layout
-- sidebar
-- topbar
-- dashboard layout
-- table system
-- form system
-- modal/drawer
-- upload component
-- empty/loading/error state
-
-### Step 21 — Module Implementation Sprint
-Mulai implement per prioritas:
-- Auth + User/Role Permission
-- Dashboard
-- Travel Agency
-- Jamaah
-- Package
-- Booking
-- Group Trip
-- Finance/Billing
-- Hotel/Flight/Itinerary
-- Announcement/Report/Article/Testimonial
-
-### Step 22 — Integration QA
-Cek semua module saling nyambung:
-Package pilih hotel/flight/itinerary, Booking masuk Group Trip, Billing ambil booking/package, Announcement target jamaah/agency/trip, Report bisa relate ke user/trip/package.
-
-### Step 23 — UAT Scenario
-Buat test scenario dari sisi Super Admin, Finance Admin, Operations Admin, Support Admin, Travel Agency, Jamaah, Mutawwif.
-
-### Step 24 — Production Readiness
-Security, permission, audit logs, file upload limits, backup, environment config, payment gateway, email/WhatsApp provider, logging, monitoring.

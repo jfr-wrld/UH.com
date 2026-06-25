@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useDataFilter } from '../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../utils/badge';
 
 const bookingTrendsData: Record<string, any[]> = {
   '1W': [
@@ -110,7 +111,7 @@ export const AdminDashboard: React.FC<{ navigate: (route: string) => void }> = (
     { header: 'Type', accessor: 'type' as const },
     { header: 'Target', accessor: 'target' as const },
     { header: 'Submitted', accessor: 'date' as const },
-    { header: 'Status', accessor: (row: typeof pendingApprovalsData[0]) => <Badge variant="warning">{row.status}</Badge> },
+    { header: 'Status', accessor: (row: typeof pendingApprovalsData[0]) => <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge> },
     { header: 'Action', accessor: (row: typeof pendingApprovalsData[0]) => <Button variant="secondary" size="sm" onClick={row.action}>Review</Button>, align: 'right' as const }
   ];
 
@@ -122,7 +123,7 @@ export const AdminDashboard: React.FC<{ navigate: (route: string) => void }> = (
     { 
       header: 'Readiness', 
       accessor: (row: typeof departuresData[0]) => (
-        <Badge variant={row.readiness === 'Ready' ? 'success' : row.readiness === 'Critical' ? 'danger' : 'warning'}>
+        <Badge variant={getStatusBadgeVariant(row.readiness)}>
           {row.readiness}
         </Badge>
       )
@@ -164,7 +165,7 @@ export const AdminDashboard: React.FC<{ navigate: (route: string) => void }> = (
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
             <span className="text-body text-muted">Today, 10 Jun 2026</span>
-            <Badge variant="success">System Operational</Badge>
+            <Badge variant={getStatusBadgeVariant("System Operational")}>System Operational</Badge>
           </div>
         }
       />
@@ -255,7 +256,7 @@ export const AdminDashboard: React.FC<{ navigate: (route: string) => void }> = (
           </div>
           
           <div style={{ flex: 1, minHeight: '300px', width: '100%' }}>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={bookingTrendsData[timeFilter]} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">

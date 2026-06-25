@@ -11,6 +11,7 @@ import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCe
 import { RotateCcw, Clock, CheckCircle, XCircle, AlertTriangle, Download, Info, Eye, RefreshCcw, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 // PRD Section 11: Refund Requests
 
@@ -245,7 +246,7 @@ const initialRefundList = [
         if (row.status === 'Approved') variant = 'success';
         if (row.status === 'Pending Review') variant = 'warning';
         if (row.status === 'Rejected') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Requested Date', accessor: 'requestedDate' as const, sortable: true },

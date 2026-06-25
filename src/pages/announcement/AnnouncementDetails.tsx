@@ -7,6 +7,7 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { Users, FileText, Send, Calendar, AlertTriangle, Play, Pause, RefreshCw, Eye, ChevronRight } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: any) => void, id?: string }> = ({ navigate, id = 'ANN-004' }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -31,7 +32,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
     },
     {
       header: 'Channel',
-      accessor: (row: typeof deliveryData[0]) => <Badge variant="neutral">{row.channel}</Badge>
+      accessor: (row: typeof deliveryData[0]) => <Badge variant={getStatusBadgeVariant(row.channel)}>{row.channel}</Badge>
     },
     {
       header: 'Status',
@@ -40,7 +41,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
         if (row.status === 'Read') variant = 'success';
         if (row.status === 'Delivered') variant = 'info';
         if (row.status === 'Failed') variant = 'danger';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     {
@@ -84,7 +85,7 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
           { label: 'Announcements', onClick: () => navigate('announcement-list') },
           { label: id }
         ]}
-        badges={<Badge variant="warning">Partially Sent</Badge>}
+        badges={<Badge variant={getStatusBadgeVariant("Partially Sent")}>Partially Sent</Badge>}
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="secondary" leftIcon={<Pause size={16} />}>Archive</Button>
@@ -157,9 +158,9 @@ export const AnnouncementDetails: React.FC<{ navigate: (route: string, data?: an
                 <div>
                   <span className="text-caption text-muted" style={{ display: 'block' }}>Channels</span>
                   <div style={{ display: 'flex', gap: 'var(--space-1)', flexWrap: 'wrap', marginTop: 'var(--space-1)' }}>
-                    <Badge variant="neutral">In-App</Badge>
-                    <Badge variant="neutral">Email</Badge>
-                    <Badge variant="neutral">WhatsApp</Badge>
+                    <Badge variant={getStatusBadgeVariant("In-App")}>In-App</Badge>
+                    <Badge variant={getStatusBadgeVariant("Email")}>Email</Badge>
+                    <Badge variant={getStatusBadgeVariant("WhatsApp")}>WhatsApp</Badge>
                   </div>
                 </div>
               </div>

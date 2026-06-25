@@ -2,7 +2,7 @@ import React from 'react';
 import { DropdownMenu } from '../actions/DropdownMenu';
 import type { DropdownMenuItem } from '../actions/DropdownMenu';
 import { Badge } from '../data-display/Badge';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CheckCircle, Clock, XCircle, Circle, Archive } from 'lucide-react';
 
 export interface StatusTransitionMenuProps {
   currentStatus: string;
@@ -19,15 +19,26 @@ export const StatusTransitionMenu: React.FC<StatusTransitionMenuProps> = ({
 }) => {
   const getVariant = (status: string) => {
     const s = status.toLowerCase();
-    if (s.includes('active') || s.includes('approved') || s.includes('success')) return 'success';
+    if (s === 'active' || s.includes('approved') || s.includes('success')) return 'success';
     if (s.includes('pending') || s.includes('revision') || s.includes('draft')) return 'warning';
-    if (s.includes('reject') || s.includes('suspend') || s.includes('fail') || s.includes('cancel')) return 'danger';
+    if (s.includes('reject') || s.includes('suspend') || s.includes('fail') || s.includes('cancel') || s.includes('inactive')) return 'danger';
+    if (s.includes('archived')) return 'info';
     return 'neutral';
   };
 
-  const dropdownItems: DropdownItem[] = allowedTransitions.map(status => ({
+  const getIcon = (status: string) => {
+    const s = status.toLowerCase();
+    if (s === 'active' || s.includes('approved') || s.includes('success') || s.includes('completed') || s.includes('confirmed') || s.includes('published')) return <CheckCircle size={16} color="var(--color-success)" />;
+    if (s.includes('pending') || s.includes('revision') || s.includes('draft') || s.includes('review') || s.includes('scheduled') || s.includes('upcoming')) return <Clock size={16} color="var(--color-warning)" />;
+    if (s.includes('reject') || s.includes('suspend') || s.includes('fail') || s.includes('cancel') || s.includes('inactive')) return <XCircle size={16} color="var(--color-danger)" />;
+    if (s.includes('archived')) return <Archive size={16} color="var(--color-info)" />;
+    return <Circle size={16} color="var(--color-primary)" />;
+  };
+
+  const dropdownItems: DropdownMenuItem[] = allowedTransitions.map(status => ({
     id: status,
-    label: `Change to ${status}`,
+    label: status,
+    icon: getIcon(status),
     onClick: () => onTransition(status)
   }));
 

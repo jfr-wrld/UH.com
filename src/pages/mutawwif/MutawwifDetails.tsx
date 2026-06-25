@@ -7,14 +7,25 @@ import { VerificationChecklist } from '../../components/domain/VerificationCheck
 import type { ChecklistStatus } from '../../components/domain/VerificationChecklist';
 import { DocumentStatusControl } from '../../components/domain/DocumentStatusControl';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
+import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { SensitiveDataReveal } from '../../components/domain/SensitiveDataReveal';
 import { Star, MapPin, Calendar, Briefcase, Award, CheckCircle2, ChevronRight, Eye } from 'lucide-react';
 import { useDataFilter } from '../../hooks/useDataFilter';
 
 import { useLocalStorageCrud } from '../../hooks/useLocalStorageCrud';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) => void, mutawwifId?: string }> = ({ navigate, mutawwifId = 'mut_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
+  const [modalState, setModalState] = useState<{isOpen: boolean, targetStatus: string}>({isOpen: false, targetStatus: ''});
+  const [mutawwifStatus, setMutawwifStatus] = useState('Active');
+  
+  const handleConfirmStatusChange = (reason: string) => {
+    setMutawwifStatus(modalState.targetStatus);
+    setModalState({isOpen: false, targetStatus: ''});
+  };
+
   const { getById } = useLocalStorageCrud('mutawwif');
   
   const [certChecklist, setCertChecklist] = useState<{id: string, label: string, required: boolean, status: ChecklistStatus}[]>([
@@ -82,8 +93,13 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
             <h1 className="text-page-title">{mutawwif.name}</h1>
             <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-              <Badge variant="success">{mutawwif.verification}</Badge>
-              <Badge variant="info">{mutawwif.availability}</Badge>
+              <StatusTransitionMenu 
+                currentStatus={mutawwifStatus}
+                allowedTransitions={['active', 'on leave', 'inactive']}
+                onTransition={(newStatus) => setModalState({isOpen: true, targetStatus: newStatus})}
+              />
+              <Badge variant={getStatusBadgeVariant(mutawwif.verification)}>{mutawwif.verification}</Badge>
+              <Badge variant={getStatusBadgeVariant(mutawwif.availability)}>{mutawwif.availability}</Badge>
               <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', color: 'var(--text-secondary)' }}>
                 <Star size={14} className="text-warning" fill="currentColor" />
                 <span className="text-caption-bold">{mutawwif.rating}</span>
@@ -221,7 +237,7 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
               <div style={{ padding: 'var(--space-4)', border: '1px solid var(--color-primary-light)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body-bold">Umrah Premium Plus (TRP-1001)</span>
-                  <Badge variant="success">Active Trip</Badge>
+                  <Badge variant={getStatusBadgeVariant("Active Trip")}>Active Trip</Badge>
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
                   <span className="text-caption">Agency: Zamzam Travels</span>
@@ -233,7 +249,7 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
               <div style={{ padding: 'var(--space-4)', border: 'none', borderRadius: 'var(--radius-md)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body-bold">Hajj Packages 2027 (TRP-1005)</span>
-                  <Badge variant="warning">Upcoming</Badge>
+                  <Badge variant={getStatusBadgeVariant("Upcoming")}>Upcoming</Badge>
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
                   <span className="text-caption">Agency: Makkah Tours</span>
@@ -284,9 +300,9 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 <span className="text-body-bold" style={{ display: 'block', marginBottom: 'var(--space-2)' }}>Top Feedback Themes</span>
                 <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-                  <Badge variant="success">Excellent Knowledge (85%)</Badge>
-                  <Badge variant="success">Very Patient (72%)</Badge>
-                  <Badge variant="success">Clear Communication (68%)</Badge>
+                  <Badge variant={getStatusBadgeVariant("Excellent Knowledge (85%)")}>Excellent Knowledge (85%)</Badge>
+                  <Badge variant={getStatusBadgeVariant("Very Patient (72%)")}>Very Patient (72%)</Badge>
+                  <Badge variant={getStatusBadgeVariant("Clear Communication (68%)")}>Clear Communication (68%)</Badge>
                 </div>
               </div>
             </div>
@@ -317,7 +333,7 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
               <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)', border: 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body-bold">Umrah Premium Plus (TRP-1001)</span>
-                  <Badge variant="warning">Incident Reported</Badge>
+                  <Badge variant={getStatusBadgeVariant("Incident Reported")}>Incident Reported</Badge>
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
                   <span className="text-caption">Type: Incident Report</span>
@@ -334,7 +350,7 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
               <div style={{ padding: 'var(--space-4)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
                   <span className="text-body-bold">Hajj Special (TRP-0992)</span>
-                  <Badge variant="success">End Trip Report</Badge>
+                  <Badge variant={getStatusBadgeVariant("End Trip Report")}>End Trip Report</Badge>
                 </div>
                 <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
                   <span className="text-caption">Type: End Trip Report</span>
@@ -359,6 +375,15 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
         )}
 
       </div>
+      <AuditActionModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({isOpen: false, targetStatus: ''})}
+        onConfirm={handleConfirmStatusChange}
+        title={`Change Status to ${modalState.targetStatus}`}
+        message="Please provide a reason for this status change."
+        actionLabel="Update Status"
+        entityName={mutawwif.name}
+      />
     </div>
   );
 };

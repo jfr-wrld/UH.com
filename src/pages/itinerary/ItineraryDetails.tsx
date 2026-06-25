@@ -6,11 +6,20 @@ import { Button } from '../../components/actions/Button';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
 import { MapPin, Clock, Calendar as CalendarIcon, FileText, Globe, MessageSquare, Eye, ChevronRight } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
+import { AuditActionModal } from '../../components/actions/AuditActionModal';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) => void, itineraryId?: string }> = ({ navigate, itineraryId = 'it_1' }) => {
   const [status, setStatus] = useState('Draft');
   const [activeTab, setActiveTab] = useState('overview');
+  const [modalState, setModalState] = useState<{isOpen: boolean, targetStatus: string}>({isOpen: false, targetStatus: ''});
+
+  const handleConfirmStatus = (reason: string) => {
+    setStatus(modalState.targetStatus);
+    setModalState({isOpen: false, targetStatus: ''});
+  };
+
 
   // Mock Itinerary Data
   const itinerary = {
@@ -29,7 +38,8 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
     createdBy: 'Admin User',
     lastUpdated: '10 May 2026, 14:30',
     totalDays: 12,
-    ownerAgency: 'Global Template'
+    ownerAgency: 'Global Template',
+    version: 'v1.2'
   };
 
   const tabs = [
@@ -57,8 +67,8 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
             <h1 className="text-page-title">{itinerary.name}</h1>
-            <StatusTransitionMenu currentStatus={status} onTransition={setStatus} allowedTransitions={['Draft', 'Active', 'Archived', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Scheduled', 'Upcoming', 'Under Review', 'Published']} />
-            <Badge variant="primary">{itinerary.owner}</Badge>
+            <StatusTransitionMenu currentStatus={status} onTransition={(newStatus) => setModalState({isOpen: true, targetStatus: newStatus})} allowedTransitions={['draft', 'active', 'inactive', 'archived']} />
+            <Badge variant={getStatusBadgeVariant(itinerary.owner)}>{itinerary.owner}</Badge>
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-muted)' }}>
             <span className="text-body">{itinerary.duration}</span>
@@ -87,6 +97,10 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
                 <div>
                   <span className="text-caption text-muted" style={{ display: 'block' }}>Type</span>
                   <span className="text-body">{itinerary.type}</span>
+                </div>
+                <div>
+                  <span className="text-caption text-muted" style={{ display: 'block' }}>Version</span>
+                  <span className="text-body">{itinerary.version}</span>
                 </div>
                 <div>
                   <span className="text-caption text-muted" style={{ display: 'block' }}>Duration</span>
@@ -174,7 +188,7 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <span className="text-body-bold">Gather at KLIA 1</span>
-                          <Badge variant="primary">Participant Visible</Badge>
+                          <Badge variant={getStatusBadgeVariant("Participant Visible")}>Participant Visible</Badge>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
                           <MapPin size={14} className="text-muted" />
@@ -205,7 +219,7 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <span className="text-body-bold">Flight Departure (SV 831)</span>
-                          <Badge variant="primary">Participant Visible</Badge>
+                          <Badge variant={getStatusBadgeVariant("Participant Visible")}>Participant Visible</Badge>
                         </div>
                         <div style={{ padding: 'var(--space-3)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
                           <span className="text-caption-bold" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Participant Description</span>
@@ -280,6 +294,7 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
         )}
 
       </div>
+      <AuditActionModal isOpen={modalState.isOpen} onClose={() => setModalState({isOpen: false, targetStatus: ''})} onConfirm={handleConfirmStatus} title={`Change Status to ${modalState.targetStatus}`} message="Please provide a reason for this status change." actionLabel="Update Status" entityName={itinerary.name} />
     </div>
   );
 };

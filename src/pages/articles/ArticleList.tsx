@@ -10,6 +10,7 @@ import { UserProfileCell } from '../../components/data-display/UserProfileCell';
 import { Plus, FileText, CheckCircle, Clock, Eye, Star, Edit, Trash2, ChevronRight } from 'lucide-react';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
+import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
 export const ArticleList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -212,7 +213,7 @@ return () => clearTimeout(timer);
         let variant: 'success' | 'warning' | 'danger' | 'neutral' = 'neutral';
         if (row.status === 'Published') variant = 'success';
         if (row.status === 'Draft') variant = 'neutral';
-        return <Badge variant={variant}>{row.status}</Badge>;
+        return <Badge variant={getStatusBadgeVariant(row.status)}>{row.status}</Badge>;
       }
     },
     { header: 'Published Date', accessor: 'publishedDate' as const, sortable: true },
