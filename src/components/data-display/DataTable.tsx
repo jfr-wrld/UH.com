@@ -40,7 +40,7 @@ export interface DataTableProps<T> {
 }
 
 const getAutoSortKey = (header: string, sampleRow: any): string => {
-  if (!sampleRow) return '';
+  if (!sampleRow || !header || typeof header !== 'string') return '';
   const cleanHeader = header.toLowerCase().replace(/[^a-z0-9]/g, '');
   const keys = Object.keys(sampleRow);
   

@@ -17,7 +17,7 @@ export const FlightDetails: React.FC<{ navigate: (route: string, data?: any) => 
   const [activeTab, setActiveTab] = useState('overview');
   const { getById } = useLocalStorageCrud('flight');
 
-  const flData = getById(flightId) || {
+  const flData: any = getById(flightId) || {
     id: flightId,
     airline: 'Unknown Airline',
     logo: 'NA',

@@ -6,13 +6,13 @@ import { DataTable } from '../../components/data-display/DataTable';
 import { FilterBar, FilterGroup } from '../../components/inputs/FilterBar';
 import { Button } from '../../components/actions/Button';
 import { DropdownMenu } from '../../components/actions/DropdownMenu';
-import { Plus, Download, TrendingUp, AlertTriangle, CheckCircle, Clock, Percent, Eye, ChevronRight } from 'lucide-react';
+import { Plus, Download, TrendingUp, AlertTriangle, CheckCircle, Clock, Percent, Eye, ChevronRight, FileText, Send } from 'lucide-react';
 import { AgencyProfileCell } from '../../components/data-display/AgencyProfileCell';
 import { ExportControl } from '../../components/domain/ExportControl';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
 
-export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => void }> = ({ navigate }) => {
+export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => void, showToast?: (title: string, desc?: string, variant?: 'success'|'error'|'warning'|'info') => void }> = ({ navigate, showToast }) => {
   const [selectedPayments, setSelectedPayments] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,14 +53,16 @@ export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => vo
       });
       if (res.ok) {
         fetchPayments();
-        // Optional: show Toast here
+        if (showToast) showToast('Payment Verified', `Payment ${paymentId} has been successfully verified.`, 'success');
       } else {
         const error = await res.json();
-        alert(error.error || 'Failed to verify');
+        if (showToast) showToast('Verification Failed', error.error || 'Failed to verify payment', 'error');
+        else alert(error.error || 'Failed to verify');
       }
     } catch (err) {
       console.error(err);
-      alert('Network error');
+      if (showToast) showToast('Network Error', 'Could not communicate with the server.', 'error');
+      else alert('Network error');
     }
   };
 
@@ -108,9 +110,12 @@ export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => vo
         <DropdownMenu
           triggerLabel=""
           items={[
-            { id: 'view', label: 'View Details', icon: <Eye size={16} />, onClick: () => console.log('View', row.id) },
-            { id: 'invoice', label: 'View Invoice', icon: <Eye size={16} />, onClick: () => navigate('invoice-details', { id: row.invoiceId }) },
-            ...(row.status === 'PENDING' ? [{ id: 'verify', label: 'Verify Payment', icon: <CheckCircle size={16} />, onClick: () => { if(window.confirm('Verify this payment? This action is audit-sensitive and requires Finance permission.')) handleVerify(row.id) } }] : [])
+            { id: 'invoice', label: 'View Invoice', icon: <FileText size={16} className="text-primary" />, onClick: () => navigate('billing-invoice-details', { id: row.invoiceId }) },
+            { id: 'receipt', label: 'Download Receipt', icon: <Download size={16} className="text-success" />, onClick: () => { if (showToast) showToast('Downloading Receipt', `Receipt for ${row.id} is generating...`, 'info') } },
+            ...(row.status === 'PENDING' ? [
+              { id: 'verify', label: 'Verify Payment', icon: <CheckCircle size={16} className="text-warning" />, onClick: () => { if(window.confirm('Verify this payment? This action is audit-sensitive.')) handleVerify(row.id) } },
+              { id: 'reminder', label: 'Send Reminder', icon: <Send size={16} className="text-info" />, onClick: () => { if(showToast) showToast('Reminder Sent', `Payment reminder sent to ${row.agency}.`, 'success') } }
+            ] : [])
           ]}
         />
       ),
@@ -162,7 +167,7 @@ export const PaymentList: React.FC<{ navigate: (route: string, data?: any) => vo
         actions={
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <ExportControl data={filteredData} filename="payment-list" />
-            <Button leftIcon={<Plus size={16} />} onClick={() => navigate('invoice-create')}>Create Invoice</Button>
+            <Button leftIcon={<Plus size={16} />} onClick={() => navigate('billing-invoice-create')}>Create Invoice</Button>
           </div>
         }
       />

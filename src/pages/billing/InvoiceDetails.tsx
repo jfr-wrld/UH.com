@@ -7,7 +7,7 @@ import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
 import { Select } from '../../components/inputs/Select';
 import { AuditLogPanel } from '../../components/domain/AuditLogPanel';
-import { FileText, CreditCard, DollarSign, RefreshCcw, Download, Link, Plus, Eye, ChevronRight } from 'lucide-react';
+import { FileText, CreditCard, DollarSign, RefreshCcw, Download, Link, Plus, Eye, ChevronRight, ArrowLeft } from 'lucide-react';
 import { StatusTransitionMenu } from '../../components/domain/StatusTransitionMenu';
 import { useDataFilter } from '../../hooks/useDataFilter';
 import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badge';
@@ -32,6 +32,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
     total: 48000,
     paid: 10000,
     balance: 38000,
+    customerNotes: 'Thank you for choosing Zamzam Travels. Your flight itinerary will be released 14 days before departure.',
     items: [
       { desc: 'Premium Umrah Safar (Adult)', qty: 4, unitPrice: 12000, total: 48000 }
     ]
@@ -59,6 +60,7 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
       {/* Header Section */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', gap: 'var(--space-4)' }}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('billing-list')} style={{ alignSelf: 'flex-start', padding: 0, color: 'var(--color-text-muted)' }}><ArrowLeft size={20} /></Button>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
               <h1 className="text-page-title">{invoice.invoiceNumber}</h1>
@@ -90,7 +92,8 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-8)' }}>
               <div>
-                <h2 className="text-h2" style={{ color: 'var(--color-primary-dark)' }}>INVOICE</h2>
+                <img src="/brand/logo-full.svg" alt="UmrahHaji.com" style={{ height: 32, marginBottom: 'var(--space-2)' }} />
+                <h1 className="text-h2" style={{ color: 'var(--color-primary-dark)', marginBottom: 'var(--space-1)' }}>INVOICE</h1>
                 <div style={{ marginTop: 'var(--space-4)', color: 'var(--text-muted)' }}>
                   <p className="text-body-bold">{invoice.agency}</p>
                   <p className="text-body">Kuala Lumpur, Malaysia</p>
@@ -133,7 +136,15 @@ export const InvoiceDetails: React.FC<{ navigate: (route: string, data?: any) =>
               </table>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-6)', marginBottom: 'var(--space-8)' }}>
+              <div style={{ flex: 1 }}>
+                {invoice.customerNotes && (
+                  <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--surface-sunken)', borderRadius: 'var(--radius-md)' }}>
+                    <div className="text-body-bold" style={{ marginBottom: 'var(--space-2)' }}>Notes</div>
+                    <div className="text-caption text-muted" style={{ whiteSpace: 'pre-wrap' }}>{invoice.customerNotes}</div>
+                  </div>
+                )}
+              </div>
               <div style={{ width: '300px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-2) 0' }}>
                   <span className="text-body text-muted">Subtotal</span>

@@ -52,6 +52,50 @@ router.get('/invoices', async (req, res) => {
   }
 });
 
+// Create a new Invoice and initial Payment Record
+router.post('/invoices', async (req, res) => {
+  try {
+    const { customerName, agency, items, subtotal, taxAmount, discountAmount, totalAmount, dueDate } = req.body;
+    
+    // Auto-generate invoice number
+    const count = await prisma.invoice.count();
+    const invoiceNumber = `INV-2026-${String(count + 1).padStart(3, '0')}`;
+
+    const result = await prisma.$transaction(async (tx) => {
+      const invoice = await tx.invoice.create({
+        data: {
+          invoiceNumber,
+          travelAgencyId: agency || 'Direct Customer',
+          jamaahId: customerName || 'Unknown Customer',
+          subtotal: subtotal || 0,
+          taxAmount: taxAmount || 0,
+          discountAmount: discountAmount || 0,
+          totalAmount: totalAmount || 0,
+          amountPaid: 0,
+          status: 'SENT',
+          dueDate: dueDate ? new Date(dueDate) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        }
+      });
+
+      const payment = await tx.paymentRecord.create({
+        data: {
+          invoiceId: invoice.id,
+          paymentMethod: 'ONLINE_GATEWAY',
+          amount: totalAmount || 0,
+          referenceNumber: `PAY-${Date.now()}`,
+          status: 'PENDING'
+        }
+      });
+
+      return { invoice, payment };
+    });
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get all Payment Records
 router.get('/payments', async (req, res) => {
   try {

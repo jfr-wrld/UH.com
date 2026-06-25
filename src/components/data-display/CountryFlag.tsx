@@ -6,6 +6,8 @@ interface CountryFlagProps {
 }
 
 export const CountryFlag: React.FC<CountryFlagProps> = ({ country, size = 16 }) => {
+  if (!country) return null;
+
   const getFlagUrl = (name: string) => {
     switch (name.toLowerCase()) {
       case 'indonesia': return 'https://flagcdn.com/id.svg';

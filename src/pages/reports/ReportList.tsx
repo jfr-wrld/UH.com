@@ -190,16 +190,14 @@ export const ReportList: React.FC<{ navigate: (route: string, data?: any) => voi
 
   const columns = [
     {
-      key: 'id',
-      title: 'Report ID',
-      sortable: true,
-      render: (val: string) => <span style={{ fontWeight: 500, color: 'var(--color-primary)' }}>{val}</span>
+      header: 'Report ID',
+      sortKey: 'id',
+      accessor: (row: any) => <span style={{ fontWeight: 500, color: 'var(--color-primary)' }}>{row.id}</span>
     },
     {
-      key: 'name',
-      title: 'Report Name',
-      sortable: true,
-      render: (val: string, row: any) => (
+      header: 'Report Name',
+      sortKey: 'name',
+      accessor: (row: any) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
           <div style={{
             width: 32, height: 32, borderRadius: 'var(--radius-md)',
@@ -210,56 +208,51 @@ export const ReportList: React.FC<{ navigate: (route: string, data?: any) => voi
             <Paperclip size={16} />
           </div>
           <div>
-            <div style={{ fontWeight: 500, color: 'var(--color-text)' }}>{val}</div>
+            <div style={{ fontWeight: 500, color: 'var(--color-text)' }}>{row.name}</div>
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>{row.category}</div>
           </div>
         </div>
       )
     },
     {
-      key: 'frequency',
-      title: 'Frequency',
-      sortable: true
+      header: 'Frequency',
+      accessor: 'frequency'
     },
     {
-      key: 'lastRun',
-      title: 'Last Run',
-      sortable: true,
-      render: (val: string) => <span style={{ color: 'var(--color-text-secondary)' }}>{val}</span>
+      header: 'Last Run',
+      sortKey: 'lastRun',
+      accessor: (row: any) => <span style={{ color: 'var(--color-text-secondary)' }}>{row.lastRun}</span>
     },
     {
-      key: 'format',
-      title: 'Format',
-      render: (val: string) => (
+      header: 'Format',
+      accessor: (row: any) => (
         <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
-          {val.split(', ').map((f, idx) => (
+          {(row.format || '').split(', ').map((f: string, idx: number) => (
             <Badge key={idx} variant="outline">{f}</Badge>
           ))}
         </div>
       )
     },
     {
-      key: 'status',
-      title: 'Status',
-      sortable: true,
-      render: (val: string) => {
+      header: 'Status',
+      sortKey: 'status',
+      accessor: (row: any) => {
         let variant: 'success' | 'warning' | 'default' = 'default';
-        if (val === 'Active') variant = 'success';
-        if (val === 'Draft') variant = 'warning';
-        return <Badge variant={variant}>{val}</Badge>;
+        if (row.status === 'Active') variant = 'success';
+        if (row.status === 'Draft') variant = 'warning';
+        return <Badge variant={variant}>{row.status}</Badge>;
       }
     },
     {
-      key: 'actions',
-      title: '',
+      header: 'Action',
       align: 'right' as const,
-      render: (_: any, row: any) => (
+      accessor: (row: any) => (
         <DropdownMenu
-          trigger={<Button variant="ghost" size="sm">...</Button>}
+          triggerLabel=""
           items={[
-            { label: 'Run Now', onClick: () => console.log('Run', row.id) },
-            { label: 'Edit Schedule', onClick: () => console.log('Edit', row.id) },
-            { label: 'Delete', onClick: () => console.log('Delete', row.id), danger: true }
+            { id: 'run', label: 'Run Now', onClick: () => console.log('Run', row.id) },
+            { id: 'edit', label: 'Edit Schedule', onClick: () => console.log('Edit', row.id) },
+            { id: 'delete', label: 'Delete', onClick: () => console.log('Delete', row.id), danger: true }
           ]}
         />
       )
