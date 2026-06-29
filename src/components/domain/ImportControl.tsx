@@ -32,7 +32,7 @@ export const ImportControl: React.FC<ImportControlProps> = ({
       <FileUploader 
         id="import-uploader"
         accept={acceptedFormats}
-        maxSize={maxSizeMB}
+        maxSizeMB={maxSizeMB}
         onUpload={onImport}
         label=""
       />

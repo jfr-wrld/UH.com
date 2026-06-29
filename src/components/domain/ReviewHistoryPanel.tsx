@@ -21,18 +21,18 @@ export const ReviewHistoryPanel: React.FC<ReviewHistoryPanelProps> = ({
   reviews,
   history
 }) => {
-  const timelineItems: TimelineItemProps[] = (reviews || history || []).map(review => {
-    let status: TimelineItemProps['status'] = 'default';
-    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Approved') status = 'success';
-    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Rejected') status = 'danger';
-    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Requested Revision') status = 'warning';
+  const timelineItems: TimelineItem[] = (reviews || history || []).map(review => {
+    let variant: TimelineItem['variant'] = 'primary';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Approved') variant = 'success';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Rejected') variant = 'danger';
+    review.decision = review.decision || (review as any).status; review.actor = review.actor || (review as any).reviewer; review.note = review.note || (review as any).notes; review.timestamp = review.timestamp || (review as any).date; if (review.decision === 'Requested Revision') variant = 'warning';
 
     return {
       id: review.id,
       title: `${review.decision} by ${review.actor}`,
       description: review.note,
       timestamp: review.timestamp,
-      status
+      variant
     };
   });
 

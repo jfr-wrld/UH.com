@@ -15,12 +15,12 @@ export const UserInvite: React.FC<{ navigate: (route: string, data?: any) => voi
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const { create } = useLocalStorageCrud('users');
+  const { create } = useLocalStorageCrud<any>('users');
 
   const steps = [
-    { label: 'Identity', description: 'Basic info' },
-    { label: 'Access', description: 'Role & permissions' },
-    { label: 'Settings', description: 'Invite preferences' }
+    { id: '1', label: 'Identity', description: 'Basic info' },
+    { id: '2', label: 'Access', description: 'Role & permissions' },
+    { id: '3', label: 'Settings', description: 'Invite preferences' }
   ];
 
   const handleNext = () => {

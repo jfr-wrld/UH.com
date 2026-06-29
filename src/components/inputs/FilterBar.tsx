@@ -1,4 +1,5 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { classNames } from '../../lib/utils';
 import { Button } from '../actions/Button';
 import { SearchInput } from './SearchInput';

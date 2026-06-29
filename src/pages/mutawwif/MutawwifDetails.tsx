@@ -26,7 +26,7 @@ export const MutawwifDetails: React.FC<{ navigate: (route: string, data?: any) =
     setModalState({isOpen: false, targetStatus: ''});
   };
 
-  const { getById } = useLocalStorageCrud('mutawwif');
+  const { getById } = useLocalStorageCrud<any>('mutawwif');
   
   const [certChecklist, setCertChecklist] = useState<{id: string, label: string, required: boolean, status: ChecklistStatus}[]>([
     { id: 'hajj', label: 'Ministry of Hajj Guide License', required: true, status: 'pass' },

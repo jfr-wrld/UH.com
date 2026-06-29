@@ -48,9 +48,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            {React.cloneElement(icon as React.ReactElement, { 
+            {React.cloneElement(icon as React.ReactElement<any>, { 
               size: 16,
-              color: (icon as React.ReactElement).props.color || (icon as React.ReactElement).props.className?.includes('text-') ? undefined : (accentColor || 'var(--color-primary)')
+              color: (icon as React.ReactElement<any>).props.color || (icon as React.ReactElement<any>).props.className?.includes('text-') ? undefined : (accentColor || 'var(--color-primary)')
             })}
           </div>
         )}

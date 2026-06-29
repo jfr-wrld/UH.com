@@ -4,6 +4,7 @@ import { classNames } from '../../lib/utils';
 export interface Tab {
   id: string;
   label: string;
+  icon?: React.ReactNode;
   disabled?: boolean;
 }
 

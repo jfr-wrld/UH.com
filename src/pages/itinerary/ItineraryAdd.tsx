@@ -14,10 +14,10 @@ export const ItineraryAdd: React.FC<{ navigate: (route: string, data?: any) => v
   const [days, setDays] = useState<any[]>([]);
 
   const steps = [
-    { label: 'Template Info', description: 'Name & type' },
-    { label: 'Schedule', description: 'Days & activities' },
-    { label: 'Time Zones', description: 'Local & destination' },
-    { label: 'Feedback', description: 'Survey settings' }
+    { id: '1', label: 'Template Info', description: 'Name & type' },
+    { id: '2', label: 'Schedule', description: 'Days & activities' },
+    { id: '3', label: 'Time Zones', description: 'Local & destination' },
+    { id: '4', label: 'Feedback', description: 'Survey settings' }
   ];
 
   const handleNext = () => {

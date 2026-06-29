@@ -15,7 +15,7 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
   const [icao, setIcao] = useState('');
   const [country, setCountry] = useState('');
 
-  const { create } = useLocalStorageCrud('airline');
+  const { create } = useLocalStorageCrud<any>('airline');
 
   const handleSave = () => {
     create({
@@ -58,10 +58,10 @@ export const AirlineAdd: React.FC<{ navigate: (route: string, data?: any) => voi
               <Input placeholder="Enter official airline name" value={name} onChange={e => setName(e.target.value)} />
             </FormField>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-              <FormField label="IATA Airline Code" required helpText="2 alphanumeric characters (e.g. MH, SV)">
+              <FormField label="IATA Airline Code" required helperText="2 alphanumeric characters (e.g. MH, SV)">
                 <Input placeholder="IATA Code" maxLength={2} value={iata} onChange={e => setIata(e.target.value)} />
               </FormField>
-              <FormField label="ICAO Airline Code" helpText="3 letters (e.g. MAS, SVA)">
+              <FormField label="ICAO Airline Code" helperText="3 letters (e.g. MAS, SVA)">
                 <Input placeholder="ICAO Code" maxLength={3} value={icao} onChange={e => setIcao(e.target.value)} />
               </FormField>
             </div>

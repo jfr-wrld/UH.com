@@ -74,6 +74,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children, navItems }) => {
           </footer>
         </main>
       </div>
+
     </div>
   );
 };

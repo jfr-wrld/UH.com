@@ -25,7 +25,7 @@ export const AuditLogPanel: React.FC<AuditLogPanelProps> = ({ logs }) => {
     return true;
   });
 
-  const timelineItems: TimelineItemProps[] = filteredLogs.map(log => ({
+  const timelineItems: TimelineItem[] = filteredLogs.map(log => ({
     id: log.id,
     title: `${log.action} by ${log.actor}`,
     description: `[${log.module}] ${log.details}`,

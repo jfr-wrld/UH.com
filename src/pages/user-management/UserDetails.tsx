@@ -17,7 +17,7 @@ export const UserDetails: React.FC<{ navigate: (route: string, data?: any) => vo
   const [activeTab, setActiveTab] = useState('profile');
   const [userStatus, setUserStatus] = useState('Active');
   const [modalState, setModalState] = useState<{isOpen: boolean, action: string, targetStatus?: string}>({isOpen: false, action: ''});
-  const { getById } = useLocalStorageCrud('users');
+  const { getById } = useLocalStorageCrud<any>('users');
   
   const handleConfirmAction = (reason: string) => {
     if (modalState.action === 'status' && modalState.targetStatus) {

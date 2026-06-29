@@ -16,14 +16,14 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
-  const { create } = useLocalStorageCrud('flight');
+  const { create } = useLocalStorageCrud<any>('flight');
 
   const steps = [
-    { label: 'Basic Info', description: 'Airline & type' },
-    { label: 'Schedule', description: 'Route & times' },
-    { label: 'Transit', description: 'Layovers' },
-    { label: 'Amenities', description: 'Cabin & baggage' },
-    { label: 'Status', description: 'Visibility options' }
+    { id: '1', label: 'Basic Info', description: 'Airline & type' },
+    { id: '2', label: 'Schedule', description: 'Route & times' },
+    { id: '3', label: 'Transit', description: 'Layovers' },
+    { id: '4', label: 'Amenities', description: 'Cabin & baggage' },
+    { id: '5', label: 'Status', description: 'Visibility options' }
   ];
 
   const handleNext = () => {
@@ -73,7 +73,7 @@ export const FlightAdd: React.FC<{ navigate: (route: string, data?: any) => void
         <FormField label="Airline" required>
           <Select options={[{value: 'sv', label: 'Saudia Airlines'}, {value: 'mh', label: 'Malaysia Airlines'}]} placeholder="Select Airline" value={airline} onChange={setAirline} />
         </FormField>
-        <FormField label="Flight Number" required helpText="Airline code + number (e.g. SV841)">
+        <FormField label="Flight Number" required helperText="Airline code + number (e.g. SV841)">
           <Input placeholder="Flight Number" value={number} onChange={e => setNumber(e.target.value)} />
         </FormField>
       </div>

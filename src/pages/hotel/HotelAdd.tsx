@@ -17,15 +17,15 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
   const [rooms, setRooms] = useState('0');
   const [distance, setDistance] = useState('0');
 
-  const { create } = useLocalStorageCrud('hotel');
+  const { create } = useLocalStorageCrud<any>('hotel');
 
   const steps = [
-    { label: 'Basic Info', description: 'Name & rating' },
-    { label: 'Location', description: 'Address & distance' },
-    { label: 'Rooms', description: 'Room types' },
-    { label: 'Amenities', description: 'Facilities' },
-    { label: 'Media', description: 'Gallery' },
-    { label: 'Status', description: 'Visibility' }
+    { id: '1', label: 'Basic Info', description: 'Name & rating' },
+    { id: '2', label: 'Location', description: 'Address & distance' },
+    { id: '3', label: 'Rooms', description: 'Room types' },
+    { id: '4', label: 'Amenities', description: 'Facilities' },
+    { id: '5', label: 'Media', description: 'Gallery' },
+    { id: '6', label: 'Status', description: 'Visibility' }
   ];
 
   const handleNext = () => {
@@ -260,7 +260,7 @@ export const HotelAdd: React.FC<{ navigate: (route: string, data?: any) => void,
         </FormField>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-        <FormField label="Owner Agency" helpText="Required if Owner Scope is Travel Agency">
+        <FormField label="Owner Agency" helperText="Required if Owner Scope is Travel Agency">
           <Select options={[{value: '', label: 'Select Agency'}, {value: 'a1', label: 'Travel Agency A'}]} value="" onChange={() => {}} disabled />
         </FormField>
         <FormField label="Visibility" required>

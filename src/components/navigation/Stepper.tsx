@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 export interface Step {
   id: string;
   label: string;
+  icon?: React.ReactNode;
 }
 
 export interface StepperProps {

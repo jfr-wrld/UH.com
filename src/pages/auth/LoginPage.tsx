@@ -4,7 +4,7 @@ import { FormField } from '../../components/inputs/FormField';
 import { Input } from '../../components/inputs/Input';
 import { ShieldCheck, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
-export const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+export const LoginPage: React.FC<{ onLogin: () => void; onBrowseAsGuest?: () => void }> = ({ onLogin, onBrowseAsGuest }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -166,7 +166,37 @@ export const LoginPage: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
             </Button>
           </form>
           
-          <div style={{ marginTop: 'var(--space-8)', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-6)' }}>
+          <div style={{ marginTop: 'var(--space-8)', textAlign: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            {onBrowseAsGuest && (
+              <button
+                onClick={onBrowseAsGuest}
+                style={{
+                  width: '100%',
+                  padding: 'var(--space-3) var(--space-4)',
+                  border: '1.5px solid var(--color-primary)',
+                  borderRadius: 'var(--radius-button)',
+                  background: 'transparent',
+                  color: 'var(--color-primary)',
+                  fontFamily: 'var(--font-family-base)',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 180ms ease',
+                }}
+                onMouseOver={e => { e.currentTarget.style.background = 'var(--color-primary-light)'; }}
+                onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1C4.68629 1 2 3.68629 2 7C2 11 8 15 8 15C8 15 14 11 14 7C14 3.68629 11.3137 1 8 1Z" stroke="currentColor" strokeWidth="1.5"/>
+                  <circle cx="8" cy="7" r="2" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+                Browse as Pilgrim
+              </button>
+            )}
             <p className="text-caption text-muted">Hint: Use admin@umrahhaji.com / admin123</p>
           </div>
         </div>

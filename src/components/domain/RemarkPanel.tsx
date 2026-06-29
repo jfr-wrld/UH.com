@@ -78,7 +78,7 @@ export const RemarkPanel: React.FC<RemarkPanelProps> = ({ remarks, onAddRemark }
         <FormField label="Remark" required>
           <Input 
             value={content} 
-            onChange={setContent} 
+            onChange={(e) => setContent(e.target.value)} 
             placeholder="Type internal note here..." 
           />
         </FormField>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { JUVLandingPage } from './pages/juv/JUVLandingPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { TravelAgencyList } from './pages/travel-agency/TravelAgencyList';
 import { TravelAgencyApplications } from './pages/travel-agency/TravelAgencyApplications';
@@ -128,11 +129,22 @@ export function ComponentShowcase() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('erp_auth') === 'true';
   });
+  const [isAdminRoute, setIsAdminRoute] = useState(() => {
+    return window.location.pathname.startsWith('/admin');
+  });
 
   const handleLogin = () => {
     localStorage.setItem('erp_auth', 'true');
     setIsAuthenticated(true);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setIsAdminRoute(window.location.pathname.startsWith('/admin'));
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -405,91 +417,91 @@ export function ComponentShowcase() {
 
     switch (currentRoute) {
       case 'dashboard':
-        return <AdminDashboard navigate={navigate}  showToast={showToast} />;
+        return <AdminDashboard navigate={navigate} />;
       case 'ta-list':
-        return <TravelAgencyList navigate={navigate}  showToast={showToast} />;
+        return <TravelAgencyList navigate={navigate} />;
       case 'ta-applications':
-        return <TravelAgencyApplications navigate={navigate}  showToast={showToast} />;
+        return <TravelAgencyApplications navigate={navigate} />;
       case 'ta-review':
         return <ApplicationReview navigate={navigate} applicationId={routeState?.applicationId}  showToast={showToast} />;
       case 'ta-details':
-        return <TravelAgencyDetails navigate={navigate} agencyId={routeState?.agencyId}  showToast={showToast} />;
+        return <TravelAgencyDetails navigate={navigate} agencyId={routeState?.agencyId} />;
       case 'ta-add':
       case 'ta-edit':
         return <TravelAgencyForm navigate={navigate} agencyId={routeState?.agencyId}  showToast={showToast} />;
       case 'um-users':
-        return <UserList navigate={navigate}  showToast={showToast} />;
+        return <UserList navigate={navigate} />;
       case 'um-invite':
         return <UserInvite navigate={navigate}  showToast={showToast} />;
       case 'um-details':
-        return <UserDetails navigate={navigate} userId={routeState?.id}  showToast={showToast} />;
+        return <UserDetails navigate={navigate} userId={routeState?.id} />;
       case 'um-roles':
-        return <RoleList navigate={navigate}  showToast={showToast} />;
+        return <RoleList navigate={navigate} />;
       case 'um-role-form':
         return <RoleForm navigate={navigate} roleId={routeState?.id}  showToast={showToast} />;
       case 'jamaah-list':
-        return <JamaahList navigate={navigate}  showToast={showToast} />;
+        return <JamaahList navigate={navigate} />;
       case 'jamaah-add':
         return <JamaahAdd navigate={navigate}  showToast={showToast} />;
       case 'jamaah-details':
-        return <JamaahDetails navigate={navigate} jamaahId={routeState?.id}  showToast={showToast} />;
+        return <JamaahDetails navigate={navigate} jamaahId={routeState?.id} />;
       case 'mutawwif-list':
-        return <MutawwifList navigate={navigate}  showToast={showToast} />;
+        return <MutawwifList navigate={navigate} />;
       case 'mutawwif-add':
         return <MutawwifAdd navigate={navigate}  showToast={showToast} />;
       case 'mutawwif-details':
-        return <MutawwifDetails navigate={navigate} mutawwifId={routeState?.id}  showToast={showToast} />;
+        return <MutawwifDetails navigate={navigate} mutawwifId={routeState?.id} />;
       case 'itinerary-list':
-        return <ItineraryList navigate={navigate}  showToast={showToast} />;
+        return <ItineraryList navigate={navigate} />;
       case 'itinerary-add':
         return <ItineraryAdd navigate={navigate}  showToast={showToast} />;
       case 'itinerary-details':
-        return <ItineraryDetails navigate={navigate} itineraryId={routeState?.id}  showToast={showToast} />;
+        return <ItineraryDetails navigate={navigate} itineraryId={routeState?.id} />;
       case 'flight-list':
-        return <FlightList navigate={navigate}  showToast={showToast} />;
+        return <FlightList navigate={navigate} />;
       case 'flight-add':
         return <FlightAdd navigate={navigate}  showToast={showToast} />;
       case 'flight-details':
-        return <FlightDetails navigate={navigate} flightId={routeState?.id}  showToast={showToast} />;
+        return <FlightDetails navigate={navigate} flightId={routeState?.id} />;
       case 'airline-add':
         return <AirlineAdd navigate={navigate}  showToast={showToast} />;
       case 'airline-details':
-        return <AirlineDetails navigate={navigate} airlineId={routeState?.id}  showToast={showToast} />;
+        return <AirlineDetails navigate={navigate} airlineId={routeState?.id} />;
       case 'hotel-list':
-        return <HotelList navigate={navigate}  showToast={showToast} />;
+        return <HotelList navigate={navigate} />;
       case 'hotel-add':
         return <HotelAdd navigate={navigate}  showToast={showToast} />;
       case 'hotel-details':
-        return <HotelDetails navigate={navigate} hotelId={routeState?.id}  showToast={showToast} />;
+        return <HotelDetails navigate={navigate} hotelId={routeState?.id} />;
       case 'season-list':
-        return <SeasonList navigate={navigate}  showToast={showToast} />;
+        return <SeasonList navigate={navigate} />;
       case 'package-list':
-        return <PackageList navigate={navigate}  showToast={showToast} />;
+        return <PackageList navigate={navigate} />;
       case 'package-create':
         return <PackageCreate navigate={navigate}  showToast={showToast} />;
       case 'package-details':
         return <PackageDetails navigate={navigate} packageId={routeState?.id}  showToast={showToast} />;
       case 'group-trip-list':
-        return <GroupTripList navigate={navigate}  showToast={showToast} />;
+        return <GroupTripList navigate={navigate} />;
       case 'group-trip-create':
         return <GroupTripCreate navigate={navigate}  showToast={showToast} />;
       case 'group-trip-details':
-        return <GroupTripDetails navigate={navigate} tripId={routeState?.id} showToast={showToast} />;
+        return <GroupTripDetails navigate={navigate} tripId={routeState?.id} />;
       case 'report-details':
-        return <ReportDetails navigate={navigate} reportId={routeState?.id}  showToast={showToast} />;
+        return <ReportDetails navigate={navigate} reportId={routeState?.id} />;
       
       case 'booking-list':
-        return <BookingList navigate={navigate} showToast={showToast} />;
+        return <BookingList navigate={navigate} />;
       case 'booking-create':
         return <BookingCreate navigate={navigate} showToast={showToast} />;
       case 'booking-details':
-        return <BookingDetails navigate={navigate} bookingId={routeState?.id} showToast={showToast} />;
+        return <BookingDetails navigate={navigate} bookingId={routeState?.id} />;
       case 'billing-list':
         return <PaymentList navigate={navigate} showToast={showToast} />;
       case 'billing-invoice-create':
         return <InvoiceCreate navigate={navigate} showToast={showToast} />;
       case 'billing-invoice-details':
-        return <InvoiceDetails navigate={navigate} invoiceId={routeState?.id} showToast={showToast} />;
+        return <InvoiceDetails navigate={navigate} invoiceId={routeState?.id} />;
 
       case 'fin-overview':
         return <FinanceOverview navigate={navigate} showToast={showToast} />;
@@ -498,39 +510,39 @@ export function ComponentShowcase() {
       case 'fin-commission':
         return <CommissionSummary navigate={navigate} showToast={showToast} />;
       case 'fin-allowance':
-        return <AllowanceList navigate={navigate} showToast={showToast} />;
+        return <AllowanceList navigate={navigate} />;
       case 'fin-allowance-create':
         return <AllowanceCreate navigate={navigate} showToast={showToast} />;
       case 'fin-allowance-details':
-        return <AllowanceDetails navigate={navigate} allowanceId={routeState?.id} showToast={showToast} />;
+        return <AllowanceDetails navigate={navigate} allowanceId={routeState?.id} />;
       case 'fin-payout':
-        return <PayoutPreparation navigate={navigate} showToast={showToast} />;
+        return <PayoutPreparation navigate={navigate} />;
       case 'fin-reports':
-        return <FinanceReports navigate={navigate} showToast={showToast} />;
+        return <FinanceReports navigate={navigate} />;
       case 'fin-settings':
         return <FinanceSettings navigate={navigate} showToast={showToast} />;
       case 'testimonial-list':
-        return <TestimonialList navigate={navigate} showToast={showToast} />;
+        return <TestimonialList navigate={navigate} />;
       case 'testimonial-details':
         return <TestimonialDetails navigate={navigate} testimonialId={routeState?.id} showToast={showToast} />;
       case 'mutawwif-report-details':
-        return <MutawwifReportDetails navigate={navigate} reportId={routeState?.id} showToast={showToast} />;
+        return <MutawwifReportDetails navigate={navigate} reportId={routeState?.id} />;
       case 'report-list':
-        return <ReportList navigate={navigate} showToast={showToast} />;
+        return <ReportList navigate={navigate} />;
       case 'report-create':
         return <ReportCreate navigate={navigate} showToast={showToast} />;
       case 'article-list':
-        return <ArticleList navigate={navigate}  showToast={showToast} />;
+        return <ArticleList navigate={navigate} />;
       case 'article-create':
         return <ArticleCreate navigate={navigate}  showToast={showToast} />;
       case 'article-details':
-        return <ArticleDetails navigate={navigate} articleId={routeState?.id}  showToast={showToast} />;
+        return <ArticleDetails navigate={navigate} articleId={routeState?.id} />;
       case 'announcement-list':
-        return <AnnouncementList navigate={navigate}  showToast={showToast} />;
+        return <AnnouncementList navigate={navigate} />;
       case 'announcement-create':
         return <AnnouncementCreate navigate={navigate}  showToast={showToast} />;
       case 'announcement-details':
-        return <AnnouncementDetails navigate={navigate} id={routeState?.id}  showToast={showToast} />;
+        return <AnnouncementDetails navigate={navigate} id={routeState?.id} />;
       case 'ref-dashboard':
         return <ReferralDashboard navigate={navigate} />;
       case 'ref-programs':
@@ -549,14 +561,20 @@ export function ComponentShowcase() {
     }
   };
 
-  if (!isAuthenticated) {
-    return <LoginPage onLogin={handleLogin} />;
+  if (isAdminRoute) {
+    if (!isAuthenticated) {
+      return <LoginPage onLogin={handleLogin} />;
+    }
+    return (
+      <AppShell navItems={navItems}>
+        {renderRoute()}
+      </AppShell>
+    );
   }
 
+  // Default to User/Jamaah View - Landing Page
   return (
-    <AppShell navItems={navItems}>
-      {renderRoute()}
-    </AppShell>
+    <JUVLandingPage isAuthenticated={isAuthenticated} />
   );
 
   function renderComponentShowcase() {
@@ -863,7 +881,7 @@ export function ComponentShowcase() {
                     allowedTransitions={['Approved', 'Rejected']}
                     onTransition={(s) => console.log(s)}
                   />
-                  <ExportControl onExport={(f) => console.log(f)} />
+                  <ExportControl data={[]} />
                 </div>
               </div>
             </div>

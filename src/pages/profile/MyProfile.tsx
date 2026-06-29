@@ -174,7 +174,7 @@ export const MyProfile: React.FC<{ navigate: (route: string, data?: any) => void
           <FormField label="Current Password" required>
             <Input type="password" placeholder="Enter current password" />
           </FormField>
-          <FormField label="New Password" required helpText="Password must be at least 8 characters long and contain numbers and symbols.">
+          <FormField label="New Password" required helperText="Password must be at least 8 characters long and contain numbers and symbols.">
             <Input type="password" placeholder="Enter new password" />
           </FormField>
           <FormField label="Confirm New Password" required>

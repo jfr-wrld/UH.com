@@ -14,7 +14,7 @@ import { getStatusBadgeVariant, getCategoryBadgeVariant } from '../../utils/badg
 
 export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => void, jamaahId?: string }> = ({ navigate, jamaahId = 'jam_1' }) => {
   const [activeTab, setActiveTab] = useState('profile');
-  const { getById } = useLocalStorageCrud('jamaah');
+  const { getById } = useLocalStorageCrud<any>('jamaah');
 
   // Mock Jamaah Data
   const jamaah = getById(jamaahId) || {
@@ -144,7 +144,7 @@ export const JamaahDetails: React.FC<{ navigate: (route: string, data?: any) => 
 
         {activeTab === 'documents' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-4)' }}>
-            <DocumentStatusControl documentName="Passport (Scanned Copy)" required status="Verified" onStatusChange={(s) => console.log(s)} />
+            <DocumentStatusControl documentName="Passport (Scanned Copy)" required status="Confirmed" onStatusChange={(s) => console.log(s)} />
             <DocumentStatusControl documentName="Umrah Visa" required status="Pending" onStatusChange={(s) => console.log(s)} />
             <DocumentStatusControl documentName="Meningitis Vaccine Certificate" required status="Submitted" onStatusChange={(s) => console.log(s)} />
           </div>

@@ -179,7 +179,7 @@ export const JamaahAdd: React.FC<{ navigate: (route: string, data?: any) => void
             <>
               <h3 className="text-section-title" style={{ marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-2)', borderBottom: '1px solid var(--border-subtle)' }}>Search Existing User</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                <FormField label="Search Platform Users" required helpText="Search by name, email, or phone number." error={showErrors && !formData.existingUserId ? 'Wajib diisi' : undefined}>
+                <FormField label="Search Platform Users" required helperText="Search by name, email, or phone number." error={showErrors && !formData.existingUserId ? 'Wajib diisi' : undefined}>
                   <Select 
                     options={[
                       {

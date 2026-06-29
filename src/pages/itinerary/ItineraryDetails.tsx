@@ -33,7 +33,6 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
     totalActivities: 35,
     localTz: 'Malaysia (GMT+8)',
     destTz: 'Saudi Arabia (GMT+3)',
-    destTz: 'Saudi Arabia (GMT+3)',
     description: 'A comprehensive 12-day Umrah itinerary with 4 days in Madinah and 6 days in Makkah.',
     createdBy: 'Admin User',
     lastUpdated: '10 May 2026, 14:30',
@@ -198,7 +197,7 @@ export const ItineraryDetails: React.FC<{ navigate: (route: string, data?: any) 
                           <span className="text-caption-bold" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Participant Description</span>
                           <span className="text-body text-muted">Briefing and check-in process. Please arrive 4 hours before departure time.</span>
                         </div>
-                        <div style={{ padding: 'var(--space-3)', border: '1px dashed var(--color-warning-default)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', border: 'var(--glass-border)', boxShadow: 'var(--glass-shadow)' }}>
+                        <div style={{ padding: 'var(--space-3)', border: '1px dashed var(--color-warning-default)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--surface-base)', backdropFilter: 'var(--glass-blur)', WebkitBackdropFilter: 'var(--glass-blur)', boxShadow: 'var(--glass-shadow)' }}>
                           <span className="text-caption-bold text-warning" style={{ display: 'block', marginBottom: 'var(--space-1)' }}>Internal Instructions</span>
                           <span className="text-body text-muted">Ensure all passports and visas are collected. Distribute ID cards to jamaah.</span>
                         </div>
