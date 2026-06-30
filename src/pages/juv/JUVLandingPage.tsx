@@ -351,6 +351,7 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
   const [registerMobileOpen, setRegisterMobileOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState({ date: 'Any Time', duration: '10 - 14 Days', type: 'All Types', budget: 'Any Range' });
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -363,9 +364,26 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
     };
     document.addEventListener('click', handleClickOutside);
 
+    // Active section tracking
+    const sectionIds = ['hero', 'packages', 'guides', 'faq', 'contact'];
+    const observers: IntersectionObserver[] = [];
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { threshold: 0.3, rootMargin: '-80px 0px -40% 0px' }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('click', handleClickOutside);
+      observers.forEach(o => o.disconnect());
     };
   }, []);
 
@@ -495,12 +513,11 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
           </a>
 
           <div className="juv-nav-links">
-            <button className="juv-nav-link active" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
-            <button className="juv-nav-link" onClick={() => scrollToSection('packages')}>Packages</button>
-            <button className="juv-nav-link" onClick={() => scrollToSection('destinations')}>Destinations</button>
-            <button className="juv-nav-link" onClick={() => scrollToSection('guides')}>Guides</button>
-            <button className="juv-nav-link" onClick={() => scrollToSection('faq')}>FAQ</button>
-            <button className="juv-nav-link" onClick={() => scrollToSection('contact')}>Contact</button>
+            <button className={`juv-nav-link ${activeSection === 'hero' ? 'active' : ''}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
+            <button className={`juv-nav-link ${activeSection === 'packages' ? 'active' : ''}`} onClick={() => scrollToSection('packages')}>Packages</button>
+            <button className={`juv-nav-link ${activeSection === 'guides' ? 'active' : ''}`} onClick={() => scrollToSection('guides')}>Guides</button>
+            <button className={`juv-nav-link ${activeSection === 'faq' ? 'active' : ''}`} onClick={() => scrollToSection('faq')}>FAQ</button>
+            <button className={`juv-nav-link ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => scrollToSection('contact')}>About</button>
           </div>
 
           <div className="juv-nav-actions">
@@ -558,10 +575,9 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
         <div className="juv-drawer-body">
           <button className="juv-drawer-link" onClick={() => scrollToSection('hero')}><IconHome /> Home</button>
           <button className="juv-drawer-link" onClick={() => scrollToSection('packages')}><IconPackages /> Packages</button>
-          <button className="juv-drawer-link" onClick={() => scrollToSection('destinations')}><IconMosque /> Destinations</button>
           <button className="juv-drawer-link" onClick={() => scrollToSection('guides')}><IconGuide /> Guides</button>
           <button className="juv-drawer-link" onClick={() => scrollToSection('faq')}><IconGuide /> FAQ</button>
-          <button className="juv-drawer-link" onClick={() => scrollToSection('contact')}><IconHeadphones /> Contact</button>
+          <button className="juv-drawer-link" onClick={() => scrollToSection('contact')}><IconHeadphones /> About</button>
         </div>
         <div className="juv-drawer-footer">
           <button className="juv-btn juv-btn-outline juv-btn-md" style={{ width: '100%', height: '42px', boxSizing: 'border-box' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}>Login</button>
@@ -591,11 +607,22 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
 
         <div className="juv-hero-content-wrapper">
           <div className="juv-hero-content">
-            <h1 className="juv-hero-title animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              Begin Your Sacred Journey <br />
-              <span className="juv-hero-highlight">with Confidence</span>
+            <h1 className="juv-hero-title">
+              {'Begin Your Sacred Journey'.split(' ').map((word, i) => (
+                <span key={i} className="juv-hero-word" style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
+                  {word}&nbsp;
+                </span>
+              ))}
+              <br />
+              <span className="juv-hero-highlight">
+                {'with Confidence'.split(' ').map((word, i) => (
+                  <span key={i} className="juv-hero-word" style={{ animationDelay: `${0.5 + i * 0.1}s` }}>
+                    {word}&nbsp;
+                  </span>
+                ))}
+              </span>
             </h1>
-            <p className="juv-hero-subtitle animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <p className="juv-hero-subtitle">
               Compare Umrah & Hajj packages from verified travel agencies. Find the right departure, accommodation, and price—all in one trusted place.
             </p>
 
@@ -603,7 +630,7 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
         </div>
 
         {/* Search Panel */}
-        <div className="juv-search-panel-container animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+        <div className="juv-search-panel-container animate-fade-in-up" style={{ animationDelay: '1s' }}>
           <div className="juv-search-panel-wrapper">
 
             <div className="juv-search-panel-box">

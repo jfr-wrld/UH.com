@@ -93,6 +93,11 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  transition: transform var(--juv-transition);
+}
+
+.juv-logo:hover {
+  transform: scale(1.05);
 }
 
 .juv-logo-img {
@@ -121,9 +126,26 @@
   position: relative;
 }
 
+.juv-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--juv-primary);
+  border-radius: 2px 2px 0 0;
+  transition: width 0.3s var(--juv-ease-out), left 0.3s var(--juv-ease-out);
+}
+
 .juv-nav-link:hover {
   color: var(--juv-primary);
   background: var(--juv-primary-soft);
+}
+
+.juv-nav-link:hover::after {
+  width: calc(100% - 32px);
+  left: 16px;
 }
 
 .juv-nav-link.active {
@@ -133,14 +155,8 @@
 }
 
 .juv-nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
+  width: calc(100% - 32px);
   left: 16px;
-  right: 16px;
-  height: 2px;
-  background-color: var(--juv-primary);
-  border-radius: 2px 2px 0 0;
 }
 
 .juv-nav-actions {
@@ -195,8 +211,12 @@
 
 .juv-btn-primary:hover {
   background: var(--juv-primary-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(6, 148, 162, 0.3);
+}
+
+.juv-btn-primary:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .juv-btn-secondary {
@@ -256,7 +276,12 @@
 
 .juv-btn-white:hover {
   background: var(--juv-bg-alt);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--juv-shadow-md);
+}
+
+.juv-btn-white:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .juv-btn-pill {
@@ -574,22 +599,30 @@
   letter-spacing: -0.5px;
 }
 
+.juv-hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: juv-word-reveal 0.8s var(--juv-ease-out) forwards;
+}
+
 .juv-hero-highlight {
   position: relative;
   display: inline-block;
-  color: var(--juv-text-primary);
+  color: var(--juv-primary-dark);
 }
 
 .juv-hero-highlight::after {
   content: '';
   position: absolute;
-  bottom: 8px;
+  bottom: 4px;
   left: 0;
-  width: 100%;
-  height: 4px;
-  background: #d4af37;
+  width: 0;
+  height: 8px;
+  background: linear-gradient(90deg, #d4af37, #f0d878);
   border-radius: 4px;
   z-index: -1;
+  animation: juv-underline-draw 0.8s var(--juv-ease-out) 1s forwards;
 }
 
 .juv-hero-subtitle {
@@ -598,6 +631,8 @@
   line-height: 1.6;
   margin-bottom: 40px;
   max-width: 600px;
+  opacity: 0;
+  animation: juv-fade-in-up 1s var(--juv-ease-out) 0.8s forwards;
 }
 
 .juv-hero-buttons {
@@ -757,6 +792,21 @@
   align-items: center;
   gap: 16px;
   flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--juv-radius-md);
+  border: 1px solid transparent;
+  transition: all var(--juv-transition);
+}
+
+.juv-search-field-modern:hover {
+  background: var(--juv-surface-2);
+  border-color: rgba(6, 148, 162, 0.2);
+}
+
+.juv-search-field-modern:focus-within {
+  background: white;
+  border-color: var(--juv-primary);
+  box-shadow: 0 0 0 3px var(--juv-primary-soft);
 }
 
 .juv-search-field-icon {
@@ -938,7 +988,7 @@
   border: 1px solid var(--juv-border-soft);
   border-radius: var(--juv-radius-pill);
   cursor: pointer;
-  transition: all var(--juv-transition);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -1005,6 +1055,12 @@
   height: 100%;
   object-fit: cover;
   transition: transform 500ms ease;
+}
+
+.juv-pkg-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--juv-shadow-xl);
+  border-color: var(--juv-primary);
 }
 
 .juv-pkg-card:hover .juv-pkg-img img {
@@ -1506,7 +1562,8 @@
 
 .juv-testimonial-card:hover {
   background: var(--juv-surface-3);
-  transform: translateY(-4px);
+  transform: translateY(-4px) rotate(1deg);
+  box-shadow: var(--juv-shadow-md);
 }
 
 .juv-testimonial-quote-icon {
@@ -1932,8 +1989,9 @@
 }
 
 .juv-footer-social a:hover {
-  background: var(--juv-primary);
-  color: white;
+  color: var(--juv-primary);
+  background: rgba(6, 148, 162, 0.1);
+  transform: scale(1.2) translateY(-2px);
 }
 
 /* ==========================================================================
@@ -2088,14 +2146,14 @@
    ========================================================================== */
 :root {
   --juv-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --juv-anim-duration: 600ms;
-  --juv-stagger: 80ms;
+  --juv-anim-duration: 900ms;
+  --juv-stagger: 120ms;
 }
 
 /* Base reveal — hidden state */
 .juv-reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(30px);
   transition: opacity var(--juv-anim-duration) var(--juv-ease-out),
               transform var(--juv-anim-duration) var(--juv-ease-out);
 }
@@ -2105,12 +2163,10 @@
   transform: translateY(0);
 }
 
-/* --- Staggered children (generic) ---
-   Add .juv-anim-child to elements inside a .juv-reveal.
-   They start hidden and animate when parent gets .visible */
+/* --- Staggered children (generic) --- */
 .juv-reveal .juv-anim-child {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(24px);
   transition: opacity var(--juv-anim-duration) var(--juv-ease-out),
               transform var(--juv-anim-duration) var(--juv-ease-out);
 }
@@ -2122,11 +2178,11 @@
 
 /* Stagger delays for children */
 .juv-reveal.visible .juv-anim-child:nth-child(1) { transition-delay: 0ms; }
-.juv-reveal.visible .juv-anim-child:nth-child(2) { transition-delay: 80ms; }
-.juv-reveal.visible .juv-anim-child:nth-child(3) { transition-delay: 160ms; }
-.juv-reveal.visible .juv-anim-child:nth-child(4) { transition-delay: 240ms; }
-.juv-reveal.visible .juv-anim-child:nth-child(5) { transition-delay: 320ms; }
-.juv-reveal.visible .juv-anim-child:nth-child(6) { transition-delay: 400ms; }
+.juv-reveal.visible .juv-anim-child:nth-child(2) { transition-delay: 120ms; }
+.juv-reveal.visible .juv-anim-child:nth-child(3) { transition-delay: 240ms; }
+.juv-reveal.visible .juv-anim-child:nth-child(4) { transition-delay: 360ms; }
+.juv-reveal.visible .juv-anim-child:nth-child(5) { transition-delay: 480ms; }
+.juv-reveal.visible .juv-anim-child:nth-child(6) { transition-delay: 600ms; }
 
 /* --- Slide from Left --- */
 .juv-reveal .juv-anim-slide-left {
@@ -2169,30 +2225,30 @@
 
 /* Pop-in stagger */
 .juv-reveal.visible .juv-anim-pop:nth-child(1) { transition-delay: 0ms; }
-.juv-reveal.visible .juv-anim-pop:nth-child(2) { transition-delay: 120ms; }
-.juv-reveal.visible .juv-anim-pop:nth-child(3) { transition-delay: 240ms; }
-.juv-reveal.visible .juv-anim-pop:nth-child(4) { transition-delay: 360ms; }
+.juv-reveal.visible .juv-anim-pop:nth-child(2) { transition-delay: 150ms; }
+.juv-reveal.visible .juv-anim-pop:nth-child(3) { transition-delay: 300ms; }
+.juv-reveal.visible .juv-anim-pop:nth-child(4) { transition-delay: 450ms; }
 
 /* --- Fade + Zoom (for banners) --- */
 .juv-reveal .juv-anim-zoom {
   opacity: 0;
   transform: scale(0.92);
-  transition: opacity 700ms var(--juv-ease-out),
-              transform 700ms var(--juv-ease-out);
+  transition: opacity 1000ms var(--juv-ease-out),
+              transform 1000ms var(--juv-ease-out);
 }
 
 .juv-reveal.visible .juv-anim-zoom {
   opacity: 1;
   transform: scale(1);
-  transition-delay: 200ms;
+  transition-delay: 300ms;
 }
 
 /* --- Scale Up (for CTA) --- */
 .juv-reveal .juv-anim-scale-up {
   opacity: 0;
   transform: scale(0.95);
-  transition: opacity 700ms var(--juv-ease-out),
-              transform 700ms var(--juv-ease-out);
+  transition: opacity 1000ms var(--juv-ease-out),
+              transform 1000ms var(--juv-ease-out);
 }
 
 .juv-reveal.visible .juv-anim-scale-up {
@@ -2201,19 +2257,108 @@
 }
 
 /* --- Generic delay helpers --- */
-.juv-delay-1 { transition-delay: 100ms !important; }
-.juv-delay-2 { transition-delay: 200ms !important; }
-.juv-delay-3 { transition-delay: 300ms !important; }
-.juv-delay-4 { transition-delay: 400ms !important; }
+.juv-delay-1 { transition-delay: 150ms !important; }
+.juv-delay-2 { transition-delay: 300ms !important; }
+.juv-delay-3 { transition-delay: 450ms !important; }
+.juv-delay-4 { transition-delay: 600ms !important; }
 
-/* --- CTA glow pulse --- */
+/* ==========================================================================
+   LOOPING ANIMATIONS
+   ========================================================================== */
+
+/* --- Trust icon float (continuous gentle bob) --- */
+@keyframes juv-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.juv-trust-feature-icon {
+  animation: juv-icon-float 3s ease-in-out infinite;
+}
+
+.juv-trust-feature-item:nth-child(2) .juv-trust-feature-icon { animation-delay: 0.4s; }
+.juv-trust-feature-item:nth-child(3) .juv-trust-feature-icon { animation-delay: 0.8s; }
+.juv-trust-feature-item:nth-child(4) .juv-trust-feature-icon { animation-delay: 1.2s; }
+
+/* --- Section title shimmer (subtle gradient sweep) --- */
+@keyframes juv-text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.juv-section-title {
+  background: linear-gradient(
+    90deg,
+    var(--juv-text-primary) 0%,
+    var(--juv-text-primary) 40%,
+    var(--juv-primary) 50%,
+    var(--juv-text-primary) 60%,
+    var(--juv-text-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: juv-text-shimmer 6s ease-in-out infinite;
+}
+
+/* --- CTA glow pulse (looping) --- */
 @keyframes juv-glow-pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(194, 120, 3, 0); }
   50% { box-shadow: 0 0 24px 8px rgba(194, 120, 3, 0.25); }
 }
 
 .juv-reveal.visible .juv-cta-btn-glow {
-  animation: juv-glow-pulse 2s ease-in-out 1s 1;
+  animation: juv-glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   TEXT ANIMATIONS
+   ========================================================================== */
+
+/* --- Word-by-word reveal for hero --- */
+@keyframes juv-word-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Hero highlight underline draw --- */
+@keyframes juv-underline-draw {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* --- Hero fade-in-up (used on hero elements) --- */
+@keyframes juv-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  opacity: 0;
+  animation: juv-fade-in-up 1s var(--juv-ease-out) forwards;
+}
+
+/* --- CTA title subtle glow loop --- */
+@keyframes juv-text-glow {
+  0%, 100% { text-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { text-shadow: 0 0 20px rgba(255,255,255,0.15); }
+}
+
+.juv-cta-title {
+  animation: juv-text-glow 3s ease-in-out infinite;
 }
 
 /* ==========================================================================
