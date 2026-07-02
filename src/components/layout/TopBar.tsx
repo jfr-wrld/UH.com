@@ -319,10 +319,18 @@ export const TopBar: React.FC<TopBarProps> = ({
           }
           variant="ghost"
           items={[
-            { id: 'profile', label: 'My Profile', icon: <UserCircle size={16} />, onClick: () => window.location.hash = 'my-profile' },
-            { id: 'settings', label: 'Preferences', icon: <Settings size={16} />, onClick: () => window.location.hash = 'settings' },
+            { id: 'profile', label: 'My Profile', icon: <UserCircle size={16} />, onClick: () => {
+              window.location.hash = window.location.pathname.startsWith('/ta') ? 'ta-profile' : 'my-profile';
+            }},
+            { id: 'settings', label: 'Preferences', icon: <Settings size={16} />, onClick: () => {
+              window.location.hash = window.location.pathname.startsWith('/ta') ? 'ta-settings' : 'settings';
+            }},
             { id: 'logout', label: 'Logout', icon: <LogOut size={16} />, danger: true, onClick: () => {
-              localStorage.removeItem('erp_auth');
+              if (window.location.pathname.startsWith('/ta')) {
+                localStorage.removeItem('ta_auth');
+              } else {
+                localStorage.removeItem('erp_auth');
+              }
               window.location.hash = '';
               window.location.reload();
             }}

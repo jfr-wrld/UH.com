@@ -1,5 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { JUVLandingPage } from './pages/juv/JUVLandingPage';
+
+import { TACrmDashboard } from './pages/ta-portal/TACrmDashboard';
+import { TACrmJamaah360 } from './pages/ta-portal/TACrmJamaah360';
+import { TAPackageList } from './pages/ta-portal/TAPackageList';
+import { TAPackageDetails } from './pages/ta-portal/TAPackageDetails';
+import { TABookingList } from './pages/ta-portal/TABookingList';
+import { TABookingDetails } from './pages/ta-portal/TABookingDetails';
+import { TALoginPage } from './pages/auth/TALoginPage';
+import { TARegisterPage } from './pages/auth/TARegisterPage';
+import { JUVLoginPage } from './pages/auth/JUVLoginPage';
+import { JUVRegisterPage } from './pages/auth/JUVRegisterPage';
+import { TAGroupTripList } from './pages/ta-portal/trips/TAGroupTripList';
+import { TAGroupTripCreate } from './pages/ta-portal/trips/TAGroupTripCreate';
+import { TAGroupTripDetails } from './pages/ta-portal/trips/TAGroupTripDetails';
+import { TADocumentDashboard } from './pages/ta-portal/documents/TADocumentDashboard';
+import { TAJamaahList } from './pages/ta-portal/jamaah/TAJamaahList';
+import { TAJamaahDetails } from './pages/ta-portal/jamaah/TAJamaahDetails';
+import { TATeamList } from './pages/ta-portal/team/TATeamList';
+import { TAStaffDetail } from './pages/ta-portal/team/TAStaffDetail';
+import { TAMutawwifList } from './pages/ta-portal/mutawwif/TAMutawwifList';
+import { TAMutawwifDetails } from './pages/ta-portal/mutawwif/TAMutawwifDetails';
+import { TAProfile } from './pages/ta-portal/profile/TAProfile';
+import { TAFinanceDashboard } from './pages/ta-portal/finance/TAFinanceDashboard';
+import { TAInvoiceList } from './pages/ta-portal/finance/TAInvoiceList';
+import { TAInvoiceDetails } from './pages/ta-portal/finance/TAInvoiceDetails';
+import { TAPaymentList } from './pages/ta-portal/finance/TAPaymentList';
+import { TARefundList } from './pages/ta-portal/finance/TARefundList';
+import { TACreateInvoice } from './pages/ta-portal/finance/TACreateInvoice';
+import { TASettlementList } from './pages/ta-portal/finance/TASettlementList';
+import { TASettlementDetails } from './pages/ta-portal/finance/TASettlementDetails';
+import { TAFinanceSettings } from './pages/ta-portal/finance/TAFinanceSettings';
+import { TATestimonialList } from './pages/ta-portal/testimonial/TATestimonialList';
+import { TATestimonialDetails } from './pages/ta-portal/testimonial/TATestimonialDetails';
+import { TAReportList } from './pages/ta-portal/support/TAReportList';
+import { TAReportCreate } from './pages/ta-portal/support/TAReportCreate';
+import { TAReportDetails } from './pages/ta-portal/support/TAReportDetails';
+import { TAAnnouncementList } from './pages/ta-portal/announcements/TAAnnouncementList';
+import { TAAnnouncementCreate } from './pages/ta-portal/announcements/TAAnnouncementCreate';
+import { TAAnnouncementDetails } from './pages/ta-portal/announcements/TAAnnouncementDetails';
+import { TAArticleHome } from './pages/ta-portal/articles/TAArticleHome';
+import { TAArticleList } from './pages/ta-portal/articles/TAArticleList';
+import { TAArticleDetails } from './pages/ta-portal/articles/TAArticleDetails';
+import { TASettings } from './pages/ta-portal/settings/TASettings';
+
 import { AdminDashboard } from './pages/AdminDashboard';
 import { TravelAgencyList } from './pages/travel-agency/TravelAgencyList';
 import { TravelAgencyApplications } from './pages/travel-agency/TravelAgencyApplications';
@@ -44,9 +88,13 @@ import { RefundRequests } from './pages/finance/RefundRequests';
 import { CommissionSummary } from './pages/finance/CommissionSummary';
 import { FinanceSettings } from './pages/finance/FinanceSettings';
 
-import { PaymentList } from './pages/billing/PaymentList';
-import { InvoiceCreate } from './pages/billing/InvoiceCreate';
-import { InvoiceDetails } from './pages/billing/InvoiceDetails';
+import { AdminFinanceDashboard } from './pages/admin-portal/finance/AdminFinanceDashboard';
+import { AdminInvoiceList } from './pages/admin-portal/finance/AdminInvoiceList';
+import { AdminPaymentList } from './pages/admin-portal/finance/AdminPaymentList';
+import { AdminRefundList } from './pages/admin-portal/finance/AdminRefundList';
+import { AdminPayoutList } from './pages/admin-portal/finance/AdminPayoutList';
+import { AdminInvoiceCreate } from './pages/admin-portal/finance/AdminInvoiceCreate';
+import { AdminInvoiceDetails } from './pages/admin-portal/finance/AdminInvoiceDetails';
 import { AllowanceList } from './pages/finance/AllowanceList';
 import { AllowanceDetails } from './pages/finance/AllowanceDetails';
 import { AllowanceCreate } from './pages/finance/AllowanceCreate';
@@ -110,7 +158,7 @@ import { AuditLogPanel } from './components/domain/AuditLogPanel';
 import { StatusTransitionMenu } from './components/domain/StatusTransitionMenu';
 import { ExportControl } from './components/domain/ExportControl';
 import { ImportControl } from './components/domain/ImportControl';
-import { Home, Building, Users, UserCheck, Package, Ticket, Plane, Bed, Map, CalendarDays, Wallet, FileEdit, Megaphone, MessageSquare, BarChart3, Settings, Search, Trash2, Edit2, AlertTriangle, Plus, Calendar, DollarSign, CreditCard, BarChart2, History, LayoutDashboard, ChevronRight, Eye, RefreshCcw, Archive, Edit, Copy } from 'lucide-react';
+import { Home, Building, Users, UserCheck, Package, Ticket, Plane, Bed, Map, CalendarDays, Wallet, FileEdit, Megaphone, MessageSquare, BarChart3, Settings, Search, Trash2, Edit2, AlertTriangle, Plus, Calendar, DollarSign, CreditCard, BarChart2, History, LayoutDashboard, ChevronRight, Eye, RefreshCcw, Archive, Edit, Copy, Contact, UserCog, Briefcase, Building2, FileText, Star, Bell, BookOpen } from 'lucide-react';
 import { useFeatureFlags } from './contexts/FeatureFlagContext';
 
 export function ComponentShowcase() {
@@ -138,9 +186,33 @@ export function ComponentShowcase() {
     setIsAuthenticated(true);
   };
 
+  const [isTARoute, setIsTARoute] = useState(() => {
+    return window.location.pathname.startsWith('/ta');
+  });
+  const [isTAAuthenticated, setIsTAAuthenticated] = useState(() => {
+    return localStorage.getItem('ta_auth') === 'true';
+  });
+  const [isJUVAuthenticated, setIsJUVAuthenticated] = useState(() => {
+    return localStorage.getItem('juv_auth') === 'true';
+  });
+
+  const handleTALogin = () => {
+    localStorage.setItem('ta_auth', 'true');
+    setIsTAAuthenticated(true);
+    navigate('ta-crm-dashboard');
+  };
+
+  const handleJUVLogin = () => {
+    localStorage.setItem('juv_auth', 'true');
+    setIsJUVAuthenticated(true);
+    navigate('dashboard');
+  };
+
+
   useEffect(() => {
     const handlePopState = () => {
       setIsAdminRoute(window.location.pathname.startsWith('/admin'));
+      setIsTARoute(window.location.pathname.startsWith('/ta'));
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -194,7 +266,7 @@ export function ComponentShowcase() {
       return {
         ...item,
         isActive,
-        onClick: item.children ? undefined : () => navigate(item.id),
+        onClick: item.children ? undefined : (item.onClick || (() => navigate(item.id))),
         children
       };
     });
@@ -287,12 +359,14 @@ export function ComponentShowcase() {
     },
     { 
       id: 'finance', 
-      label: 'Finance',
+      label: 'Finance Management',
       category: 'Finance',
       icon: <DollarSign size={20} />,
       children: [
-        { id: 'fin-overview', label: 'Overview', icon: <Eye size={16} />, onClick: () => navigate('fin-overview'), isActive: currentRoute.startsWith('fin-overview') },
-        { id: 'fin-refunds', label: 'Refund Requests', icon: <RefreshCcw size={16} />, onClick: () => navigate('fin-refunds'), isActive: currentRoute.startsWith('fin-refunds') },
+        { id: 'admin-finance-dashboard', label: 'Overview', onClick: () => navigate('admin-finance-dashboard'), isActive: currentRoute.startsWith('admin-finance-dashboard') },
+        { id: 'admin-finance-payments', label: 'Payments', onClick: () => navigate('admin-finance-payments'), isActive: currentRoute.startsWith('admin-finance-payments') },
+        { id: 'admin-finance-invoices', label: 'Invoices', onClick: () => navigate('admin-finance-invoices'), isActive: currentRoute.startsWith('admin-finance-invoice') },
+        { id: 'admin-finance-refunds', label: 'Refund Requests', onClick: () => navigate('admin-finance-refunds'), isActive: currentRoute.startsWith('admin-finance-refunds') },
         { id: 'fin-commission', label: 'Commission Summary', onClick: () => navigate('fin-commission'), isActive: currentRoute.startsWith('fin-commission') },
         { 
           id: 'fin-allowance', 
@@ -301,10 +375,10 @@ export function ComponentShowcase() {
           isActive: currentRoute.startsWith('fin-allowance')
         },
         { 
-          id: 'fin-payout', 
+          id: 'admin-finance-payouts', 
           label: 'Payout Preparation',
-          onClick: () => navigate('fin-payout'),
-          isActive: currentRoute.startsWith('fin-payout')
+          onClick: () => navigate('admin-finance-payouts'),
+          isActive: currentRoute.startsWith('admin-finance-payout')
         },
         { 
           id: 'fin-reports', 
@@ -314,14 +388,6 @@ export function ComponentShowcase() {
         },
         { id: 'fin-settings', label: 'Finance Settings', onClick: () => navigate('fin-settings'), isActive: currentRoute.startsWith('fin-settings') },
       ]
-    },
-    { 
-      id: 'billing-list', 
-      label: 'Payments', 
-      category: 'Finance',
-      icon: <CreditCard size={20} />,
-      onClick: () => navigate('billing-list'),
-      isActive: currentRoute.startsWith('billing-list') || currentRoute.startsWith('invoice-create') || currentRoute.startsWith('invoice-details')
     },
     { 
       id: 'articles', 
@@ -496,17 +562,20 @@ export function ComponentShowcase() {
         return <BookingCreate navigate={navigate} showToast={showToast} />;
       case 'booking-details':
         return <BookingDetails navigate={navigate} bookingId={routeState?.id} />;
-      case 'billing-list':
-        return <PaymentList navigate={navigate} showToast={showToast} />;
-      case 'billing-invoice-create':
-        return <InvoiceCreate navigate={navigate} showToast={showToast} />;
-      case 'billing-invoice-details':
-        return <InvoiceDetails navigate={navigate} invoiceId={routeState?.id} />;
-
-      case 'fin-overview':
-        return <FinanceOverview navigate={navigate} showToast={showToast} />;
-      case 'fin-refunds':
-        return <RefundRequests navigate={navigate} showToast={showToast} />;
+      case 'admin-finance-dashboard':
+        return <AdminFinanceDashboard navigate={navigate} />;
+      case 'admin-finance-payments':
+        return <AdminPaymentList navigate={navigate} showToast={showToast} />;
+      case 'admin-finance-invoices':
+        return <AdminInvoiceList navigate={navigate} />;
+      case 'admin-finance-refunds':
+        return <AdminRefundList navigate={navigate} />;
+      case 'admin-finance-payouts':
+        return <AdminPayoutList navigate={navigate} />;
+      case 'admin-finance-invoice-create':
+        return <AdminInvoiceCreate navigate={navigate} showToast={showToast} />;
+      case 'admin-finance-invoice-details':
+        return <AdminInvoiceDetails navigate={navigate} invoiceId={routeState?.id} showToast={showToast} />;
       case 'fin-commission':
         return <CommissionSummary navigate={navigate} showToast={showToast} />;
       case 'fin-allowance':
@@ -515,8 +584,7 @@ export function ComponentShowcase() {
         return <AllowanceCreate navigate={navigate} showToast={showToast} />;
       case 'fin-allowance-details':
         return <AllowanceDetails navigate={navigate} allowanceId={routeState?.id} />;
-      case 'fin-payout':
-        return <PayoutPreparation navigate={navigate} />;
+
       case 'fin-reports':
         return <FinanceReports navigate={navigate} />;
       case 'fin-settings':
@@ -561,6 +629,157 @@ export function ComponentShowcase() {
     }
   };
 
+
+  const taNavItems = updateActiveNavItems([
+    { id: 'ta-crm-dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, onClick: () => navigate('ta-crm-dashboard'), isActive: currentRoute === 'ta-crm-dashboard' || currentRoute.startsWith('ta-crm-jamaah-360') },
+    
+    // DIRECTORY & USERS
+    { id: 'ta-profile', label: 'Agency Profile', category: 'Directory & Users', icon: <Building2 size={20} />, onClick: () => navigate('ta-profile'), isActive: currentRoute === 'ta-profile' },
+    { id: 'ta-team', label: 'Agency Team', category: 'Directory & Users', icon: <Contact size={20} />, onClick: () => navigate('ta-team'), isActive: currentRoute === 'ta-team' || currentRoute.startsWith('ta-staff-') },
+    { 
+      id: 'ta-jamaah', 
+      label: 'Jamaah', 
+      category: 'Directory & Users',
+      icon: <Users size={20} />,
+      onClick: () => navigate('ta-jamaah-list'),
+      isActive: currentRoute === 'ta-jamaah-list' || currentRoute.startsWith('ta-jamaah-')
+    },
+    { 
+      id: 'ta-mutawwif', 
+      label: 'Mutawwif', 
+      category: 'Directory & Users', 
+      icon: <UserCheck size={20} />,
+      onClick: () => navigate('ta-mutawwif-list'),
+      isActive: currentRoute === 'ta-mutawwif-list' || currentRoute.startsWith('ta-mutawwif-details')
+    },
+
+    // SALES & BOOKING
+    { id: 'ta-packages', label: 'Packages', category: 'Sales & Booking', icon: <Package size={20} />, onClick: () => navigate('ta-package-list'), isActive: currentRoute === 'ta-package-list' || currentRoute.startsWith('ta-package-') },
+    { id: 'ta-bookings', label: 'Bookings', category: 'Sales & Booking', icon: <Ticket size={20} />, onClick: () => navigate('ta-booking-list'), isActive: currentRoute === 'ta-booking-list' || currentRoute.startsWith('ta-booking-') },
+
+    // TRIP OPERATIONS
+    { id: 'ta-trips', label: 'Group Trips', category: 'Trip Operations', icon: <Briefcase size={20} />, onClick: () => navigate('ta-trip-list'), isActive: currentRoute === 'ta-trip-list' || currentRoute.startsWith('ta-trip-') },
+    { id: 'ta-documents', label: 'Documents & Services', category: 'Trip Operations', icon: <FileText size={20} />, onClick: () => navigate('ta-documents'), isActive: currentRoute === 'ta-documents' },
+
+    // FINANCE
+    { 
+      id: 'ta-finance', 
+      label: 'Finance', 
+      category: 'Finance', 
+      icon: <Wallet size={20} />,
+      isActive: currentRoute === 'ta-finance' || currentRoute.startsWith('ta-finance-'),
+      children: [
+        { id: 'ta-finance-dashboard', label: 'Dashboard', onClick: () => navigate('ta-finance'), isActive: currentRoute === 'ta-finance' },
+        { id: 'ta-finance-invoices', label: 'Invoices', onClick: () => navigate('ta-finance-invoices'), isActive: currentRoute === 'ta-finance-invoices' || currentRoute.startsWith('ta-finance-invoice') },
+        { id: 'ta-finance-payments', label: 'Payments', onClick: () => navigate('ta-finance-payments'), isActive: currentRoute === 'ta-finance-payments' },
+        { id: 'ta-finance-refunds', label: 'Refunds', onClick: () => navigate('ta-finance-refunds'), isActive: currentRoute === 'ta-finance-refunds' },
+        { id: 'ta-finance-settlements', label: 'Settlements', onClick: () => navigate('ta-finance-settlements'), isActive: currentRoute.startsWith('ta-finance-settlement') },
+        { id: 'ta-finance-settings', label: 'Settings', onClick: () => navigate('ta-finance-settings'), isActive: currentRoute === 'ta-finance-settings' }
+      ]
+    },
+
+    // COMMUNICATION & SUPPORT
+    { id: 'ta-reports', label: 'Reports & Support', category: 'Communication & Support', icon: <MessageSquare size={20} />, children: [
+      { id: 'ta-report-list', label: 'All Tickets / Reports', onClick: () => navigate('ta-report-list'), isActive: currentRoute === 'ta-report-list' || currentRoute.startsWith('ta-report-details') },
+      { id: 'ta-report-create', label: 'Create Ticket', onClick: () => navigate('ta-report-create'), isActive: currentRoute === 'ta-report-create' }
+    ] },
+    { id: 'ta-testimonials', label: 'Testimonials', category: 'Communication & Support', icon: <Star size={20} />, children: [
+      { id: 'ta-testimonial-list', label: 'All Feedback', onClick: () => navigate('ta-testimonial-list'), isActive: currentRoute === 'ta-testimonial-list' || currentRoute.startsWith('ta-testimonial-details') }
+    ] },
+    { id: 'ta-announcements', label: 'Announcements', category: 'Communication & Support', icon: <Bell size={20} />, onClick: () => navigate('ta-announcements'), isActive: currentRoute === 'ta-announcements' || currentRoute.startsWith('ta-announcement-') },
+    { id: 'ta-knowledge-base', label: 'Knowledge Base', category: 'Communication & Support', icon: <BookOpen size={20} />, onClick: () => navigate('ta-knowledge-base'), isActive: currentRoute === 'ta-knowledge-base' || currentRoute.startsWith('ta-article-') },
+
+    // SYSTEM
+    { id: 'ta-settings', label: 'Settings', category: 'System', icon: <Settings size={20} />, onClick: () => navigate('ta-settings'), isActive: currentRoute === 'ta-settings' },
+  ]);
+
+  const renderTARoute = () => {
+    switch (currentRoute) {
+      case 'ta-crm-dashboard':
+      case 'dashboard':
+        return <TACrmDashboard navigate={navigate} />;
+      case 'ta-crm-jamaah-360':
+        return <TACrmJamaah360 navigate={navigate} jamaahId={routeState?.id} />;
+      case 'ta-package-list':
+        return <TAPackageList navigate={navigate} />;
+      case 'ta-package-details':
+        return <TAPackageDetails navigate={navigate} packageId={routeState?.id} />;
+      case 'ta-booking-list':
+        return <TABookingList navigate={navigate} />;
+      case 'ta-booking-details':
+        return <TABookingDetails navigate={navigate} bookingId={routeState?.id} />;
+      case 'ta-trip-list':
+        return <TAGroupTripList navigate={navigate} />;
+      case 'ta-trip-create':
+        return <TAGroupTripCreate navigate={navigate} showToast={showToast} />;
+      case 'ta-trip-details':
+        return <TAGroupTripDetails navigate={navigate} tripId={routeState?.id} showToast={showToast} />;
+      case 'ta-jamaah-list':
+        return <TAJamaahList navigate={navigate} />;
+      case 'ta-jamaah-details':
+        return <TAJamaahDetails navigate={navigate} jamaahId={routeState?.id} />;
+      case 'ta-mutawwif-list':
+        return <TAMutawwifList navigate={navigate} />;
+      case 'ta-mutawwif-details':
+        return <TAMutawwifDetails navigate={navigate} mutawwifId={routeState?.id} />;
+      case 'ta-team':
+        return <TATeamList navigate={navigate} />;
+      case 'ta-staff-details':
+        return <TAStaffDetail navigate={navigate} staffId={routeState?.id} />;
+      case 'ta-profile':
+        return <TAProfile navigate={navigate} />;
+      case 'ta-documents':
+        return <TADocumentDashboard navigate={navigate} />;
+      case 'ta-finance':
+        return <TAFinanceDashboard navigate={navigate} />;
+      case 'ta-finance-invoices':
+        return <TAInvoiceList navigate={navigate} />;
+      case 'ta-finance-invoice-create':
+        return <TACreateInvoice navigate={navigate} showToast={showToast} />;
+      case 'ta-finance-invoice-details':
+        return <TAInvoiceDetails navigate={navigate} invoiceId={routeState?.id} />;
+      case 'ta-finance-payments':
+        return <TAPaymentList navigate={navigate} />;
+      case 'ta-finance-refunds':
+        return <TARefundList navigate={navigate} />;
+      case 'ta-finance-settlements':
+        return <TASettlementList navigate={navigate} />;
+      case 'ta-finance-settlement-details':
+        return <TASettlementDetails navigate={navigate} settlementId={routeState?.id} />;
+      case 'ta-finance-settings':
+        return <TAFinanceSettings navigate={navigate} />;
+      case 'ta-testimonial-list':
+      case 'ta-testimonials':
+        return <TATestimonialList navigate={navigate} />;
+      case 'ta-testimonial-details':
+        return <TATestimonialDetails navigate={navigate} testimonialId={routeState?.id} showToast={showToast} />;
+      case 'ta-report-list':
+      case 'ta-reports':
+        return <TAReportList navigate={navigate} />;
+      case 'ta-report-create':
+        return <TAReportCreate navigate={navigate} showToast={showToast} />;
+      case 'ta-report-details':
+        return <TAReportDetails navigate={navigate} reportId={routeState?.id} showToast={showToast} />;
+      case 'ta-announcements':
+      case 'ta-announcement-list':
+        return <TAAnnouncementList navigate={navigate} />;
+      case 'ta-announcement-create':
+        return <TAAnnouncementCreate navigate={navigate} showToast={showToast} />;
+      case 'ta-announcement-details':
+        return <TAAnnouncementDetails navigate={navigate} id={routeState?.id} type={routeState?.type} />;
+      case 'ta-knowledge-base':
+        return <TAArticleHome navigate={navigate} />;
+      case 'ta-article-list':
+        return <TAArticleList navigate={navigate} />;
+      case 'ta-article-details':
+        return <TAArticleDetails navigate={navigate} id={routeState?.id} />;
+      case 'ta-settings':
+        return <TASettings navigate={navigate} showToast={showToast} />;
+      default:
+        return <TACrmDashboard navigate={navigate} />;
+    }
+  };
+
   if (isAdminRoute) {
     if (!isAuthenticated) {
       return <LoginPage onLogin={handleLogin} />;
@@ -572,9 +791,40 @@ export function ComponentShowcase() {
     );
   }
 
+
+  if (isTARoute) {
+    if (!isTAAuthenticated) {
+      if (currentRoute === 'ta-register') {
+        return <TARegisterPage onRegister={handleTALogin} onLoginClick={() => navigate('ta-login')} />;
+      }
+      return <TALoginPage onLogin={handleTALogin} onRegisterClick={() => navigate('ta-register')} />;
+    }
+    return (
+      <AppShell navItems={taNavItems} agencyName="Al-Hijrah Travel">
+        {renderTARoute()}
+      </AppShell>
+    );
+  }
+
+  // JUV Auth Routes
+  if (currentRoute === 'login') {
+    return <JUVLoginPage onLogin={handleJUVLogin} onRegisterClick={() => navigate('register')} />;
+  }
+  if (currentRoute === 'register') {
+    return <JUVRegisterPage onRegister={handleJUVLogin} onLoginClick={() => navigate('login')} />;
+  }
+
   // Default to User/Jamaah View - Landing Page
   return (
-    <JUVLandingPage isAuthenticated={isAuthenticated} />
+    <JUVLandingPage 
+      isAuthenticated={isJUVAuthenticated} 
+      onLoginClick={() => navigate('login')}
+      onRegisterClick={() => navigate('register')}
+      onLogoutClick={() => {
+        localStorage.removeItem('juv_auth');
+        setIsJUVAuthenticated(false);
+      }}
+    />
   );
 
   function renderComponentShowcase() {

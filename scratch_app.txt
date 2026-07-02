@@ -1,0 +1,51 @@
+  };
+
+  const taNavItems = updateActiveNavItems([
+    { id: 'ta-crm-dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} />, onClick: () => navigate('ta-crm-dashboard'), isActive: currentRoute === 'ta-crm-dashboard' || currentRoute.startsWith('ta-crm-jamaah-360') },
+    
+    // AGENCY ADMINISTRATION
+    { id: 'ta-profile', label: 'Profile', category: 'Agency Administration', icon: <Building2 size={20} />, onClick: () => navigate('ta-profile'), isActive: currentRoute === 'ta-profile' },
+    { id: 'ta-team', label: 'Team', category: 'Agency Administration', icon: <Users size={20} />, onClick: () => navigate('ta-team'), isActive: currentRoute === 'ta-team' },
+
+    // SALES & BOOKING
+    { id: 'ta-packages', label: 'Packages', category: 'Sales & Booking', icon: <Package size={20} />, onClick: () => navigate('ta-package-list'), isActive: currentRoute === 'ta-package-list' || currentRoute.startsWith('ta-package-') },
+    { id: 'ta-bookings', label: 'Bookings', category: 'Sales & Booking', icon: <Ticket size={20} />, onClick: () => navigate('ta-booking-list'), isActive: currentRoute === 'ta-booking-list' || currentRoute.startsWith('ta-booking-') },
+    { 
+      id: 'ta-jamaah', 
+      label: 'Jamaah', 
+      category: 'Sales & Booking',
+      icon: <Users size={20} />,
+      onClick: () => navigate('ta-jamaah-list'),
+      isActive: currentRoute === 'ta-jamaah-list' || currentRoute === 'ta-jamaah-details'
+    },
+
+    // TRIP OPERATIONS
+    { id: 'ta-trips', label: 'Group Trips', category: 'Trip Operations', icon: <Briefcase size={20} /> },
+    { id: 'ta-mutawwif', label: 'Mutawwif', category: 'Trip Operations', icon: <UserCheck size={20} /> },
+    { id: 'ta-documents', label: 'Documents', category: 'Trip Operations', icon: <FileText size={20} /> },
+
+    // FINANCE
+    { id: 'ta-finance', label: 'Finance', category: 'Finance', icon: <Wallet size={20} /> },
+
+    // COMMUNICATION & SUPPORT
+    { id: 'ta-reports', label: 'Support', category: 'Communication & Support', icon: <MessageSquare size={20} /> },
+    { id: 'ta-testimonials', label: 'Testimonials', category: 'Communication & Support', icon: <Star size={20} /> },
+    { id: 'ta-announcements', label: 'Announcements', category: 'Communication & Support', icon: <Bell size={20} /> },
+    { id: 'ta-articles', label: 'Knowledge Base', category: 'Communication & Support', icon: <BookOpen size={20} /> },
+
+    // SYSTEM
+    { id: 'ta-settings', label: 'Settings', category: 'System', icon: <Settings size={20} /> },
+  ]);
+
+  const renderTARoute = () => {
+    switch (currentRoute) {
+      case 'ta-crm-dashboard':
+      case 'dashboard': // default hash
+        return <TACrmDashboard navigate={navigate} />;
+      case 'ta-jamaah':
+      case 'ta-jamaah-list':
+        return <TAJamaahList navigate={navigate} />;
+      case 'ta-jamaah-details':
+        return <TAJamaahDetails navigate={navigate} jamaahId={routeState?.id} />;
+      case 'ta-crm-jamaah-360':
+        return <TACrmJamaah360 navigate={navigate} jamaahId={routeState?.id} />;

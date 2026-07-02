@@ -7,156 +7,1722 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PlatformSetting {
-  id               String   @id @default(uuid())
-  settingGroup     String
-  settingKey       String   @unique
-  settingValue     String   // Store JSON string
-  dataType         String
-  isEditableByTa   Boolean  @default(false)
-  description      String?
-  updatedBy        String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model AppUsers {
+  id                                               String                       @id @default(uuid())
+  authUserId                                       String?                      @unique
+  displayName                                      String?
+  email                                            String?
+  phone                                            String?
+  avatarFileId                                     String?
+  accountStatus                                    String                       @default("active")
+  preferredLanguage                                String                       @default("en")
+  timezone                                         String                       @default("Asia/Kuala_Lumpur")
+  createdAt                                        DateTime                     @default(now())
+  updatedAt                                        DateTime                     @default(now())
+  deletedAt                                        DateTime?
+  StoredFiles_AppUsers_ownerUserId                 StoredFiles[]                @relation("AppUsers_ownerUserId")
+  FileAccessLogs_AppUsers_actorUserId              FileAccessLogs[]             @relation("AppUsers_actorUserId")
+  AuditLogs_AppUsers_actorUserId                   AuditLogs[]                  @relation("AppUsers_actorUserId")
+  PortalMemberships_AppUsers_userId                PortalMemberships[]          @relation("AppUsers_userId")
+  PortalMemberships_AppUsers_invitedByUserId       PortalMemberships[]          @relation("AppUsers_invitedByUserId")
+  AdminStaffProfiles_AppUsers_userId               AdminStaffProfiles[]         @relation("AppUsers_userId")
+  TravelAgencyStaff_AppUsers_userId                TravelAgencyStaff[]          @relation("AppUsers_userId")
+  UserSessions_AppUsers_userId                     UserSessions[]               @relation("AppUsers_userId")
+  TravelAgencyDocuments_AppUsers_reviewedByUserId  TravelAgencyDocuments[]      @relation("AppUsers_reviewedByUserId")
+  PlatformSettings_AppUsers_updatedByUserId        PlatformSettings[]           @relation("AppUsers_updatedByUserId")
+  AgencySettings_AppUsers_updatedByUserId          AgencySettings[]             @relation("AppUsers_updatedByUserId")
+  PilgrimProfiles_AppUsers_userId                  PilgrimProfiles[]            @relation("AppUsers_userId")
+  MutawwifProfiles_AppUsers_userId                 MutawwifProfiles[]           @relation("AppUsers_userId")
+  MutawwifDocuments_AppUsers_reviewedByUserId      MutawwifDocuments[]          @relation("AppUsers_reviewedByUserId")
+  Packages_AppUsers_createdByUserId                Packages[]                   @relation("AppUsers_createdByUserId")
+  PackageVersions_AppUsers_createdByUserId         PackageVersions[]            @relation("AppUsers_createdByUserId")
+  Bookings_AppUsers_createdByUserId                Bookings[]                   @relation("AppUsers_createdByUserId")
+  BookingCancellations_AppUsers_requestedByUserId  BookingCancellations[]       @relation("AppUsers_requestedByUserId")
+  Invoices_AppUsers_createdByUserId                Invoices[]                   @relation("AppUsers_createdByUserId")
+  Payments_AppUsers_recordedByUserId               Payments[]                   @relation("AppUsers_recordedByUserId")
+  Payments_AppUsers_verifiedByUserId               Payments[]                   @relation("AppUsers_verifiedByUserId")
+  Refunds_AppUsers_requestedByUserId               Refunds[]                    @relation("AppUsers_requestedByUserId")
+  Refunds_AppUsers_approvedByUserId                Refunds[]                    @relation("AppUsers_approvedByUserId")
+  FinanceLedgerEntries_AppUsers_userId             FinanceLedgerEntries[]       @relation("AppUsers_userId")
+  SettlementBatches_AppUsers_preparedByUserId      SettlementBatches[]          @relation("AppUsers_preparedByUserId")
+  GroupTrips_AppUsers_createdByUserId              GroupTrips[]                 @relation("AppUsers_createdByUserId")
+  TripChangeAcknowledgements_AppUsers_userId       TripChangeAcknowledgements[] @relation("AppUsers_userId")
+  MutawwifAssignments_AppUsers_createdByUserId     MutawwifAssignments[]        @relation("AppUsers_createdByUserId")
+  PilgrimDocuments_AppUsers_uploadedByUserId       PilgrimDocuments[]           @relation("AppUsers_uploadedByUserId")
+  PilgrimDocuments_AppUsers_reviewedByUserId       PilgrimDocuments[]           @relation("AppUsers_reviewedByUserId")
+  ReadinessItems_AppUsers_updatedByUserId          ReadinessItems[]             @relation("AppUsers_updatedByUserId")
+  ReadinessItemEvents_AppUsers_actorUserId         ReadinessItemEvents[]        @relation("AppUsers_actorUserId")
+  ReferralCodes_AppUsers_ownerUserId               ReferralCodes[]              @relation("AppUsers_ownerUserId")
+  ReferralAttributions_AppUsers_referredUserId     ReferralAttributions[]       @relation("AppUsers_referredUserId")
+  ReferralRewards_AppUsers_beneficiaryUserId       ReferralRewards[]            @relation("AppUsers_beneficiaryUserId")
+  PayoutDestinations_AppUsers_userId               PayoutDestinations[]         @relation("AppUsers_userId")
+  WithdrawalRequests_AppUsers_userId               WithdrawalRequests[]         @relation("AppUsers_userId")
+  SupportCases_AppUsers_createdByUserId            SupportCases[]               @relation("AppUsers_createdByUserId")
+  SupportCases_AppUsers_assignedAgencyPicUserId    SupportCases[]               @relation("AppUsers_assignedAgencyPicUserId")
+  SupportCaseComments_AppUsers_authorUserId        SupportCaseComments[]        @relation("AppUsers_authorUserId")
+  SupportCaseAttachments_AppUsers_uploadedByUserId SupportCaseAttachments[]     @relation("AppUsers_uploadedByUserId")
+  Announcements_AppUsers_createdByUserId           Announcements[]              @relation("AppUsers_createdByUserId")
+  Notifications_AppUsers_recipientUserId           Notifications[]              @relation("AppUsers_recipientUserId")
+  NotificationPreferences_AppUsers_userId          NotificationPreferences[]    @relation("AppUsers_userId")
+  Articles_AppUsers_createdByUserId                Articles[]                   @relation("AppUsers_createdByUserId")
+  Testimonials_AppUsers_authorUserId               Testimonials[]               @relation("AppUsers_authorUserId")
+  Ratings_AppUsers_authorUserId                    Ratings[]                    @relation("AppUsers_authorUserId")
+  SavedPackages_AppUsers_userId                    SavedPackages[]              @relation("AppUsers_userId")
+  CompareSessions_AppUsers_userId                  CompareSessions[]            @relation("AppUsers_userId")
 }
 
-model FeatureFlag {
+model StoredFiles {
+  id                                                           String                            @id @default(uuid())
+  bucket                                                       String
+  objectPath                                                   String
+  originalFilename                                             String?
+  mimeType                                                     String?
+  fileSizeBytes                                                Int?
+  checksum                                                     String?
+  visibility                                                   String                            @default("restricted")
+  ownerUserId                                                  String?
+  ownerUser                                                    AppUsers?                         @relation("AppUsers_ownerUserId", fields: [ownerUserId], references: [id])
+  agencyId                                                     String?
+  moduleName                                                   String?
+  entityTable                                                  String?
+  entityId                                                     String?
+  scanStatus                                                   String                            @default("pending")
+  createdAt                                                    DateTime                          @default(now())
+  deletedAt                                                    DateTime?
+  FileAccessLogs_StoredFiles_fileId                            FileAccessLogs[]                  @relation("StoredFiles_fileId")
+  TravelAgencies_StoredFiles_logoFileId                        TravelAgencies[]                  @relation("StoredFiles_logoFileId")
+  TravelAgencyDocuments_StoredFiles_fileId                     TravelAgencyDocuments[]           @relation("StoredFiles_fileId")
+  MutawwifProfiles_StoredFiles_profilePhotoFileId              MutawwifProfiles[]                @relation("StoredFiles_profilePhotoFileId")
+  MutawwifDocuments_StoredFiles_fileId                         MutawwifDocuments[]               @relation("StoredFiles_fileId")
+  Airlines_StoredFiles_logoFileId                              Airlines[]                        @relation("StoredFiles_logoFileId")
+  Hotels_StoredFiles_imageFileId                               Hotels[]                          @relation("StoredFiles_imageFileId")
+  Packages_StoredFiles_thumbnailFileId                         Packages[]                        @relation("StoredFiles_thumbnailFileId")
+  PackageMedia_StoredFiles_fileId                              PackageMedia[]                    @relation("StoredFiles_fileId")
+  Payments_StoredFiles_proofFileId                             Payments[]                        @relation("StoredFiles_proofFileId")
+  MutawwifAssignmentHandoverNotes_StoredFiles_attachmentFileId MutawwifAssignmentHandoverNotes[] @relation("StoredFiles_attachmentFileId")
+  PilgrimDocuments_StoredFiles_fileId                          PilgrimDocuments[]                @relation("StoredFiles_fileId")
+  SupportCaseAttachments_StoredFiles_fileId                    SupportCaseAttachments[]          @relation("StoredFiles_fileId")
+  AdminStaffProfiles_StoredFiles_AdminProfilePhoto             AdminStaffProfiles[]              @relation("StoredFiles_AdminProfilePhoto")
+  TravelAgencyStaff_StoredFiles_TAStaffProfilePhoto            TravelAgencyStaff[]               @relation("StoredFiles_TAStaffProfilePhoto")
+  PilgrimProfiles_StoredFiles_PilgrimProfilePhoto              PilgrimProfiles[]                 @relation("StoredFiles_PilgrimProfilePhoto")
+
+  @@unique([bucket, objectPath])
+}
+
+model FileAccessLogs {
+  id          String      @id @default(uuid())
+  fileId      String
+  file        StoredFiles @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  actorUserId String?
+  actorUser   AppUsers?   @relation("AppUsers_actorUserId", fields: [actorUserId], references: [id])
+  action      String
+  reason      String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime    @default(now())
+}
+
+model AuditLogs {
+  id          String    @id @default(uuid())
+  actorUserId String?
+  actorUser   AppUsers? @relation("AppUsers_actorUserId", fields: [actorUserId], references: [id])
+  actorPortal String?
+  agencyId    String?
+  action      String
+  entityTable String
+  entityId    String?
+  oldValues   String?
+  newValues   String?
+  reason      String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+}
+
+model EventOutbox {
+  id             String    @id @default(uuid())
+  eventKey       String
+  aggregateTable String?
+  aggregateId    String?
+  payload        String    @default("{}")
+  status         String    @default("pending")
+  attempts       Int       @default(0)
+  scheduledAt    DateTime?
+  processedAt    DateTime?
+  createdAt      DateTime  @default(now())
+}
+
+model TravelAgencies {
+  id                                               String                     @id @default(uuid())
+  legalName                                        String
+  publicDisplayName                                String?
+  registrationNumber                               String?
+  travelLicenseNumber                              String?
+  licenseExpiryDate                                DateTime?
+  agencyType                                       String?
+  countryCode                                      String?
+  city                                             String?
+  email                                            String?
+  websiteUrl                                       String?
+  description                                      String?
+  logoFileId                                       String?
+  logoFile                                         StoredFiles?               @relation("StoredFiles_logoFileId", fields: [logoFileId], references: [id])
+  verificationStatus                               String                     @default("pending_review")
+  publicProfileStatus                              String                     @default("hidden")
+  status                                           String                     @default("active")
+  createdAt                                        DateTime                   @default(now())
+  updatedAt                                        DateTime                   @default(now())
+  deletedAt                                        DateTime?
+  PermissionGroups_TravelAgencies_agencyId         PermissionGroups[]         @relation("TravelAgencies_agencyId")
+  PortalMemberships_TravelAgencies_agencyId        PortalMemberships[]        @relation("TravelAgencies_agencyId")
+  TravelAgencyStaff_TravelAgencies_agencyId        TravelAgencyStaff[]        @relation("TravelAgencies_agencyId")
+  TravelAgencyDocuments_TravelAgencies_agencyId    TravelAgencyDocuments[]    @relation("TravelAgencies_agencyId")
+  TravelAgencyBankAccounts_TravelAgencies_agencyId TravelAgencyBankAccounts[] @relation("TravelAgencies_agencyId")
+  AgencySettings_TravelAgencies_agencyId           AgencySettings[]           @relation("TravelAgencies_agencyId")
+  PilgrimProfiles_TravelAgencies_createdByAgencyId PilgrimProfiles[]          @relation("TravelAgencies_createdByAgencyId")
+  PilgrimAgencyLinks_TravelAgencies_agencyId       PilgrimAgencyLinks[]       @relation("TravelAgencies_agencyId")
+  PilgrimFamilyGroups_TravelAgencies_agencyId      PilgrimFamilyGroups[]      @relation("TravelAgencies_agencyId")
+  ItineraryTemplates_TravelAgencies_agencyId       ItineraryTemplates[]       @relation("TravelAgencies_agencyId")
+  Packages_TravelAgencies_agencyId                 Packages[]                 @relation("TravelAgencies_agencyId")
+  Bookings_TravelAgencies_agencyId                 Bookings[]                 @relation("TravelAgencies_agencyId")
+  Invoices_TravelAgencies_agencyId                 Invoices[]                 @relation("TravelAgencies_agencyId")
+  Payments_TravelAgencies_agencyId                 Payments[]                 @relation("TravelAgencies_agencyId")
+  Refunds_TravelAgencies_agencyId                  Refunds[]                  @relation("TravelAgencies_agencyId")
+  FinanceLedgerEntries_TravelAgencies_agencyId     FinanceLedgerEntries[]     @relation("TravelAgencies_agencyId")
+  CommissionRecords_TravelAgencies_agencyId        CommissionRecords[]        @relation("TravelAgencies_agencyId")
+  SettlementBatches_TravelAgencies_agencyId        SettlementBatches[]        @relation("TravelAgencies_agencyId")
+  GroupTrips_TravelAgencies_agencyId               GroupTrips[]               @relation("TravelAgencies_agencyId")
+  MutawwifAssignments_TravelAgencies_agencyId      MutawwifAssignments[]      @relation("TravelAgencies_agencyId")
+  PilgrimDocuments_TravelAgencies_agencyId         PilgrimDocuments[]         @relation("TravelAgencies_agencyId")
+  DocumentRequirements_TravelAgencies_agencyId     DocumentRequirements[]     @relation("TravelAgencies_agencyId")
+  ServiceRequirements_TravelAgencies_agencyId      ServiceRequirements[]      @relation("TravelAgencies_agencyId")
+  ReadinessItems_TravelAgencies_agencyId           ReadinessItems[]           @relation("TravelAgencies_agencyId")
+  ReferralPrograms_TravelAgencies_agencyId         ReferralPrograms[]         @relation("TravelAgencies_agencyId")
+  AllowanceRecords_TravelAgencies_agencyId         AllowanceRecords[]         @relation("TravelAgencies_agencyId")
+  SupportCases_TravelAgencies_agencyId             SupportCases[]             @relation("TravelAgencies_agencyId")
+  Announcements_TravelAgencies_agencyId            Announcements[]            @relation("TravelAgencies_agencyId")
+  Articles_TravelAgencies_agencyId                 Articles[]                 @relation("TravelAgencies_agencyId")
+  Testimonials_TravelAgencies_agencyId             Testimonials[]             @relation("TravelAgencies_agencyId")
+}
+
+model PermissionGroups {
+  id                                                      String                 @id @default(uuid())
+  agencyId                                                String?
+  agency                                                  TravelAgencies?        @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  portal                                                  String
+  name                                                    String
+  description                                             String?
+  isSystem                                                Boolean
+  status                                                  String                 @default("active")
+  createdAt                                               DateTime               @default(now())
+  updatedAt                                               DateTime               @default(now())
+  PermissionGroupRules_PermissionGroups_permissionGroupId PermissionGroupRules[] @relation("PermissionGroups_permissionGroupId")
+  PortalMemberships_PermissionGroups_permissionGroupId    PortalMemberships[]    @relation("PermissionGroups_permissionGroupId")
+  TravelAgencyStaff_PermissionGroups_permissionGroupId    TravelAgencyStaff[]    @relation("PermissionGroups_permissionGroupId")
+
+  @@unique([agencyId, portal, name])
+}
+
+model PermissionGroupRules {
+  id                String           @id @default(uuid())
+  permissionGroupId String
+  permissionGroup   PermissionGroups @relation("PermissionGroups_permissionGroupId", fields: [permissionGroupId], references: [id])
+  moduleKey         String
+  actionKey         String
+  sensitiveKey      String?
+  allowed           Boolean
+  createdAt         DateTime         @default(now())
+}
+
+model PortalMemberships {
+  id                String            @id @default(uuid())
+  userId            String
+  user              AppUsers          @relation("AppUsers_userId", fields: [userId], references: [id])
+  portal            String
+  agencyId          String?
+  agency            TravelAgencies?   @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  permissionGroupId String?
+  permissionGroup   PermissionGroups? @relation("PermissionGroups_permissionGroupId", fields: [permissionGroupId], references: [id])
+  roleKey           String
+  status            String            @default("active")
+  invitedByUserId   String?
+  invitedByUser     AppUsers?         @relation("AppUsers_invitedByUserId", fields: [invitedByUserId], references: [id])
+  acceptedAt        DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now())
+
+  @@unique([userId, portal, agencyId])
+}
+
+model AdminStaffProfiles {
+  id                 String       @id @default(uuid())
+  userId             String       @unique
+  user               AppUsers     @relation("AppUsers_userId", fields: [userId], references: [id])
+  staffCode          String?
+  department         String?
+  title              String?
+  email              String?
+  profilePhotoFileId String?
+  profilePhotoFile   StoredFiles? @relation("StoredFiles_AdminProfilePhoto", fields: [profilePhotoFileId], references: [id])
+  verificationStatus String       @default("pending")
+  status             String       @default("active")
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @default(now())
+}
+
+model TravelAgencyStaff {
+  id                 String            @id @default(uuid())
+  agencyId           String
+  agency             TravelAgencies    @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  userId             String?
+  user               AppUsers?         @relation("AppUsers_userId", fields: [userId], references: [id])
+  staffName          String
+  email              String
+  phone              String?
+  roleTemplate       String
+  profilePhotoFileId String?
+  profilePhotoFile   StoredFiles?      @relation("StoredFiles_TAStaffProfilePhoto", fields: [profilePhotoFileId], references: [id])
+  permissionGroupId  String?
+  permissionGroup    PermissionGroups? @relation("PermissionGroups_permissionGroupId", fields: [permissionGroupId], references: [id])
+  verificationStatus String            @default("pending")
+  invitationStatus   String            @default("draft")
+  status             String            @default("draft")
+  lastLoginAt        DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now())
+
+  @@unique([agencyId, email])
+}
+
+model UserSessions {
+  id            String    @id @default(uuid())
+  userId        String
+  user          AppUsers  @relation("AppUsers_userId", fields: [userId], references: [id])
+  sessionStatus String    @default("active")
+  deviceLabel   String?
+  ipAddress     String?
+  userAgent     String?
+  lastSeenAt    DateTime?
+  revokedAt     DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model TravelAgencyDocuments {
+  id               String         @id @default(uuid())
+  agencyId         String
+  agency           TravelAgencies @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  documentType     String
+  fileId           String?
+  file             StoredFiles?   @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  status           String         @default("pending_review")
+  expiryDate       DateTime?
+  adminRemark      String?
+  submittedAt      DateTime?
+  reviewedAt       DateTime?
+  reviewedByUserId String?
+  reviewedByUser   AppUsers?      @relation("AppUsers_reviewedByUserId", fields: [reviewedByUserId], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now())
+}
+
+model TravelAgencyBankAccounts {
+  id                     String         @id @default(uuid())
+  agencyId               String
+  agency                 TravelAgencies @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  bankName               String
+  accountHolderName      String
+  accountNumberEncrypted String?
+  accountNumberLast4     String?
+  status                 String         @default("pending_review")
+  isPrimary              Boolean
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @default(now())
+}
+
+model PlatformSettings {
+  id              String    @id @default(uuid())
+  settingKey      String    @unique
+  settingValue    String
+  ownership       String    @default("platform")
+  isSensitive     Boolean
+  updatedByUserId String?
+  updatedByUser   AppUsers? @relation("AppUsers_updatedByUserId", fields: [updatedByUserId], references: [id])
+  updatedAt       DateTime  @default(now())
+}
+
+model AgencySettings {
+  id              String         @id @default(uuid())
+  agencyId        String
+  agency          TravelAgencies @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  settingKey      String
+  settingValue    String
+  ownership       String         @default("agency")
+  updatedByUserId String?
+  updatedByUser   AppUsers?      @relation("AppUsers_updatedByUserId", fields: [updatedByUserId], references: [id])
+  updatedAt       DateTime       @default(now())
+
+  @@unique([agencyId, settingKey])
+}
+
+model PilgrimProfiles {
+  id                                                   String                 @id @default(uuid())
+  userId                                               String?
+  user                                                 AppUsers?              @relation("AppUsers_userId", fields: [userId], references: [id])
+  fullName                                             String
+  displayName                                          String?
+  email                                                String?
+  phone                                                String?
+  gender                                               String?
+  dateOfBirth                                          DateTime?
+  nationalityCode                                      String?
+  identityNumberEncrypted                              String?
+  identityNumberLast4                                  String?
+  passportNumberEncrypted                              String?
+  passportNumberLast4                                  String?
+  passportExpiryDate                                   DateTime?
+  address                                              String?
+  emergencyContact                                     String?
+  profilePhotoFileId                                   String?
+  profilePhotoFile                                     StoredFiles?           @relation("StoredFiles_PilgrimProfilePhoto", fields: [profilePhotoFileId], references: [id])
+  profileStatus                                        String                 @default("pending_profile")
+  verificationStatus                                   String                 @default("pending")
+  createdByAgencyId                                    String?
+  createdByAgency                                      TravelAgencies?        @relation("TravelAgencies_createdByAgencyId", fields: [createdByAgencyId], references: [id])
+  createdAt                                            DateTime               @default(now())
+  updatedAt                                            DateTime               @default(now())
+  deletedAt                                            DateTime?
+  PilgrimAgencyLinks_PilgrimProfiles_pilgrimId         PilgrimAgencyLinks[]   @relation("PilgrimProfiles_pilgrimId")
+  PilgrimFamilyGroups_PilgrimProfiles_primaryPilgrimId PilgrimFamilyGroups[]  @relation("PilgrimProfiles_primaryPilgrimId")
+  PilgrimFamilyMembers_PilgrimProfiles_pilgrimId       PilgrimFamilyMembers[] @relation("PilgrimProfiles_pilgrimId")
+  Bookings_PilgrimProfiles_primaryPilgrimId            Bookings[]             @relation("PilgrimProfiles_primaryPilgrimId")
+  BookingParticipants_PilgrimProfiles_pilgrimId        BookingParticipants[]  @relation("PilgrimProfiles_pilgrimId")
+  Invoices_PilgrimProfiles_pilgrimId                   Invoices[]             @relation("PilgrimProfiles_pilgrimId")
+  TripMembers_PilgrimProfiles_pilgrimId                TripMembers[]          @relation("PilgrimProfiles_pilgrimId")
+  PilgrimDocuments_PilgrimProfiles_pilgrimId           PilgrimDocuments[]     @relation("PilgrimProfiles_pilgrimId")
+  ReadinessItems_PilgrimProfiles_pilgrimId             ReadinessItems[]       @relation("PilgrimProfiles_pilgrimId")
+}
+
+model PilgrimAgencyLinks {
+  id         String          @id @default(uuid())
+  pilgrimId  String
+  pilgrim    PilgrimProfiles @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  agencyId   String
+  agency     TravelAgencies  @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  linkSource String
+  status     String          @default("active")
+  createdAt  DateTime        @default(now())
+
+  @@unique([pilgrimId, agencyId])
+}
+
+model PilgrimFamilyGroups {
+  id                                                     String                 @id @default(uuid())
+  agencyId                                               String?
+  agency                                                 TravelAgencies?        @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  groupName                                              String
+  primaryPilgrimId                                       String?
+  primaryPilgrim                                         PilgrimProfiles?       @relation("PilgrimProfiles_primaryPilgrimId", fields: [primaryPilgrimId], references: [id])
+  notes                                                  String?
+  createdAt                                              DateTime               @default(now())
+  PilgrimFamilyMembers_PilgrimFamilyGroups_familyGroupId PilgrimFamilyMembers[] @relation("PilgrimFamilyGroups_familyGroupId")
+  BookingParticipants_PilgrimFamilyGroups_familyGroupId  BookingParticipants[]  @relation("PilgrimFamilyGroups_familyGroupId")
+}
+
+model PilgrimFamilyMembers {
+  id               String              @id @default(uuid())
+  familyGroupId    String
+  familyGroup      PilgrimFamilyGroups @relation("PilgrimFamilyGroups_familyGroupId", fields: [familyGroupId], references: [id])
+  pilgrimId        String
+  pilgrim          PilgrimProfiles     @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  relationship     String?
+  isPrimaryContact Boolean
+  createdAt        DateTime            @default(now())
+
+  @@unique([familyGroupId, pilgrimId])
+}
+
+model MutawwifProfiles {
+  id                                                              String                            @id @default(uuid())
+  userId                                                          String                            @unique
+  user                                                            AppUsers                          @relation("AppUsers_userId", fields: [userId], references: [id])
+  fullName                                                        String
+  displayName                                                     String?
+  title                                                           String?
+  phone                                                           String?
+  email                                                           String?
+  nationalityCode                                                 String?
+  identityNumberEncrypted                                         String?
+  identityNumberLast4                                             String?
+  passportNumberEncrypted                                         String?
+  passportNumberLast4                                             String?
+  profilePhotoFileId                                              String?
+  profilePhotoFile                                                StoredFiles?                      @relation("StoredFiles_profilePhotoFileId", fields: [profilePhotoFileId], references: [id])
+  verificationStatus                                              String                            @default("pending_review")
+  profileCompletionStatus                                         String                            @default("incomplete")
+  assignmentReadinessStatus                                       String                            @default("not_ready")
+  availabilityStatus                                              String                            @default("available")
+  publicVisibilityStatus                                          String                            @default("private")
+  createdAt                                                       DateTime                          @default(now())
+  updatedAt                                                       DateTime                          @default(now())
+  deletedAt                                                       DateTime?
+  MutawwifDocuments_MutawwifProfiles_mutawwifId                   MutawwifDocuments[]               @relation("MutawwifProfiles_mutawwifId")
+  MutawwifLanguages_MutawwifProfiles_mutawwifId                   MutawwifLanguages[]               @relation("MutawwifProfiles_mutawwifId")
+  MutawwifSpecializations_MutawwifProfiles_mutawwifId             MutawwifSpecializations[]         @relation("MutawwifProfiles_mutawwifId")
+  MutawwifAvailability_MutawwifProfiles_mutawwifId                MutawwifAvailability[]            @relation("MutawwifProfiles_mutawwifId")
+  MutawwifAssignmentPreferences_MutawwifProfiles_mutawwifId       MutawwifAssignmentPreferences[]   @relation("MutawwifProfiles_mutawwifId")
+  MutawwifAssignments_MutawwifProfiles_mutawwifId                 MutawwifAssignments[]             @relation("MutawwifProfiles_mutawwifId")
+  MutawwifAssignmentRequests_MutawwifProfiles_mutawwifId          MutawwifAssignmentRequests[]      @relation("MutawwifProfiles_mutawwifId")
+  MutawwifAssignmentHandoverNotes_MutawwifProfiles_fromMutawwifId MutawwifAssignmentHandoverNotes[] @relation("MutawwifProfiles_fromMutawwifId")
+  MutawwifAssignmentHandoverNotes_MutawwifProfiles_toMutawwifId   MutawwifAssignmentHandoverNotes[] @relation("MutawwifProfiles_toMutawwifId")
+  MutawwifActivitySignals_MutawwifProfiles_mutawwifId             MutawwifActivitySignals[]         @relation("MutawwifProfiles_mutawwifId")
+  AllowanceRecords_MutawwifProfiles_mutawwifId                    AllowanceRecords[]                @relation("MutawwifProfiles_mutawwifId")
+  WithdrawalRequests_MutawwifProfiles_mutawwifId                  WithdrawalRequests[]              @relation("MutawwifProfiles_mutawwifId")
+  Testimonials_MutawwifProfiles_mutawwifId                        Testimonials[]                    @relation("MutawwifProfiles_mutawwifId")
+}
+
+model MutawwifDocuments {
+  id               String           @id @default(uuid())
+  mutawwifId       String
+  mutawwif         MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  documentType     String
+  fileId           String?
+  file             StoredFiles?     @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  status           String           @default("pending_review")
+  expiryDate       DateTime?
+  reviewNote       String?
+  reviewedByUserId String?
+  reviewedByUser   AppUsers?        @relation("AppUsers_reviewedByUserId", fields: [reviewedByUserId], references: [id])
+  reviewedAt       DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now())
+}
+
+model MutawwifLanguages {
+  id           String           @id @default(uuid())
+  mutawwifId   String
+  mutawwif     MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  languageCode String
+  proficiency  String
+  createdAt    DateTime         @default(now())
+
+  @@unique([mutawwifId, languageCode])
+}
+
+model MutawwifSpecializations {
+  id                String           @id @default(uuid())
+  mutawwifId        String
+  mutawwif          MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  specializationKey String
+  createdAt         DateTime         @default(now())
+
+  @@unique([mutawwifId, specializationKey])
+}
+
+model MutawwifAvailability {
+  id               String           @id @default(uuid())
+  mutawwifId       String
+  mutawwif         MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  availabilityType String
+  startsAt         DateTime
+  endsAt           DateTime
+  reason           String?
+  visibility       String           @default("scheduler_visible")
+  status           String           @default("active")
+  createdAt        DateTime         @default(now())
+}
+
+model MutawwifAssignmentPreferences {
+  id                     String           @id @default(uuid())
+  mutawwifId             String
+  mutawwif               MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  preferredRole          String?
+  preferredGroupSize     String?
+  preferredLanguageGroup String?
+  preferredDestination   String?
+  notes                  String?
+  updatedAt              DateTime         @default(now())
+
+  @@unique([mutawwifId])
+}
+
+model Countries {
+  code                         String   @id @default(uuid())
+  name                         String
+  status                       String   @default("active")
+  Cities_Countries_countryCode Cities[] @relation("Countries_countryCode")
+}
+
+model Cities {
+  id                                      String             @id @default(uuid())
+  countryCode                             String?
+  countryCodeRel                          Countries?         @relation("Countries_countryCode", fields: [countryCode], references: [code])
+  name                                    String
+  timezone                                String?
+  status                                  String             @default("active")
+  Flights_Cities_originCityId             Flights[]          @relation("Cities_originCityId")
+  Flights_Cities_destinationCityId        Flights[]          @relation("Cities_destinationCityId")
+  Hotels_Cities_cityId                    Hotels[]           @relation("Cities_cityId")
+  PackageSchedules_Cities_departureCityId PackageSchedules[] @relation("Cities_departureCityId")
+  PackageHotels_Cities_cityId             PackageHotels[]    @relation("Cities_cityId")
+  GroupTrips_Cities_departureCityId       GroupTrips[]       @relation("Cities_departureCityId")
+  TripHotels_Cities_cityId                TripHotels[]       @relation("Cities_cityId")
+
+  @@unique([countryCode, name])
+}
+
+model Airlines {
+  id                         String       @id @default(uuid())
+  airlineCode                String?      @unique
+  name                       String
+  logoFileId                 String?
+  logoFile                   StoredFiles? @relation("StoredFiles_logoFileId", fields: [logoFileId], references: [id])
+  status                     String       @default("active")
+  Flights_Airlines_airlineId Flights[]    @relation("Airlines_airlineId")
+}
+
+model Flights {
+  id                              String           @id @default(uuid())
+  airlineId                       String?
+  airline                         Airlines?        @relation("Airlines_airlineId", fields: [airlineId], references: [id])
+  flightNumber                    String?
+  originCityId                    String?
+  originCity                      Cities?          @relation("Cities_originCityId", fields: [originCityId], references: [id])
+  destinationCityId               String?
+  destinationCity                 Cities?          @relation("Cities_destinationCityId", fields: [destinationCityId], references: [id])
+  departureTime                   DateTime?
+  arrivalTime                     DateTime?
+  status                          String           @default("active")
+  PackageFlights_Flights_flightId PackageFlights[] @relation("Flights_flightId")
+  TripFlights_Flights_flightId    TripFlights[]    @relation("Flights_flightId")
+}
+
+model Hotels {
+  id                                 String                @id @default(uuid())
+  name                               String
+  cityId                             String?
+  city                               Cities?               @relation("Cities_cityId", fields: [cityId], references: [id])
+  starRating                         Float?
+  distanceToMosqueMeters             Int?
+  address                            String?
+  imageFileId                        String?
+  imageFile                          StoredFiles?          @relation("StoredFiles_imageFileId", fields: [imageFileId], references: [id])
+  status                             String                @default("active")
+  PackageHotels_Hotels_hotelId       PackageHotels[]       @relation("Hotels_hotelId")
+  TripHotels_Hotels_hotelId          TripHotels[]          @relation("Hotels_hotelId")
+  TripRoomAssignments_Hotels_hotelId TripRoomAssignments[] @relation("Hotels_hotelId")
+}
+
+model Seasons {
+  id                                String             @id @default(uuid())
+  name                              String
+  seasonType                        String
+  startsOn                          DateTime?
+  endsOn                            DateTime?
+  status                            String             @default("active")
+  PackageSchedules_Seasons_seasonId PackageSchedules[] @relation("Seasons_seasonId")
+}
+
+model ItineraryTemplates {
+  id                                                   String                   @id @default(uuid())
+  agencyId                                             String?
+  agency                                               TravelAgencies?          @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  title                                                String
+  description                                          String?
+  visibility                                           String                   @default("platform")
+  status                                               String                   @default("active")
+  createdAt                                            DateTime                 @default(now())
+  ItineraryTemplateItems_ItineraryTemplates_templateId ItineraryTemplateItems[] @relation("ItineraryTemplates_templateId")
+}
+
+model ItineraryTemplateItems {
+  id                                                          String                  @id @default(uuid())
+  templateId                                                  String
+  template                                                    ItineraryTemplates      @relation("ItineraryTemplates_templateId", fields: [templateId], references: [id])
+  dayNumber                                                   Int
+  title                                                       String
+  activityType                                                String?
+  locationName                                                String?
+  guidanceArticleId                                           String?
+  sortOrder                                                   Int                     @default(0)
+  PackageItineraryItems_ItineraryTemplateItems_templateItemId PackageItineraryItems[] @relation("ItineraryTemplateItems_templateItemId")
+  TripActivities_ItineraryTemplateItems_sourceTemplateItemId  TripActivities[]        @relation("ItineraryTemplateItems_sourceTemplateItemId")
+}
+
+model DocumentTypes {
+  id                                                String                 @id @default(uuid())
+  code                                              String                 @unique
+  label                                             String
+  isSensitive                                       Boolean
+  status                                            String                 @default("active")
+  PilgrimDocuments_DocumentTypes_documentTypeId     PilgrimDocuments[]     @relation("DocumentTypes_documentTypeId")
+  DocumentRequirements_DocumentTypes_documentTypeId DocumentRequirements[] @relation("DocumentTypes_documentTypeId")
+}
+
+model ServiceTypes {
+  id                                             String                @id @default(uuid())
+  code                                           String                @unique
+  label                                          String
+  status                                         String                @default("active")
+  ServiceRequirements_ServiceTypes_serviceTypeId ServiceRequirements[] @relation("ServiceTypes_serviceTypeId")
+}
+
+model Packages {
+  id                                       String                  @id @default(uuid())
+  agencyId                                 String
+  agency                                   TravelAgencies          @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageCode                              String?
+  title                                    String
+  category                                 String
+  packageType                              String?
+  description                              String?
+  status                                   String                  @default("draft")
+  visibility                               String                  @default("private")
+  startingPriceAmount                      Float?
+  currency                                 String                  @default("RM")
+  defaultDurationDays                      Int?
+  thumbnailFileId                          String?
+  thumbnailFile                            StoredFiles?            @relation("StoredFiles_thumbnailFileId", fields: [thumbnailFileId], references: [id])
+  publishedAt                              DateTime?
+  createdByUserId                          String?
+  createdByUser                            AppUsers?               @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt                                DateTime                @default(now())
+  updatedAt                                DateTime                @default(now())
+  deletedAt                                DateTime?
+  PackageSchedules_Packages_packageId      PackageSchedules[]      @relation("Packages_packageId")
+  PackagePrices_Packages_packageId         PackagePrices[]         @relation("Packages_packageId")
+  PackageHotels_Packages_packageId         PackageHotels[]         @relation("Packages_packageId")
+  PackageFlights_Packages_packageId        PackageFlights[]        @relation("Packages_packageId")
+  PackageItineraryItems_Packages_packageId PackageItineraryItems[] @relation("Packages_packageId")
+  PackageMedia_Packages_packageId          PackageMedia[]          @relation("Packages_packageId")
+  PackageVersions_Packages_packageId       PackageVersions[]       @relation("Packages_packageId")
+  Bookings_Packages_packageId              Bookings[]              @relation("Packages_packageId")
+  GroupTrips_Packages_packageId            GroupTrips[]            @relation("Packages_packageId")
+  DocumentRequirements_Packages_packageId  DocumentRequirements[]  @relation("Packages_packageId")
+  ServiceRequirements_Packages_packageId   ServiceRequirements[]   @relation("Packages_packageId")
+  Testimonials_Packages_packageId          Testimonials[]          @relation("Packages_packageId")
+  SavedPackages_Packages_packageId         SavedPackages[]         @relation("Packages_packageId")
+  CompareSessionItems_Packages_packageId   CompareSessionItems[]   @relation("Packages_packageId")
+
+  @@unique([agencyId, packageCode])
+}
+
+model PackageSchedules {
+  id                                        String          @id @default(uuid())
+  packageId                                 String
+  package                                   Packages        @relation("Packages_packageId", fields: [packageId], references: [id])
+  seasonId                                  String?
+  season                                    Seasons?        @relation("Seasons_seasonId", fields: [seasonId], references: [id])
+  departureDate                             DateTime?
+  returnDate                                DateTime?
+  departureCityId                           String?
+  departureCity                             Cities?         @relation("Cities_departureCityId", fields: [departureCityId], references: [id])
+  capacity                                  Int?
+  seatsBooked                               Int             @default(0)
+  status                                    String          @default("active")
+  createdAt                                 DateTime        @default(now())
+  PackagePrices_PackageSchedules_scheduleId PackagePrices[] @relation("PackageSchedules_scheduleId")
+  Bookings_PackageSchedules_scheduleId      Bookings[]      @relation("PackageSchedules_scheduleId")
+  GroupTrips_PackageSchedules_scheduleId    GroupTrips[]    @relation("PackageSchedules_scheduleId")
+}
+
+model PackagePrices {
+  id              String            @id @default(uuid())
+  packageId       String
+  package         Packages          @relation("Packages_packageId", fields: [packageId], references: [id])
+  scheduleId      String?
+  schedule        PackageSchedules? @relation("PackageSchedules_scheduleId", fields: [scheduleId], references: [id])
+  roomType        String
+  pilgrimCategory String?
+  priceAmount     Float
+  depositAmount   Float?
+  currency        String            @default("RM")
+  status          String            @default("active")
+}
+
+model PackageHotels {
+  id        String   @id @default(uuid())
+  packageId String
+  package   Packages @relation("Packages_packageId", fields: [packageId], references: [id])
+  hotelId   String?
+  hotel     Hotels?  @relation("Hotels_hotelId", fields: [hotelId], references: [id])
+  cityId    String?
+  city      Cities?  @relation("Cities_cityId", fields: [cityId], references: [id])
+  nights    Int?
+  snapshot  String   @default("{}")
+}
+
+model PackageFlights {
+  id        String   @id @default(uuid())
+  packageId String
+  package   Packages @relation("Packages_packageId", fields: [packageId], references: [id])
+  flightId  String?
+  flight    Flights? @relation("Flights_flightId", fields: [flightId], references: [id])
+  direction String?
+  snapshot  String   @default("{}")
+}
+
+model PackageItineraryItems {
+  id             String                  @id @default(uuid())
+  packageId      String
+  package        Packages                @relation("Packages_packageId", fields: [packageId], references: [id])
+  templateItemId String?
+  templateItem   ItineraryTemplateItems? @relation("ItineraryTemplateItems_templateItemId", fields: [templateItemId], references: [id])
+  dayNumber      Int?
+  title          String
+  activityType   String?
+  snapshot       String                  @default("{}")
+  sortOrder      Int                     @default(0)
+}
+
+model PackageMedia {
+  id        String      @id @default(uuid())
+  packageId String
+  package   Packages    @relation("Packages_packageId", fields: [packageId], references: [id])
+  fileId    String
+  file      StoredFiles @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  mediaType String
+  sortOrder Int         @default(0)
+}
+
+model PackageVersions {
+  id              String    @id @default(uuid())
+  packageId       String
+  package         Packages  @relation("Packages_packageId", fields: [packageId], references: [id])
+  versionNumber   Int
+  snapshot        String
+  changeReason    String?
+  createdByUserId String?
+  createdByUser   AppUsers? @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt       DateTime  @default(now())
+
+  @@unique([packageId, versionNumber])
+}
+
+model Bookings {
+  id                                      String                 @id @default(uuid())
+  bookingNumber                           String                 @unique
+  agencyId                                String
+  agency                                  TravelAgencies         @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageId                               String?
+  package                                 Packages?              @relation("Packages_packageId", fields: [packageId], references: [id])
+  scheduleId                              String?
+  schedule                                PackageSchedules?      @relation("PackageSchedules_scheduleId", fields: [scheduleId], references: [id])
+  primaryPilgrimId                        String?
+  primaryPilgrim                          PilgrimProfiles?       @relation("PilgrimProfiles_primaryPilgrimId", fields: [primaryPilgrimId], references: [id])
+  bookingType                             String                 @default("individual")
+  bookingStatus                           String                 @default("draft")
+  paymentStatus                           String                 @default("not_invoiced")
+  packageSnapshot                         String                 @default("{}")
+  priceSnapshot                           String                 @default("{}")
+  referralAttributionId                   String?
+  createdByUserId                         String?
+  createdByUser                           AppUsers?              @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  confirmedAt                             DateTime?
+  createdAt                               DateTime               @default(now())
+  updatedAt                               DateTime               @default(now())
+  deletedAt                               DateTime?
+  BookingParticipants_Bookings_bookingId  BookingParticipants[]  @relation("Bookings_bookingId")
+  BookingPriceItems_Bookings_bookingId    BookingPriceItems[]    @relation("Bookings_bookingId")
+  BookingCancellations_Bookings_bookingId BookingCancellations[] @relation("Bookings_bookingId")
+  Invoices_Bookings_bookingId             Invoices[]             @relation("Bookings_bookingId")
+  Refunds_Bookings_bookingId              Refunds[]              @relation("Bookings_bookingId")
+  CommissionRecords_Bookings_bookingId    CommissionRecords[]    @relation("Bookings_bookingId")
+  GroupTripAllocations_Bookings_bookingId GroupTripAllocations[] @relation("Bookings_bookingId")
+  ReferralAttributions_Bookings_bookingId ReferralAttributions[] @relation("Bookings_bookingId")
+  Testimonials_Bookings_bookingId         Testimonials[]         @relation("Bookings_bookingId")
+}
+
+model BookingParticipants {
+  id                                                     String                 @id @default(uuid())
+  bookingId                                              String
+  booking                                                Bookings               @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  pilgrimId                                              String
+  pilgrim                                                PilgrimProfiles        @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  familyGroupId                                          String?
+  familyGroup                                            PilgrimFamilyGroups?   @relation("PilgrimFamilyGroups_familyGroupId", fields: [familyGroupId], references: [id])
+  participantRole                                        String?
+  roomType                                               String?
+  pilgrimCategory                                        String?
+  priceAmount                                            Float?
+  currency                                               String                 @default("RM")
+  status                                                 String                 @default("active")
+  createdAt                                              DateTime               @default(now())
+  BookingPriceItems_BookingParticipants_participantId    BookingPriceItems[]    @relation("BookingParticipants_participantId")
+  GroupTripAllocations_BookingParticipants_participantId GroupTripAllocations[] @relation("BookingParticipants_participantId")
+  TripMembers_BookingParticipants_bookingParticipantId   TripMembers[]          @relation("BookingParticipants_bookingParticipantId")
+
+  @@unique([bookingId, pilgrimId])
+}
+
+model BookingPriceItems {
+  id            String               @id @default(uuid())
+  bookingId     String
+  booking       Bookings             @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  participantId String?
+  participant   BookingParticipants? @relation("BookingParticipants_participantId", fields: [participantId], references: [id])
+  itemType      String
+  description   String
+  quantity      Float                @default(1)
+  unitAmount    Float
+  totalAmount   Float
+  currency      String               @default("RM")
+  snapshot      String               @default("{}")
+}
+
+model BookingCancellations {
+  id                    String    @id @default(uuid())
+  bookingId             String
+  booking               Bookings  @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  requestedByUserId     String?
+  requestedByUser       AppUsers? @relation("AppUsers_requestedByUserId", fields: [requestedByUserId], references: [id])
+  status                String    @default("requested")
+  reason                String?
+  financeReviewRequired Boolean
+  createdAt             DateTime  @default(now())
+  resolvedAt            DateTime?
+}
+
+model Invoices {
+  id                              String           @id @default(uuid())
+  invoiceNumber                   String           @unique
+  agencyId                        String
+  agency                          TravelAgencies   @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  bookingId                       String?
+  booking                         Bookings?        @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  pilgrimId                       String?
+  pilgrim                         PilgrimProfiles? @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  invoiceType                     String           @default("booking_invoice")
+  status                          String           @default("draft")
+  currency                        String           @default("RM")
+  totalAmount                     Float            @default(0)
+  paidAmount                      Float            @default(0)
+  outstandingAmount               Float            @default(0)
+  dueDate                         DateTime?
+  sentAt                          DateTime?
+  createdByUserId                 String?
+  createdByUser                   AppUsers?        @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt                       DateTime         @default(now())
+  updatedAt                       DateTime         @default(now())
+  InvoiceItems_Invoices_invoiceId InvoiceItems[]   @relation("Invoices_invoiceId")
+  Payments_Invoices_invoiceId     Payments[]       @relation("Invoices_invoiceId")
+  Refunds_Invoices_invoiceId      Refunds[]        @relation("Invoices_invoiceId")
+}
+
+model InvoiceItems {
   id          String   @id @default(uuid())
-  moduleName  String   @unique
-  isEnabled   Boolean  @default(true)
-  description String?
-  updatedBy   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  invoiceId   String
+  invoice     Invoices @relation("Invoices_invoiceId", fields: [invoiceId], references: [id])
+  sourceTable String?
+  sourceId    String?
+  description String
+  quantity    Float    @default(1)
+  unitAmount  Float
+  totalAmount Float
+  snapshot    String   @default("{}")
 }
 
-model AuditLog {
-  id           String   @id @default(uuid())
-  actorId      String
-  action       String
-  targetModule String
-  targetId     String?
-  oldValue     String?
-  newValue     String?
-  ipAddress    String?
-  createdAt    DateTime @default(now())
+model Payments {
+  id                                   String              @id @default(uuid())
+  invoiceId                            String
+  invoice                              Invoices            @relation("Invoices_invoiceId", fields: [invoiceId], references: [id])
+  agencyId                             String
+  agency                               TravelAgencies      @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  paymentReference                     String?
+  paymentMethod                        String?
+  amount                               Float
+  currency                             String              @default("RM")
+  status                               String              @default("pending_review")
+  proofFileId                          String?
+  proofFile                            StoredFiles?        @relation("StoredFiles_proofFileId", fields: [proofFileId], references: [id])
+  recordedByUserId                     String?
+  recordedByUser                       AppUsers?           @relation("AppUsers_recordedByUserId", fields: [recordedByUserId], references: [id])
+  verifiedByUserId                     String?
+  verifiedByUser                       AppUsers?           @relation("AppUsers_verifiedByUserId", fields: [verifiedByUserId], references: [id])
+  paidAt                               DateTime?
+  verifiedAt                           DateTime?
+  createdAt                            DateTime            @default(now())
+  Refunds_Payments_paymentId           Refunds[]           @relation("Payments_paymentId")
+  CommissionRecords_Payments_paymentId CommissionRecords[] @relation("Payments_paymentId")
 }
 
-model ReferralCampaign {
-  id           String   @id @default(uuid())
-  name         String
-  description  String?
-  agencyId     String?
-  rewardType   String
-  rewardValue  Float
-  status       String   @default("DRAFT")
-  startDate    DateTime?
-  endDate      DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  codes        ReferralCode[]
-}
-
-model ReferralCode {
-  id           String   @id @default(uuid())
-  ownerId      String
-  ownerRole    String
-  code         String   @unique
-  campaignId   String
-  campaign     ReferralCampaign @relation(fields: [campaignId], references: [id])
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  attributions ReferralAttribution[]
-}
-
-model ReferralAttribution {
-  id               String   @id @default(uuid())
-  referralCodeId   String
-  code             ReferralCode @relation(fields: [referralCodeId], references: [id])
-  invitedUserId    String
-  relatedBookingId String?
-  conversionStatus String   @default("REGISTERED")
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  reward           ReferralReward?
-}
-
-model ReferralReward {
-  id                     String   @id @default(uuid())
-  attributionId          String   @unique
-  attribution            ReferralAttribution @relation(fields: [attributionId], references: [id])
-  rewardAmountCalculated Float
-  status                 String   @default("PENDING_REVIEW")
-  reasonCode             String?
-  approvedBy             String?
-  approvedAt             DateTime?
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-  financeHandoff         FinanceHandoffQueue?
-}
-
-model FinanceHandoffQueue {
-  id                 String   @id @default(uuid())
-  referralRewardId   String   @unique
-  reward             ReferralReward @relation(fields: [referralRewardId], references: [id])
-  payoutStatus       String   @default("QUEUED")
-  financeStaffId     String?
-  paidAt             DateTime?
-  paymentReference   String?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-}
-
-// ==========================================
-// Billing & Finance Models
-// ==========================================
-
-model Invoice {
-  id             String          @id @default(uuid())
-  invoiceNumber  String          @unique
-  travelAgencyId String?
-  jamaahId       String?
-  bookingId      String?
-  subtotal       Float
-  taxAmount      Float
-  discountAmount Float
-  totalAmount    Float
-  amountPaid     Float           @default(0)
-  status         String          @default("DRAFT") // DRAFT, SENT, PARTIAL, PAID, OVERDUE, VOID
-  dueDate        DateTime
-  issuedDate     DateTime        @default(now())
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-
-  payments       PaymentRecord[]
-}
-
-model PaymentRecord {
-  id                String               @id @default(uuid())
-  invoiceId         String
-  paymentMethod     String               // BANK_TRANSFER, ONLINE_GATEWAY, CASH
+model Refunds {
+  id                String          @id @default(uuid())
+  invoiceId         String?
+  invoice           Invoices?       @relation("Invoices_invoiceId", fields: [invoiceId], references: [id])
+  paymentId         String?
+  payment           Payments?       @relation("Payments_paymentId", fields: [paymentId], references: [id])
+  bookingId         String?
+  booking           Bookings?       @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  agencyId          String?
+  agency            TravelAgencies? @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
   amount            Float
-  referenceNumber   String
-  proofOfPaymentUrl String?
-  status            String               @default("PENDING") // PENDING, VERIFIED, FAILED, REFUNDED
-  verifiedBy        String?
-  verifiedAt        DateTime?
-  createdAt         DateTime             @default(now())
-  updatedAt         DateTime             @updatedAt
-
-  invoice           Invoice              @relation(fields: [invoiceId], references: [id])
-  commissions       PlatformCommission[]
+  currency          String          @default("RM")
+  status            String          @default("refund_pending")
+  reason            String?
+  requestedByUserId String?
+  requestedByUser   AppUsers?       @relation("AppUsers_requestedByUserId", fields: [requestedByUserId], references: [id])
+  approvedByUserId  String?
+  approvedByUser    AppUsers?       @relation("AppUsers_approvedByUserId", fields: [approvedByUserId], references: [id])
+  createdAt         DateTime        @default(now())
+  resolvedAt        DateTime?
 }
 
-model PlatformCommission {
-  id               String        @id @default(uuid())
-  paymentId        String
-  baseAmount       Float
-  commissionRate   Float
-  commissionAmount Float
-  status           String        @default("PENDING") // PENDING, EARNED, REVERSED, SETTLED
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+model FinanceLedgerEntries {
+  id                                                         String             @id @default(uuid())
+  agencyId                                                   String?
+  agency                                                     TravelAgencies?    @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  userId                                                     String?
+  user                                                       AppUsers?          @relation("AppUsers_userId", fields: [userId], references: [id])
+  sourceTable                                                String
+  sourceId                                                   String
+  ledgerType                                                 String
+  direction                                                  String
+  amount                                                     Float
+  currency                                                   String             @default("RM")
+  status                                                     String             @default("posted")
+  postedAt                                                   DateTime           @default(now())
+  snapshot                                                   String             @default("{}")
+  SettlementItems_FinanceLedgerEntries_ledgerEntryId         SettlementItems[]  @relation("FinanceLedgerEntries_ledgerEntryId")
+  ReferralRewards_FinanceLedgerEntries_financeLedgerEntryId  ReferralRewards[]  @relation("FinanceLedgerEntries_financeLedgerEntryId")
+  AllowanceRecords_FinanceLedgerEntries_financeLedgerEntryId AllowanceRecords[] @relation("FinanceLedgerEntries_financeLedgerEntryId")
+}
 
-  payment          PaymentRecord @relation(fields: [paymentId], references: [id])
+model CommissionRecords {
+  id             String          @id @default(uuid())
+  agencyId       String?
+  agency         TravelAgencies? @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  bookingId      String?
+  booking        Bookings?       @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  paymentId      String?
+  payment        Payments?       @relation("Payments_paymentId", fields: [paymentId], references: [id])
+  commissionType String
+  amount         Float
+  currency       String          @default("RM")
+  status         String          @default("pending")
+  snapshot       String          @default("{}")
+  createdAt      DateTime        @default(now())
+}
+
+model SettlementBatches {
+  id                                                  String            @id @default(uuid())
+  agencyId                                            String?
+  agency                                              TravelAgencies?   @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  batchNumber                                         String?           @unique
+  status                                              String            @default("draft")
+  totalAmount                                         Float             @default(0)
+  currency                                            String            @default("RM")
+  preparedByUserId                                    String?
+  preparedByUser                                      AppUsers?         @relation("AppUsers_preparedByUserId", fields: [preparedByUserId], references: [id])
+  createdAt                                           DateTime          @default(now())
+  settledAt                                           DateTime?
+  SettlementItems_SettlementBatches_settlementBatchId SettlementItems[] @relation("SettlementBatches_settlementBatchId")
+}
+
+model SettlementItems {
+  id                String                @id @default(uuid())
+  settlementBatchId String
+  settlementBatch   SettlementBatches     @relation("SettlementBatches_settlementBatchId", fields: [settlementBatchId], references: [id])
+  ledgerEntryId     String?
+  ledgerEntry       FinanceLedgerEntries? @relation("FinanceLedgerEntries_ledgerEntryId", fields: [ledgerEntryId], references: [id])
+  amount            Float
+  currency          String                @default("RM")
+}
+
+model GroupTrips {
+  id                                                String                       @id @default(uuid())
+  agencyId                                          String
+  agency                                            TravelAgencies               @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageId                                         String?
+  package                                           Packages?                    @relation("Packages_packageId", fields: [packageId], references: [id])
+  scheduleId                                        String?
+  schedule                                          PackageSchedules?            @relation("PackageSchedules_scheduleId", fields: [scheduleId], references: [id])
+  tripCode                                          String
+  title                                             String
+  tripStatus                                        String                       @default("draft")
+  startsOn                                          DateTime?
+  endsOn                                            DateTime?
+  departureCityId                                   String?
+  departureCity                                     Cities?                      @relation("Cities_departureCityId", fields: [departureCityId], references: [id])
+  destinationSummary                                String?
+  packageSnapshot                                   String                       @default("{}")
+  operationalSnapshot                               String                       @default("{}")
+  whatsappGroupUrl                                  String?
+  createdByUserId                                   String?
+  createdByUser                                     AppUsers?                    @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt                                         DateTime                     @default(now())
+  updatedAt                                         DateTime                     @default(now())
+  GroupTripAllocations_GroupTrips_groupTripId       GroupTripAllocations[]       @relation("GroupTrips_groupTripId")
+  TripMembers_GroupTrips_groupTripId                TripMembers[]                @relation("GroupTrips_groupTripId")
+  TripActivities_GroupTrips_groupTripId             TripActivities[]             @relation("GroupTrips_groupTripId")
+  TripHotels_GroupTrips_groupTripId                 TripHotels[]                 @relation("GroupTrips_groupTripId")
+  TripFlights_GroupTrips_groupTripId                TripFlights[]                @relation("GroupTrips_groupTripId")
+  TripTransportSegments_GroupTrips_groupTripId      TripTransportSegments[]      @relation("GroupTrips_groupTripId")
+  TripRoomAssignments_GroupTrips_groupTripId        TripRoomAssignments[]        @relation("GroupTrips_groupTripId")
+  TripChangeAcknowledgements_GroupTrips_groupTripId TripChangeAcknowledgements[] @relation("GroupTrips_groupTripId")
+  MutawwifAssignments_GroupTrips_groupTripId        MutawwifAssignments[]        @relation("GroupTrips_groupTripId")
+  DocumentRequirements_GroupTrips_groupTripId       DocumentRequirements[]       @relation("GroupTrips_groupTripId")
+  ServiceRequirements_GroupTrips_groupTripId        ServiceRequirements[]        @relation("GroupTrips_groupTripId")
+  ReadinessItems_GroupTrips_groupTripId             ReadinessItems[]             @relation("GroupTrips_groupTripId")
+  AllowanceRecords_GroupTrips_groupTripId           AllowanceRecords[]           @relation("GroupTrips_groupTripId")
+  Testimonials_GroupTrips_groupTripId               Testimonials[]               @relation("GroupTrips_groupTripId")
+
+  @@unique([agencyId, tripCode])
+}
+
+model GroupTripAllocations {
+  id               String               @id @default(uuid())
+  groupTripId      String
+  groupTrip        GroupTrips           @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  bookingId        String
+  booking          Bookings             @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  participantId    String?
+  participant      BookingParticipants? @relation("BookingParticipants_participantId", fields: [participantId], references: [id])
+  allocationStatus String               @default("allocated")
+  allocatedAt      DateTime             @default(now())
+
+  @@unique([groupTripId, participantId])
+}
+
+model TripMembers {
+  id                                       String               @id @default(uuid())
+  groupTripId                              String
+  groupTrip                                GroupTrips           @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  pilgrimId                                String
+  pilgrim                                  PilgrimProfiles      @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  bookingParticipantId                     String?
+  bookingParticipant                       BookingParticipants? @relation("BookingParticipants_bookingParticipantId", fields: [bookingParticipantId], references: [id])
+  memberStatus                             String               @default("active")
+  roomLabel                                String?
+  assistanceFlags                          String               @default("[]")
+  serviceSummary                           String               @default("{}")
+  createdAt                                DateTime             @default(now())
+  TripRoomMembers_TripMembers_tripMemberId TripRoomMembers[]    @relation("TripMembers_tripMemberId")
+  ReadinessItems_TripMembers_tripMemberId  ReadinessItems[]     @relation("TripMembers_tripMemberId")
+
+  @@unique([groupTripId, pilgrimId])
+}
+
+model TripActivities {
+  id                                                   String                       @id @default(uuid())
+  groupTripId                                          String
+  groupTrip                                            GroupTrips                   @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  sourceTemplateItemId                                 String?
+  sourceTemplateItem                                   ItineraryTemplateItems?      @relation("ItineraryTemplateItems_sourceTemplateItemId", fields: [sourceTemplateItemId], references: [id])
+  activityDate                                         DateTime?
+  startsAt                                             DateTime?
+  endsAt                                               DateTime?
+  timezone                                             String?
+  title                                                String
+  activityType                                         String?
+  locationName                                         String?
+  meetingPoint                                         String?
+  guidanceArticleId                                    String?
+  activityStatus                                       String                       @default("scheduled")
+  changeStatus                                         String                       @default("unchanged")
+  snapshot                                             String                       @default("{}")
+  sortOrder                                            Int                          @default(0)
+  TripChangeAcknowledgements_TripActivities_activityId TripChangeAcknowledgements[] @relation("TripActivities_activityId")
+  MutawwifAssignments_TripActivities_activityId        MutawwifAssignments[]        @relation("TripActivities_activityId")
+  MutawwifActivitySignals_TripActivities_activityId    MutawwifActivitySignals[]    @relation("TripActivities_activityId")
+}
+
+model TripHotels {
+  id           String     @id @default(uuid())
+  groupTripId  String
+  groupTrip    GroupTrips @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  hotelId      String?
+  hotel        Hotels?    @relation("Hotels_hotelId", fields: [hotelId], references: [id])
+  cityId       String?
+  city         Cities?    @relation("Cities_cityId", fields: [cityId], references: [id])
+  checkInDate  DateTime?
+  checkOutDate DateTime?
+  snapshot     String     @default("{}")
+}
+
+model TripFlights {
+  id          String     @id @default(uuid())
+  groupTripId String
+  groupTrip   GroupTrips @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  flightId    String?
+  flight      Flights?   @relation("Flights_flightId", fields: [flightId], references: [id])
+  direction   String?
+  departureAt DateTime?
+  arrivalAt   DateTime?
+  snapshot    String     @default("{}")
+}
+
+model TripTransportSegments {
+  id           String     @id @default(uuid())
+  groupTripId  String
+  groupTrip    GroupTrips @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  segmentType  String
+  providerName String?
+  startsAt     DateTime?
+  origin       String?
+  destination  String?
+  status       String     @default("scheduled")
+  snapshot     String     @default("{}")
+}
+
+model TripRoomAssignments {
+  id                                                   String            @id @default(uuid())
+  groupTripId                                          String
+  groupTrip                                            GroupTrips        @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  roomLabel                                            String
+  hotelId                                              String?
+  hotel                                                Hotels?           @relation("Hotels_hotelId", fields: [hotelId], references: [id])
+  roomType                                             String?
+  notes                                                String?
+  createdAt                                            DateTime          @default(now())
+  TripRoomMembers_TripRoomAssignments_roomAssignmentId TripRoomMembers[] @relation("TripRoomAssignments_roomAssignmentId")
+}
+
+model TripRoomMembers {
+  id               String              @id @default(uuid())
+  roomAssignmentId String
+  roomAssignment   TripRoomAssignments @relation("TripRoomAssignments_roomAssignmentId", fields: [roomAssignmentId], references: [id])
+  tripMemberId     String
+  tripMember       TripMembers         @relation("TripMembers_tripMemberId", fields: [tripMemberId], references: [id])
+
+  @@unique([roomAssignmentId, tripMemberId])
+}
+
+model TripChangeAcknowledgements {
+  id              String          @id @default(uuid())
+  groupTripId     String?
+  groupTrip       GroupTrips?     @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  activityId      String?
+  activity        TripActivities? @relation("TripActivities_activityId", fields: [activityId], references: [id])
+  userId          String
+  user            AppUsers        @relation("AppUsers_userId", fields: [userId], references: [id])
+  changeReference String?
+  status          String          @default("acknowledged")
+  acknowledgedAt  DateTime        @default(now())
+}
+
+model MutawwifAssignments {
+  id                                                               String                            @id @default(uuid())
+  groupTripId                                                      String
+  groupTrip                                                        GroupTrips                        @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  activityId                                                       String?
+  activity                                                         TripActivities?                   @relation("TripActivities_activityId", fields: [activityId], references: [id])
+  mutawwifId                                                       String
+  mutawwif                                                         MutawwifProfiles                  @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  agencyId                                                         String
+  agency                                                           TravelAgencies                    @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  assignmentRole                                                   String                            @default("assistant")
+  assignmentStatus                                                 String                            @default("pending")
+  startsAt                                                         DateTime?
+  endsAt                                                           DateTime?
+  assignmentSnapshot                                               String                            @default("{}")
+  createdByUserId                                                  String?
+  createdByUser                                                    AppUsers?                         @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt                                                        DateTime                          @default(now())
+  updatedAt                                                        DateTime                          @default(now())
+  MutawwifAssignmentRequests_MutawwifAssignments_assignmentId      MutawwifAssignmentRequests[]      @relation("MutawwifAssignments_assignmentId")
+  MutawwifAssignmentHandoverNotes_MutawwifAssignments_assignmentId MutawwifAssignmentHandoverNotes[] @relation("MutawwifAssignments_assignmentId")
+  AllowanceRecords_MutawwifAssignments_assignmentId                AllowanceRecords[]                @relation("MutawwifAssignments_assignmentId")
+}
+
+model MutawwifAssignmentRequests {
+  id             String              @id @default(uuid())
+  assignmentId   String
+  assignment     MutawwifAssignments @relation("MutawwifAssignments_assignmentId", fields: [assignmentId], references: [id])
+  mutawwifId     String
+  mutawwif       MutawwifProfiles    @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  requestStatus  String              @default("pending_response")
+  response       String?
+  responseReason String?
+  respondedAt    DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime            @default(now())
+}
+
+model MutawwifAssignmentHandoverNotes {
+  id               String              @id @default(uuid())
+  assignmentId     String
+  assignment       MutawwifAssignments @relation("MutawwifAssignments_assignmentId", fields: [assignmentId], references: [id])
+  fromMutawwifId   String?
+  fromMutawwif     MutawwifProfiles?   @relation("MutawwifProfiles_fromMutawwifId", fields: [fromMutawwifId], references: [id])
+  toMutawwifId     String?
+  toMutawwif       MutawwifProfiles?   @relation("MutawwifProfiles_toMutawwifId", fields: [toMutawwifId], references: [id])
+  note             String?
+  attachmentFileId String?
+  attachmentFile   StoredFiles?        @relation("StoredFiles_attachmentFileId", fields: [attachmentFileId], references: [id])
+  status           String              @default("submitted")
+  createdAt        DateTime            @default(now())
+}
+
+model MutawwifActivitySignals {
+  id         String           @id @default(uuid())
+  activityId String
+  activity   TripActivities   @relation("TripActivities_activityId", fields: [activityId], references: [id])
+  mutawwifId String
+  mutawwif   MutawwifProfiles @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  signal     String
+  note       String?
+  createdAt  DateTime         @default(now())
+}
+
+model PilgrimDocuments {
+  id               String          @id @default(uuid())
+  pilgrimId        String
+  pilgrim          PilgrimProfiles @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  agencyId         String?
+  agency           TravelAgencies? @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  documentTypeId   String
+  documentType     DocumentTypes   @relation("DocumentTypes_documentTypeId", fields: [documentTypeId], references: [id])
+  fileId           String?
+  file             StoredFiles?    @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  status           String          @default("missing")
+  expiryDate       DateTime?
+  rejectionReason  String?
+  uploadedByUserId String?
+  uploadedByUser   AppUsers?       @relation("AppUsers_uploadedByUserId", fields: [uploadedByUserId], references: [id])
+  reviewedByUserId String?
+  reviewedByUser   AppUsers?       @relation("AppUsers_reviewedByUserId", fields: [reviewedByUserId], references: [id])
+  reviewedAt       DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now())
+}
+
+model DocumentRequirements {
+  id                                                        String           @id @default(uuid())
+  agencyId                                                  String?
+  agency                                                    TravelAgencies?  @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageId                                                 String?
+  package                                                   Packages?        @relation("Packages_packageId", fields: [packageId], references: [id])
+  groupTripId                                               String?
+  groupTrip                                                 GroupTrips?      @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  documentTypeId                                            String
+  documentType                                              DocumentTypes    @relation("DocumentTypes_documentTypeId", fields: [documentTypeId], references: [id])
+  requiredFor                                               String
+  isRequired                                                Boolean
+  ruleConfig                                                String           @default("{}")
+  status                                                    String           @default("active")
+  ReadinessItems_DocumentRequirements_documentRequirementId ReadinessItems[] @relation("DocumentRequirements_documentRequirementId")
+}
+
+model ServiceRequirements {
+  id                                                      String           @id @default(uuid())
+  agencyId                                                String?
+  agency                                                  TravelAgencies?  @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageId                                               String?
+  package                                                 Packages?        @relation("Packages_packageId", fields: [packageId], references: [id])
+  groupTripId                                             String?
+  groupTrip                                               GroupTrips?      @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  serviceTypeId                                           String
+  serviceType                                             ServiceTypes     @relation("ServiceTypes_serviceTypeId", fields: [serviceTypeId], references: [id])
+  requiredFor                                             String
+  isRequired                                              Boolean
+  ruleConfig                                              String           @default("{}")
+  status                                                  String           @default("active")
+  ReadinessItems_ServiceRequirements_serviceRequirementId ReadinessItems[] @relation("ServiceRequirements_serviceRequirementId")
+}
+
+model ReadinessItems {
+  id                                                 String                @id @default(uuid())
+  agencyId                                           String?
+  agency                                             TravelAgencies?       @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  groupTripId                                        String?
+  groupTrip                                          GroupTrips?           @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  tripMemberId                                       String?
+  tripMember                                         TripMembers?          @relation("TripMembers_tripMemberId", fields: [tripMemberId], references: [id])
+  pilgrimId                                          String?
+  pilgrim                                            PilgrimProfiles?      @relation("PilgrimProfiles_pilgrimId", fields: [pilgrimId], references: [id])
+  requirementType                                    String
+  documentRequirementId                              String?
+  documentRequirement                                DocumentRequirements? @relation("DocumentRequirements_documentRequirementId", fields: [documentRequirementId], references: [id])
+  serviceRequirementId                               String?
+  serviceRequirement                                 ServiceRequirements?  @relation("ServiceRequirements_serviceRequirementId", fields: [serviceRequirementId], references: [id])
+  status                                             String                @default("missing")
+  blocksReadiness                                    Boolean
+  dueAt                                              DateTime?
+  safeSummary                                        String?
+  internalNote                                       String?
+  updatedByUserId                                    String?
+  updatedByUser                                      AppUsers?             @relation("AppUsers_updatedByUserId", fields: [updatedByUserId], references: [id])
+  updatedAt                                          DateTime              @default(now())
+  createdAt                                          DateTime              @default(now())
+  ReadinessItemEvents_ReadinessItems_readinessItemId ReadinessItemEvents[] @relation("ReadinessItems_readinessItemId")
+}
+
+model ReadinessItemEvents {
+  id              String         @id @default(uuid())
+  readinessItemId String
+  readinessItem   ReadinessItems @relation("ReadinessItems_readinessItemId", fields: [readinessItemId], references: [id])
+  oldStatus       String?
+  newStatus       String
+  actorUserId     String?
+  actorUser       AppUsers?      @relation("AppUsers_actorUserId", fields: [actorUserId], references: [id])
+  reason          String?
+  createdAt       DateTime       @default(now())
+}
+
+model ReferralPrograms {
+  id                                       String          @id @default(uuid())
+  name                                     String
+  ownerScope                               String          @default("platform")
+  agencyId                                 String?
+  agency                                   TravelAgencies? @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  rewardPolicy                             String          @default("{}")
+  status                                   String          @default("active")
+  startsAt                                 DateTime?
+  endsAt                                   DateTime?
+  createdAt                                DateTime        @default(now())
+  ReferralCodes_ReferralPrograms_programId ReferralCodes[] @relation("ReferralPrograms_programId")
+}
+
+model ReferralCodes {
+  id                                                String                 @id @default(uuid())
+  programId                                         String
+  program                                           ReferralPrograms       @relation("ReferralPrograms_programId", fields: [programId], references: [id])
+  ownerUserId                                       String
+  ownerUser                                         AppUsers               @relation("AppUsers_ownerUserId", fields: [ownerUserId], references: [id])
+  ownerRole                                         String
+  code                                              String                 @unique
+  status                                            String                 @default("active")
+  createdAt                                         DateTime               @default(now())
+  ReferralClicks_ReferralCodes_referralCodeId       ReferralClicks[]       @relation("ReferralCodes_referralCodeId")
+  ReferralAttributions_ReferralCodes_referralCodeId ReferralAttributions[] @relation("ReferralCodes_referralCodeId")
+}
+
+model ReferralClicks {
+  id             String        @id @default(uuid())
+  referralCodeId String
+  referralCode   ReferralCodes @relation("ReferralCodes_referralCodeId", fields: [referralCodeId], references: [id])
+  visitorId      String?
+  landingUrl     String?
+  ipAddress      String?
+  userAgent      String?
+  clickedAt      DateTime      @default(now())
+}
+
+model ReferralAttributions {
+  id                                                         String            @id @default(uuid())
+  referralCodeId                                             String
+  referralCode                                               ReferralCodes     @relation("ReferralCodes_referralCodeId", fields: [referralCodeId], references: [id])
+  bookingId                                                  String?
+  booking                                                    Bookings?         @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  referredUserId                                             String?
+  referredUser                                               AppUsers?         @relation("AppUsers_referredUserId", fields: [referredUserId], references: [id])
+  attributionStatus                                          String            @default("pending")
+  attributionSnapshot                                        String            @default("{}")
+  createdAt                                                  DateTime          @default(now())
+  ReferralRewards_ReferralAttributions_referralAttributionId ReferralRewards[] @relation("ReferralAttributions_referralAttributionId")
+}
+
+model ReferralRewards {
+  id                    String                @id @default(uuid())
+  referralAttributionId String
+  referralAttribution   ReferralAttributions  @relation("ReferralAttributions_referralAttributionId", fields: [referralAttributionId], references: [id])
+  beneficiaryUserId     String
+  beneficiaryUser       AppUsers              @relation("AppUsers_beneficiaryUserId", fields: [beneficiaryUserId], references: [id])
+  rewardType            String
+  amount                Float?
+  currency              String                @default("RM")
+  rewardStatus          String                @default("pending_review")
+  financeLedgerEntryId  String?
+  financeLedgerEntry    FinanceLedgerEntries? @relation("FinanceLedgerEntries_financeLedgerEntryId", fields: [financeLedgerEntryId], references: [id])
+  reviewNote            String?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @default(now())
+}
+
+model PayoutDestinations {
+  id                                                        String               @id @default(uuid())
+  userId                                                    String
+  user                                                      AppUsers             @relation("AppUsers_userId", fields: [userId], references: [id])
+  destinationType                                           String
+  providerName                                              String?
+  accountHolderName                                         String?
+  accountIdentifierEncrypted                                String?
+  accountIdentifierLast4                                    String?
+  maskedLabel                                               String
+  verificationStatus                                        String               @default("pending_review")
+  isPrimary                                                 Boolean
+  status                                                    String               @default("active")
+  createdAt                                                 DateTime             @default(now())
+  updatedAt                                                 DateTime             @default(now())
+  WithdrawalRequests_PayoutDestinations_payoutDestinationId WithdrawalRequests[] @relation("PayoutDestinations_payoutDestinationId")
+}
+
+model AllowanceRecords {
+  id                   String                @id @default(uuid())
+  mutawwifId           String
+  mutawwif             MutawwifProfiles      @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  agencyId             String?
+  agency               TravelAgencies?       @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  groupTripId          String?
+  groupTrip            GroupTrips?           @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  assignmentId         String?
+  assignment           MutawwifAssignments?  @relation("MutawwifAssignments_assignmentId", fields: [assignmentId], references: [id])
+  sourceType           String
+  amount               Float
+  currency             String                @default("RM")
+  status               String                @default("pending_review")
+  financeLedgerEntryId String?
+  financeLedgerEntry   FinanceLedgerEntries? @relation("FinanceLedgerEntries_financeLedgerEntryId", fields: [financeLedgerEntryId], references: [id])
+  sourceSnapshot       String                @default("{}")
+  createdAt            DateTime              @default(now())
+  releasedAt           DateTime?
+}
+
+model WithdrawalRequests {
+  id                  String              @id @default(uuid())
+  userId              String
+  user                AppUsers            @relation("AppUsers_userId", fields: [userId], references: [id])
+  mutawwifId          String?
+  mutawwif            MutawwifProfiles?   @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  payoutDestinationId String?
+  payoutDestination   PayoutDestinations? @relation("PayoutDestinations_payoutDestinationId", fields: [payoutDestinationId], references: [id])
+  amount              Float
+  feeAmount           Float               @default(0)
+  netAmount           Float
+  currency            String              @default("RM")
+  status              String              @default("submitted")
+  requestSnapshot     String              @default("{}")
+  submittedAt         DateTime            @default(now())
+  processedAt         DateTime?
+}
+
+model SupportCases {
+  id                                                String                   @id @default(uuid())
+  caseNumber                                        String                   @unique
+  createdByUserId                                   String?
+  createdByUser                                     AppUsers?                @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  agencyId                                          String?
+  agency                                            TravelAgencies?          @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  assignedAgencyPicUserId                           String?
+  assignedAgencyPicUser                             AppUsers?                @relation("AppUsers_assignedAgencyPicUserId", fields: [assignedAgencyPicUserId], references: [id])
+  category                                          String
+  priority                                          String                   @default("normal")
+  status                                            String                   @default("submitted")
+  title                                             String
+  description                                       String?
+  visibilityScope                                   String                   @default("own")
+  sourceModule                                      String?
+  sourceSnapshot                                    String                   @default("{}")
+  resolvedAt                                        DateTime?
+  createdAt                                         DateTime                 @default(now())
+  updatedAt                                         DateTime                 @default(now())
+  SupportCaseLinks_SupportCases_supportCaseId       SupportCaseLinks[]       @relation("SupportCases_supportCaseId")
+  SupportCaseComments_SupportCases_supportCaseId    SupportCaseComments[]    @relation("SupportCases_supportCaseId")
+  SupportCaseAttachments_SupportCases_supportCaseId SupportCaseAttachments[] @relation("SupportCases_supportCaseId")
+}
+
+model SupportCaseLinks {
+  id            String       @id @default(uuid())
+  supportCaseId String
+  supportCase   SupportCases @relation("SupportCases_supportCaseId", fields: [supportCaseId], references: [id])
+  entityTable   String
+  entityId      String
+  relationType  String
+  safeSnapshot  String       @default("{}")
+}
+
+model SupportCaseComments {
+  id            String       @id @default(uuid())
+  supportCaseId String
+  supportCase   SupportCases @relation("SupportCases_supportCaseId", fields: [supportCaseId], references: [id])
+  authorUserId  String?
+  authorUser    AppUsers?    @relation("AppUsers_authorUserId", fields: [authorUserId], references: [id])
+  commentType   String       @default("public")
+  body          String
+  visibility    String       @default("case_participants")
+  createdAt     DateTime     @default(now())
+}
+
+model SupportCaseAttachments {
+  id               String       @id @default(uuid())
+  supportCaseId    String
+  supportCase      SupportCases @relation("SupportCases_supportCaseId", fields: [supportCaseId], references: [id])
+  fileId           String
+  file             StoredFiles  @relation("StoredFiles_fileId", fields: [fileId], references: [id])
+  uploadedByUserId String?
+  uploadedByUser   AppUsers?    @relation("AppUsers_uploadedByUserId", fields: [uploadedByUserId], references: [id])
+  visibility       String       @default("case_participants")
+  createdAt        DateTime     @default(now())
+}
+
+model Announcements {
+  id                                                 String                  @id @default(uuid())
+  createdByUserId                                    String?
+  createdByUser                                      AppUsers?               @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  agencyId                                           String?
+  agency                                             TravelAgencies?         @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  title                                              String
+  body                                               String
+  priority                                           String                  @default("info")
+  category                                           String?
+  status                                             String                  @default("draft")
+  requiresAcknowledgement                            Boolean
+  publishedAt                                        DateTime?
+  expiresAt                                          DateTime?
+  createdAt                                          DateTime                @default(now())
+  AnnouncementAudiences_Announcements_announcementId AnnouncementAudiences[] @relation("Announcements_announcementId")
+  Notifications_Announcements_announcementId         Notifications[]         @relation("Announcements_announcementId")
+}
+
+model AnnouncementAudiences {
+  id             String        @id @default(uuid())
+  announcementId String
+  announcement   Announcements @relation("Announcements_announcementId", fields: [announcementId], references: [id])
+  audienceType   String
+  audienceId     String?
+  filter         String        @default("{}")
+}
+
+model Notifications {
+  id                                                  String                   @id @default(uuid())
+  recipientUserId                                     String
+  recipientUser                                       AppUsers                 @relation("AppUsers_recipientUserId", fields: [recipientUserId], references: [id])
+  announcementId                                      String?
+  announcement                                        Announcements?           @relation("Announcements_announcementId", fields: [announcementId], references: [id])
+  eventKey                                            String?
+  title                                               String
+  safeSummary                                         String?
+  category                                            String?
+  priority                                            String                   @default("info")
+  sourceModule                                        String?
+  sourceTable                                         String?
+  sourceId                                            String?
+  readAt                                              DateTime?
+  acknowledgedAt                                      DateTime?
+  archivedAt                                          DateTime?
+  createdAt                                           DateTime                 @default(now())
+  NotificationDeliveries_Notifications_notificationId NotificationDeliveries[] @relation("Notifications_notificationId")
+}
+
+model NotificationDeliveries {
+  id                String        @id @default(uuid())
+  notificationId    String
+  notification      Notifications @relation("Notifications_notificationId", fields: [notificationId], references: [id])
+  channel           String
+  deliveryStatus    String        @default("pending")
+  providerReference String?
+  attemptedAt       DateTime?
+  deliveredAt       DateTime?
+  failureReason     String?
+}
+
+model NotificationPreferences {
+  id        String   @id @default(uuid())
+  userId    String
+  user      AppUsers @relation("AppUsers_userId", fields: [userId], references: [id])
+  category  String
+  channel   String
+  enabled   Boolean
+  updatedAt DateTime @default(now())
+
+  @@unique([userId, category, channel])
+}
+
+model ArticleCategories {
+  id                                           String              @id @default(uuid())
+  parentId                                     String?
+  parent                                       ArticleCategories?  @relation("ArticleCategories_parentId", fields: [parentId], references: [id])
+  name                                         String
+  slug                                         String              @unique
+  status                                       String              @default("active")
+  ArticleCategories_ArticleCategories_parentId ArticleCategories[] @relation("ArticleCategories_parentId")
+  Articles_ArticleCategories_categoryId        Articles[]          @relation("ArticleCategories_categoryId")
+}
+
+model Articles {
+  id                                     String                @id @default(uuid())
+  categoryId                             String?
+  category                               ArticleCategories?    @relation("ArticleCategories_categoryId", fields: [categoryId], references: [id])
+  agencyId                               String?
+  agency                                 TravelAgencies?       @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  title                                  String
+  slug                                   String                @unique
+  body                                   String
+  status                                 String                @default("draft")
+  visibility                             String                @default("public")
+  sourceLabel                            String?
+  reviewerLabel                          String?
+  disclaimer                             String?
+  publishedAt                            DateTime?
+  createdByUserId                        String?
+  createdByUser                          AppUsers?             @relation("AppUsers_createdByUserId", fields: [createdByUserId], references: [id])
+  createdAt                              DateTime              @default(now())
+  updatedAt                              DateTime              @default(now())
+  ArticleContextLinks_Articles_articleId ArticleContextLinks[] @relation("Articles_articleId")
+}
+
+model ArticleContextLinks {
+  id          String   @id @default(uuid())
+  articleId   String
+  article     Articles @relation("Articles_articleId", fields: [articleId], references: [id])
+  contextType String
+  contextId   String?
+  sortOrder   Int      @default(0)
+}
+
+model Testimonials {
+  id           String            @id @default(uuid())
+  authorUserId String?
+  authorUser   AppUsers?         @relation("AppUsers_authorUserId", fields: [authorUserId], references: [id])
+  agencyId     String?
+  agency       TravelAgencies?   @relation("TravelAgencies_agencyId", fields: [agencyId], references: [id])
+  packageId    String?
+  package      Packages?         @relation("Packages_packageId", fields: [packageId], references: [id])
+  bookingId    String?
+  booking      Bookings?         @relation("Bookings_bookingId", fields: [bookingId], references: [id])
+  groupTripId  String?
+  groupTrip    GroupTrips?       @relation("GroupTrips_groupTripId", fields: [groupTripId], references: [id])
+  mutawwifId   String?
+  mutawwif     MutawwifProfiles? @relation("MutawwifProfiles_mutawwifId", fields: [mutawwifId], references: [id])
+  rating       Float?
+  title        String?
+  body         String?
+  status       String            @default("pending_review")
+  visibility   String            @default("private")
+  createdAt    DateTime          @default(now())
+  publishedAt  DateTime?
+}
+
+model Ratings {
+  id           String    @id @default(uuid())
+  authorUserId String?
+  authorUser   AppUsers? @relation("AppUsers_authorUserId", fields: [authorUserId], references: [id])
+  targetType   String
+  targetId     String
+  rating       Float
+  feedback     String?
+  status       String    @default("submitted")
+  createdAt    DateTime  @default(now())
+}
+
+model SavedPackages {
+  id        String   @id @default(uuid())
+  userId    String
+  user      AppUsers @relation("AppUsers_userId", fields: [userId], references: [id])
+  packageId String
+  package   Packages @relation("Packages_packageId", fields: [packageId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, packageId])
+}
+
+model CompareSessions {
+  id                                                   String                @id @default(uuid())
+  userId                                               String?
+  user                                                 AppUsers?             @relation("AppUsers_userId", fields: [userId], references: [id])
+  sessionKey                                           String?
+  createdAt                                            DateTime              @default(now())
+  updatedAt                                            DateTime              @default(now())
+  CompareSessionItems_CompareSessions_compareSessionId CompareSessionItems[] @relation("CompareSessions_compareSessionId")
+}
+
+model CompareSessionItems {
+  id               String          @id @default(uuid())
+  compareSessionId String
+  compareSession   CompareSessions @relation("CompareSessions_compareSessionId", fields: [compareSessionId], references: [id])
+  packageId        String
+  package          Packages        @relation("Packages_packageId", fields: [packageId], references: [id])
+  sortOrder        Int             @default(0)
+
+  @@unique([compareSessionId, packageId])
 }

@@ -7,9 +7,11 @@ import { TopBar } from './TopBar';
 export interface AppShellProps {
   children: React.ReactNode;
   navItems: NavItem[];
+  agencyName?: string;
+  agencyLogo?: string;
 }
 
-export const AppShell: React.FC<AppShellProps> = ({ children, navItems }) => {
+export const AppShell: React.FC<AppShellProps> = ({ children, navItems, agencyName, agencyLogo }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(() => {
     return localStorage.getItem('sidebar_collapsed') === 'true';
@@ -46,6 +48,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children, navItems }) => {
         isCollapsed={!isMobile && isDesktopCollapsed}
         isMobileOpen={isMobileOpen}
         onCloseMobile={() => setIsMobileOpen(false)}
+        agencyName={agencyName}
+        agencyLogo={agencyLogo}
       />
       
       <div className="main-content-wrapper">

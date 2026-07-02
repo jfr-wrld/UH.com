@@ -18,6 +18,8 @@ export interface SidebarProps {
   items: NavItem[];
   onCloseMobile?: () => void;
   className?: string;
+  agencyName?: string;
+  agencyLogo?: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,7 +27,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isMobileOpen,
   items,
   onCloseMobile,
-  className
+  className,
+  agencyName,
+  agencyLogo
 }) => {
   const [expandedItems, setExpandedItems] = React.useState<Set<string>>(new Set());
 
@@ -71,11 +75,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className
         )}
       >
-        <div className="sidebar-header" style={{ justifyContent: isCollapsed ? 'center' : 'flex-start', padding: isCollapsed ? '0 var(--space-2)' : '0 var(--space-4)' }}>
-          {isCollapsed ? (
-            <img src="/brand/logo-mark.svg" alt="UmrahHaji" style={{ width: 32, height: 32 }} />
+        <div className="sidebar-header" style={{ justifyContent: isCollapsed ? 'center' : 'flex-start', padding: isCollapsed ? '0 var(--space-2)' : '0 var(--space-4)', height: 'var(--topbar-height)', minHeight: 'var(--topbar-height)', display: 'flex', alignItems: 'center' }}>
+          {agencyName ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {agencyLogo ? (
+                <img src={agencyLogo} alt={agencyName} style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)' }} />
+              ) : (
+                <div style={{ width: 32, height: 32, borderRadius: 'var(--radius-sm)', backgroundColor: 'var(--color-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
+                  {agencyName.charAt(0)}
+                </div>
+              )}
+              {!isCollapsed && (
+                <span style={{ fontWeight: 700, fontSize: '16px', color: 'var(--color-text-neutral)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '160px' }}>
+                  {agencyName}
+                </span>
+              )}
+            </div>
           ) : (
-            <img src="/brand/logo-full.svg" alt="UmrahHaji" style={{ height: 32, maxWidth: '100%' }} />
+            isCollapsed ? (
+              <img src="/brand/logo-mark.svg" alt="UmrahHaji" style={{ width: 32, height: 32 }} />
+            ) : (
+              <img src="/brand/logo-full.svg" alt="UmrahHaji" style={{ height: 32, maxWidth: '100%' }} />
+            )
           )}
         </div>
         

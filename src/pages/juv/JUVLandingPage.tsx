@@ -7,6 +7,9 @@ import { User, UserCheck, Building2, Heart, BadgeCheck, ChevronLeft, ChevronRigh
 // ============================================================================
 interface JUVLandingPageProps {
   isAuthenticated: boolean;
+  onLoginClick: () => void;
+  onRegisterClick: () => void;
+  onLogoutClick: () => void;
 }
 
 interface PackageData {
@@ -337,8 +340,14 @@ function RevealSection({ children, className = '', style }: { children: React.Re
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
-export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated }) => {
+export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated, onLoginClick, onRegisterClick, onLogoutClick }) => {
+  const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [registerMobileOpen, setRegisterMobileOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [loginMobileOpen, setLoginMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeGuideTab, setActiveGuideTab] = useState('Guides');
@@ -346,12 +355,8 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
   const [activeFaqCategory, setActiveFaqCategory] = useState(faqCategories[0].label);
   const [searchCategory, setSearchCategory] = useState<'umrah' | 'hajj' | 'tours'>('umrah');
   const [searchDeparture, setSearchDeparture] = useState('');
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
-  const [registerMobileOpen, setRegisterMobileOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState({ date: 'Any Time', duration: '10 - 14 Days', type: 'All Types', budget: 'Any Range' });
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -523,17 +528,30 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
           <div className="juv-nav-actions">
             {!isAuthenticated ? (
               <div className="juv-desktop-auth" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button className="juv-btn juv-btn-outline juv-btn-sm" style={{ minWidth: '100px', height: '36px', boxSizing: 'border-box' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}>Login</button>
                 <div style={{ position: 'relative' }}>
-                  <button className="juv-btn juv-btn-primary juv-btn-sm" style={{ minWidth: '110px', height: '36px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', ...(registerOpen ? { background: 'var(--juv-primary-dark)' } : {}) }} onClick={() => setRegisterOpen(!registerOpen)}>
+                  <button className="juv-btn juv-btn-outline juv-btn-sm" style={{ minWidth: '100px', height: '36px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', ...(loginOpen ? { background: 'var(--juv-surface)' } : {}) }} onClick={() => { setLoginOpen(!loginOpen); setRegisterOpen(false); }}>
+                    Login
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: loginOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </button>
+                  {loginOpen && (
+                    <div className="juv-dropdown-menu" style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, minWidth: '200px' }}>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onLoginClick}><User size={16} color="#3b82f6" /> Login as Jamaah</button>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onLoginClick}><UserCheck size={16} color="#10b981" /> Login as Mutawwif</button>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { window.location.href = '/ta'; }}><Building2 size={16} color="#8b5cf6" /> Travel Agency</button>
+                    </div>
+                  )}
+                </div>
+                
+                <div style={{ position: 'relative' }}>
+                  <button className="juv-btn juv-btn-primary juv-btn-sm" style={{ minWidth: '110px', height: '36px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', ...(registerOpen ? { background: 'var(--juv-primary-dark)' } : {}) }} onClick={() => { setRegisterOpen(!registerOpen); setLoginOpen(false); }}>
                     Register
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: registerOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}><polyline points="6 9 12 15 18 9"></polyline></svg>
                   </button>
                   {registerOpen && (
                     <div className="juv-dropdown-menu" style={{ position: 'absolute', top: 'calc(100% + 4px)', right: 0, minWidth: '200px' }}>
-                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><User size={16} color="#3b82f6" /> Register as Jamaah</button>
-                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><UserCheck size={16} color="#10b981" /> Register as Mutawwif</button>
-                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><Building2 size={16} color="#8b5cf6" /> Register as Travel Agency</button>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onRegisterClick}><User size={16} color="#3b82f6" /> Jamaah</button>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onRegisterClick}><UserCheck size={16} color="#10b981" /> Mutawwif</button>
+                      <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { window.location.href = '/ta#ta-register'; }}><Building2 size={16} color="#8b5cf6" /> Travel Agency</button>
                     </div>
                   )}
                 </div>
@@ -549,7 +567,7 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
                   <div className="juv-dropdown-menu">
                     <button className="juv-dropdown-item"><IconProfile /> Profile</button>
                     <div className="juv-dropdown-divider"></div>
-                    <button className="juv-dropdown-item" style={{ color: '#dc2626' }} onClick={() => { localStorage.removeItem('erp_auth'); window.location.reload(); }}>Logout</button>
+                    <button className="juv-dropdown-item" style={{ color: '#dc2626' }} onClick={onLogoutClick}>Logout</button>
                   </div>
                 )}
               </div>
@@ -580,17 +598,30 @@ export const JUVLandingPage: React.FC<JUVLandingPageProps> = ({ isAuthenticated 
           <button className="juv-drawer-link" onClick={() => scrollToSection('contact')}><IconHeadphones /> About</button>
         </div>
         <div className="juv-drawer-footer">
-          <button className="juv-btn juv-btn-outline juv-btn-md" style={{ width: '100%', height: '42px', boxSizing: 'border-box' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}>Login</button>
+          <div style={{ position: 'relative', width: '100%', marginBottom: 'var(--space-2)' }}>
+            <button className="juv-btn juv-btn-outline juv-btn-md" style={{ width: '100%', height: '42px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }} onClick={() => { setLoginMobileOpen(!loginMobileOpen); setRegisterMobileOpen(false); }}>
+              Login
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: loginMobileOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            {loginMobileOpen && (
+              <div className="juv-dropdown-menu" style={{ position: 'absolute', bottom: 'calc(100% + 4px)', left: 0, width: '100%' }}>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onLoginClick}><User size={16} color="#3b82f6" /> Login as Jamaah</button>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onLoginClick}><UserCheck size={16} color="#10b981" /> Login as Mutawwif</button>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { window.location.href = '/ta'; }}><Building2 size={16} color="#8b5cf6" /> Travel Agency</button>
+              </div>
+            )}
+          </div>
+          
           <div style={{ position: 'relative', width: '100%' }}>
-            <button className="juv-btn juv-btn-primary juv-btn-md" style={{ width: '100%', height: '42px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', ...(registerMobileOpen ? { background: 'var(--juv-primary-dark)' } : {}) }} onClick={() => setRegisterMobileOpen(!registerMobileOpen)}>
+            <button className="juv-btn juv-btn-primary juv-btn-md" style={{ width: '100%', height: '42px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', ...(registerMobileOpen ? { background: 'var(--juv-primary-dark)' } : {}) }} onClick={() => { setRegisterMobileOpen(!registerMobileOpen); setLoginMobileOpen(false); }}>
               Register
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: registerMobileOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
             {registerMobileOpen && (
               <div className="juv-dropdown-menu" style={{ position: 'absolute', bottom: 'calc(100% + 4px)', left: 0, width: '100%' }}>
-                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><User size={16} color="#3b82f6" /> Register as Jamaah</button>
-                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><UserCheck size={16} color="#10b981" /> Register as Mutawwif</button>
-                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { localStorage.setItem('erp_auth', 'true'); window.location.reload(); }}><Building2 size={16} color="#8b5cf6" /> Register as Travel Agency</button>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onRegisterClick}><User size={16} color="#3b82f6" /> Jamaah</button>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={onRegisterClick}><UserCheck size={16} color="#10b981" /> Mutawwif</button>
+                <button className="juv-dropdown-item" style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => { window.location.href = '/ta#ta-register'; }}><Building2 size={16} color="#8b5cf6" /> Travel Agency</button>
               </div>
             )}
           </div>

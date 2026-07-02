@@ -1,0 +1,1 @@
+Fix JUVLandingPage auth state and logout
